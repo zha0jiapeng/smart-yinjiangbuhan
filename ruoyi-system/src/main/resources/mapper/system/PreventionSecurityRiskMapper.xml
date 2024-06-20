@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionSecurityRiskMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionSecurityRisk">
+        <!--@Table prevention_security_risk-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="deviceId" column="device_id" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="analysisUnit" column="analysis_unit" jdbcType="VARCHAR"/>
+        <result property="dangerEvent" column="danger_event" jdbcType="VARCHAR"/>
+        <result property="measuresOne" column="measures_one" jdbcType="VARCHAR"/>
+        <result property="measuresTwo" column="measures_two" jdbcType="VARCHAR"/>
+        <result property="measuresThree" column="measures_three" jdbcType="VARCHAR"/>
+        <result property="controlMeasures" column="control_measures" jdbcType="VARCHAR"/>
+        <result property="hiddenContent" column="hidden_content" jdbcType="VARCHAR"/>
+        <result property="deptUserName" column="dept_user_name" jdbcType="VARCHAR"/>
+        <result property="cycle" column="cycle" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="hiddenInfo" column="hidden_info" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks, create_time, update_time
+        from prevention_security_risk
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks, create_time, update_time
+        from prevention_security_risk
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deviceId != null">
+                and device_id = #{deviceId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="analysisUnit != null and analysisUnit != ''">
+                and analysis_unit = #{analysisUnit}
+            </if>
+            <if test="dangerEvent != null and dangerEvent != ''">
+                and danger_event = #{dangerEvent}
+            </if>
+            <if test="measuresOne != null and measuresOne != ''">
+                and measures_one = #{measuresOne}
+            </if>
+            <if test="measuresTwo != null and measuresTwo != ''">
+                and measures_two = #{measuresTwo}
+            </if>
+            <if test="measuresThree != null and measuresThree != ''">
+                and measures_three = #{measuresThree}
+            </if>
+            <if test="controlMeasures != null and controlMeasures != ''">
+                and control_measures = #{controlMeasures}
+            </if>
+            <if test="hiddenContent != null and hiddenContent != ''">
+                and hidden_content = #{hiddenContent}
+            </if>
+            <if test="deptUserName != null and deptUserName != ''">
+                and dept_user_name = #{deptUserName}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                and hidden_info = #{hiddenInfo}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks, create_time, update_time
+        from prevention_security_risk
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_security_risk
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deviceId != null">
+                and device_id = #{deviceId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="analysisUnit != null and analysisUnit != ''">
+                and analysis_unit = #{analysisUnit}
+            </if>
+            <if test="dangerEvent != null and dangerEvent != ''">
+                and danger_event = #{dangerEvent}
+            </if>
+            <if test="measuresOne != null and measuresOne != ''">
+                and measures_one = #{measuresOne}
+            </if>
+            <if test="measuresTwo != null and measuresTwo != ''">
+                and measures_two = #{measuresTwo}
+            </if>
+            <if test="measuresThree != null and measuresThree != ''">
+                and measures_three = #{measuresThree}
+            </if>
+            <if test="controlMeasures != null and controlMeasures != ''">
+                and control_measures = #{controlMeasures}
+            </if>
+            <if test="hiddenContent != null and hiddenContent != ''">
+                and hidden_content = #{hiddenContent}
+            </if>
+            <if test="deptUserName != null and deptUserName != ''">
+                and dept_user_name = #{deptUserName}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                and hidden_info = #{hiddenInfo}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="countUnit" resultType="java.lang.String">
+        SELECT analysis_unit FROM `prevention_security_risk` WHERE device_id = #{id} GROUP BY analysis_unit;
+    </select>
+    <select id="countEvent" resultType="java.lang.String">
+        SELECT danger_event FROM `prevention_security_risk` WHERE device_id = #{id} GROUP BY danger_event;
+    </select>
+    <select id="countControl" resultType="java.lang.String">
+        SELECT control_measures FROM `prevention_security_risk` WHERE device_id = #{id} GROUP BY control_measures;
+    </select>
+    <select id="countTask" resultType="java.lang.String">
+        SELECT hidden_content FROM `prevention_security_risk` WHERE device_id = #{id} GROUP BY hidden_content;
+    </select>
+
+
+    <resultMap id="BaseResultMapVO" type="com.ruoyi.system.domain.vo.PreventionSecurityRiskVO">
+        <!--@Table prevention_security_risk-->
+        <result property="deviceName" column="device_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="analysisUnit" column="analysis_unit" jdbcType="VARCHAR"/>
+        <result property="dangerEvent" column="danger_event" jdbcType="VARCHAR"/>
+        <result property="measuresOne" column="measures_one" jdbcType="VARCHAR"/>
+        <result property="measuresTwo" column="measures_two" jdbcType="VARCHAR"/>
+        <result property="measuresThree" column="measures_three" jdbcType="VARCHAR"/>
+        <result property="controlMeasures" column="control_measures" jdbcType="VARCHAR"/>
+        <result property="hiddenContent" column="hidden_content" jdbcType="VARCHAR"/>
+        <result property="deptUserName" column="dept_user_name" jdbcType="VARCHAR"/>
+        <result property="cycle" column="cycle" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="hiddenInfo" column="hidden_info" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="queryAllVO" resultMap="BaseResultMapVO">
+        SELECT
+            t2.device_name,
+            t1.dept_name,
+            t1.user_name,
+            t1.analysis_unit,
+            t1.danger_event,
+            t1.measures_one,
+            t1.measures_two,
+            t1.measures_three,
+            t1.control_measures,
+            t1.hidden_content,
+            t1.dept_user_name,
+            t1.cycle,
+            t1.unit,
+            t1.hidden_info,
+            t1.remarks
+        FROM
+            `prevention_security_risk` t1 LEFT JOIN prevention_device t2 ON t1.device_id = t2.id
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_security_risk(device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks)
+        values (#{deviceId}, #{deptName}, #{deptId}, #{userName}, #{userId}, #{analysisUnit}, #{dangerEvent}, #{measuresOne}, #{measuresTwo}, #{measuresThree}, #{controlMeasures}, #{hiddenContent}, #{deptUserName}, #{cycle}, #{unit}, #{hiddenInfo}, #{remarks})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_security_risk(device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.deviceId}, #{entity.deptName}, #{entity.deptId}, #{entity.userName}, #{entity.userId}, #{entity.analysisUnit}, #{entity.dangerEvent}, #{entity.measuresOne}, #{entity.measuresTwo}, #{entity.measuresThree}, #{entity.controlMeasures}, #{entity.hiddenContent}, #{entity.deptUserName}, #{entity.cycle}, #{entity.unit}, #{entity.hiddenInfo}, #{entity.remarks})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_security_risk(device_id, dept_name, dept_id, user_name, user_id, analysis_unit, danger_event, measures_one, measures_two, measures_three, control_measures, hidden_content, dept_user_name, cycle, unit, hidden_info, remarks)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.deviceId}, #{entity.deptName}, #{entity.deptId}, #{entity.userName}, #{entity.userId}, #{entity.analysisUnit}, #{entity.dangerEvent}, #{entity.measuresOne}, #{entity.measuresTwo}, #{entity.measuresThree}, #{entity.controlMeasures}, #{entity.hiddenContent}, #{entity.deptUserName}, #{entity.cycle}, #{entity.unit}, #{entity.hiddenInfo}, #{entity.remarks})
+        </foreach>
+        on duplicate key update
+        device_id = values(device_id),
+        dept_name = values(dept_name),
+        dept_id = values(dept_id),
+        user_name = values(user_name),
+        user_id = values(user_id),
+        analysis_unit = values(analysis_unit),
+        danger_event = values(danger_event),
+        measures_one = values(measures_one),
+        measures_two = values(measures_two),
+        measures_three = values(measures_three),
+        control_measures = values(control_measures),
+        hidden_content = values(hidden_content),
+        dept_user_name = values(dept_user_name),
+        cycle = values(cycle),
+        unit = values(unit),
+        hidden_info = values(hidden_info),
+        remarks = values(remarks)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_security_risk
+        <set>
+            <if test="deviceId != null">
+                device_id = #{deviceId},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="analysisUnit != null and analysisUnit != ''">
+                analysis_unit = #{analysisUnit},
+            </if>
+            <if test="dangerEvent != null and dangerEvent != ''">
+                danger_event = #{dangerEvent},
+            </if>
+            <if test="measuresOne != null and measuresOne != ''">
+                measures_one = #{measuresOne},
+            </if>
+            <if test="measuresTwo != null and measuresTwo != ''">
+                measures_two = #{measuresTwo},
+            </if>
+            <if test="measuresThree != null and measuresThree != ''">
+                measures_three = #{measuresThree},
+            </if>
+            <if test="controlMeasures != null and controlMeasures != ''">
+                control_measures = #{controlMeasures},
+            </if>
+            <if test="hiddenContent != null and hiddenContent != ''">
+                hidden_content = #{hiddenContent},
+            </if>
+            <if test="deptUserName != null and deptUserName != ''">
+                dept_user_name = #{deptUserName},
+            </if>
+            <if test="cycle != null and cycle != ''">
+                cycle = #{cycle},
+            </if>
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                hidden_info = #{hiddenInfo},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_security_risk where id = #{id}
+    </delete>
+
+</mapper>
+

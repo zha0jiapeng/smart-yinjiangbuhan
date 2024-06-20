@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.IotTspMapper">
+    <!---->
+    <resultMap type="IotTsp" id="IotTspResult">
+        <result property="id" column="id"/>
+        <result property="devId" column="dev_id"/>
+        <result property="pmTwoFive" column="pm_two_five"/>
+        <result property="pmTen" column="pm_ten"/>
+        <result property="tsp" column="tsp"/>
+        <result property="temperature" column="temperature"/>
+        <result property="humidity" column="humidity"/>
+        <result property="windSpeed" column="wind_speed"/>
+        <result property="windDirection" column="wind_direction"/>
+        <result property="noise" column="noise"/>
+        <result property="pressure" column="pressure"/>
+        <result property="noTwo" column="no_two"/>
+        <result property="soTwo" column="so_two"/>
+        <result property="co" column="co"/>
+        <result property="three" column="three"/>
+        <result property="voc" column="voc"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="modify_by" property="modifyBy"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="yn" property="yn"/>
+    </resultMap>
+    <!---->
+    <resultMap type="IotTspCopy" id="IotTspResultCopy">
+        <result property="id" column="id"/>
+        <result property="devId" column="dev_id"/>
+        <result property="pmTwoFive" column="pm_two_five"/>
+        <result property="pmTen" column="pm_ten"/>
+        <result property="tsp" column="tsp"/>
+        <result property="temperature" column="temperature"/>
+        <result property="humidity" column="humidity"/>
+        <result property="windSpeed" column="wind_speed"/>
+        <result property="windDirection" column="wind_direction"/>
+        <result property="noise" column="noise"/>
+        <result property="pressure" column="pressure"/>
+        <result property="noTwo" column="no_two"/>
+        <result property="soTwo" column="so_two"/>
+        <result property="co" column="co"/>
+        <result property="three" column="three"/>
+        <result property="voc" column="voc"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_date" property="createdDate"/>
+        <result column="modify_by" property="modifyBy"/>
+        <result column="modify_date" property="modifyDate"/>
+        <result column="yn" property="yn"/>
+    </resultMap>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="IotTspResult">
+        select
+        id, dev_id, pm_two_five, pm_ten, tsp, temperature, humidity, wind_speed, wind_direction, noise, pressure,
+        no_two, so_two, co, three,
+        voc, created_by, created_date, modify_by, modify_date,yn
+        from lot_tsp
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllList" resultMap="IotTspResultCopy">
+        select id, dev_id, pm_two_five, pm_ten, tsp, temperature, humidity, wind_speed, wind_direction, noise, pressure,no_two, so_two, co, three, voc, created_by, created_date, modify_by, modify_date,yn
+        from lot_tsp where created_date BETWEEN #{starTime} and #{endTime}
+        order by created_date desc
+    </select>
+
+
+
+</mapper>

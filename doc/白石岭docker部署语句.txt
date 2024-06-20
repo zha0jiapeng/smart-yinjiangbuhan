@@ -1,0 +1,38 @@
+
+
+MYSQL 部署语句
+
+docker run --restart=always --privileged=true  \
+-v /docker/mysql/:/var/lib/mysql \
+-p 38081:3306 --name mysql \
+-e MYSQL_ROOT_PASSWORD=123456 -d mysql
+
+Redis 部署语句
+
+docker run --name=redis --workdir=/data -p 38082:6379 --restart=no --detach=true redis
+
+JAVA  部署语句
+docker run -it -d -v /home/bsl/java/ht:/work -v /home:/home -p 8097:8097 --name bsl-java-new bsl-java-images:1.0
+
+docker run -it -d -v /home/bsl/java/wk:/work -v /home:/home -p 7000:7000 --name r-pan-java-new r-pan-api-launch-images:1.0
+
+WEB 部署语句
+
+docker run -it -d \
+-v /home/bsl/web/dist:/usr/share/nginx/html \
+-v /home/bsl/web/nginx.conf:/etc/nginx/conf.d/nginx.conf \
+-p 39080:8088 --name bsl-ht-web nginx
+
+docker run -it -d \
+-v /home/bsl/web/sjfx/dist:/usr/share/nginx/html \
+-v /home/bsl/web/sjfx/nginx.conf:/etc/nginx/conf.d/nginx.conf \
+-p 39088:8088 --name bsl-dp-web nginx
+
+FASTDFS 部署语句
+
+https://blog.csdn.net/Coder_ljw/article/details/127523362
+
+FASTDFS 清空脚本
+
+https://blog.csdn.net/willingtolove/article/details/118368844
+

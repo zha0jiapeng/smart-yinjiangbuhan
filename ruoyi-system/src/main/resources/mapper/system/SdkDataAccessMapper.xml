@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SdkDataAccessMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.SdkDataAccess">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="sId" column="s_id" jdbcType="VARCHAR"/>
+        <result property="orgId" column="org_id" jdbcType="VARCHAR"/>
+        <result property="oriRedId" column="ori_red_id" jdbcType="VARCHAR"/>
+        <result property="oriOrgId" column="ori_org_id" jdbcType="VARCHAR"/>
+        <result property="realOrgId" column="real_org_id" jdbcType="VARCHAR"/>
+        <result property="supplierId" column="supplier_id" jdbcType="VARCHAR"/>
+        <result property="stockbinId" column="stockbin_id" jdbcType="VARCHAR"/>
+        <result property="oriOrderId" column="ori_order_id" jdbcType="VARCHAR"/>
+        <result property="orderDataId" column="order_data_id" jdbcType="VARCHAR"/>
+        <result property="oriStockbinId" column="ori_stockbin_id" jdbcType="VARCHAR"/>
+        <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+        <result property="oriOrgName" column="ori_org_name" jdbcType="VARCHAR"/>
+        <result property="stockbinName" column="stockbin_name" jdbcType="VARCHAR"/>
+        <result property="supplierName" column="supplier_name" jdbcType="VARCHAR"/>
+        <result property="stockbinFullName" column="stockbin_full_name" jdbcType="VARCHAR"/>
+        <result property="orderCode" column="order_code" jdbcType="VARCHAR"/>
+        <result property="supplierOrgCode" column="supplier_org_code" jdbcType="VARCHAR"/>
+        <result property="auditDate" column="audit_date" jdbcType="VARCHAR"/>
+        <result property="orderDate" column="order_date" jdbcType="VARCHAR"/>
+        <result property="makerDate" column="maker_date" jdbcType="VARCHAR"/>
+        <result property="recordedDate" column="recorded_date" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="auditor" column="auditor" jdbcType="VARCHAR"/>
+        <result property="maker" column="maker" jdbcType="VARCHAR"/>
+        <result property="plateNumber" column="plate_number" jdbcType="VARCHAR"/>
+        <result property="weightType" column="weight_type" jdbcType="VARCHAR"/>
+        <result property="exitTime" column="exit_time" jdbcType="VARCHAR"/>
+        <result property="enterTime" column="enter_time" jdbcType="VARCHAR"/>
+        <result property="waybillWeight" column="waybill_weight" jdbcType="INTEGER"/>
+        <result property="printTimes" column="print_times" jdbcType="INTEGER"/>
+        <result property="serviceType" column="service_type" jdbcType="INTEGER"/>
+        <result property="orderType" column="order_type" jdbcType="INTEGER"/>
+        <result property="auxiliaryNetQuantity" column="auxiliary_net_quantity" jdbcType="INTEGER"/>
+        <result property="deductQuantity" column="deduct_quantity" jdbcType="INTEGER"/>
+        <result property="deductRate" column="deduct_rate" jdbcType="INTEGER"/>
+        <result property="orderOrigin" column="order_origin" jdbcType="INTEGER"/>
+        <result property="photo" column="photo" jdbcType="VARCHAR"/>
+        <result property="gpyPhoto" column="gpy_photo" jdbcType="VARCHAR"/>
+        <result property="signaturePhoto" column="signature_photo" jdbcType="VARCHAR"/>
+        <result property="material" column="material" jdbcType="VARCHAR"/>
+        <result property="tareQuantity" column="tare_quantity" jdbcType="NUMERIC"/>
+        <result property="roughQuantity" column="rough_quantity" jdbcType="NUMERIC"/>
+        <result property="isRed" column="is_red" jdbcType="INTEGER"/>
+        <result property="isExit" column="is_exit" jdbcType="INTEGER"/>
+        <result property="isTare" column="is_tare" jdbcType="INTEGER"/>
+        <result property="isAudit" column="is_audit" jdbcType="INTEGER"/>
+        <result property="isReturn" column="is_return" jdbcType="INTEGER"/>
+        <result property="isAffirm" column="is_affirm" jdbcType="INTEGER"/>
+        <result property="isRemoved" column="is_removed" jdbcType="INTEGER"/>
+        <result property="isMultiplication" column="is_multiplication" jdbcType="INTEGER"/>
+        <result property="isUseOrinetQuantity" column="is_use_orinet_quantity" jdbcType="INTEGER"/>
+        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+        <result property="updatedAt" column="updated_at" jdbcType="TIMESTAMP"/>
+        <result property="version" column="version" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id, s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version
+        from sdk_data_access where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id, s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version
+        from sdk_data_access
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="sId != null and sId != ''">
+                and s_id = #{sId}
+            </if>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId}
+            </if>
+            <if test="oriRedId != null and oriRedId != ''">
+                and ori_red_id = #{oriRedId}
+            </if>
+            <if test="oriOrgId != null and oriOrgId != ''">
+                and ori_org_id = #{oriOrgId}
+            </if>
+            <if test="realOrgId != null and realOrgId != ''">
+                and real_org_id = #{realOrgId}
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                and supplier_id = #{supplierId}
+            </if>
+            <if test="stockbinId != null and stockbinId != ''">
+                and stockbin_id = #{stockbinId}
+            </if>
+            <if test="oriOrderId != null and oriOrderId != ''">
+                and ori_order_id = #{oriOrderId}
+            </if>
+            <if test="orderDataId != null and orderDataId != ''">
+                and order_data_id = #{orderDataId}
+            </if>
+            <if test="oriStockbinId != null and oriStockbinId != ''">
+                and ori_stockbin_id = #{oriStockbinId}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                and org_name = #{orgName}
+            </if>
+            <if test="oriOrgName != null and oriOrgName != ''">
+                and ori_org_name = #{oriOrgName}
+            </if>
+            <if test="stockbinName != null and stockbinName != ''">
+                and stockbin_name = #{stockbinName}
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                and supplier_name = #{supplierName}
+            </if>
+            <if test="stockbinFullName != null and stockbinFullName != ''">
+                and stockbin_full_name = #{stockbinFullName}
+            </if>
+            <if test="orderCode != null and orderCode != ''">
+                and order_code = #{orderCode}
+            </if>
+            <if test="supplierOrgCode != null and supplierOrgCode != ''">
+                and supplier_org_code = #{supplierOrgCode}
+            </if>
+            <if test="auditDate != null and auditDate != ''">
+                and audit_date = #{auditDate}
+            </if>
+            <if test="orderDate != null and orderDate != ''">
+                and order_date = #{orderDate}
+            </if>
+            <if test="makerDate != null and makerDate != ''">
+                and maker_date = #{makerDate}
+            </if>
+            <if test="recordedDate != null and recordedDate != ''">
+                and recorded_date = #{recordedDate}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="auditor != null and auditor != ''">
+                and auditor = #{auditor}
+            </if>
+            <if test="maker != null and maker != ''">
+                and maker = #{maker}
+            </if>
+            <if test="plateNumber != null and plateNumber != ''">
+                and plate_number = #{plateNumber}
+            </if>
+            <if test="weightType != null and weightType != ''">
+                and weight_type = #{weightType}
+            </if>
+            <if test="exitTime != null and exitTime != ''">
+                and exit_time = #{exitTime}
+            </if>
+            <if test="enterTime != null and enterTime != ''">
+                and enter_time = #{enterTime}
+            </if>
+            <if test="waybillWeight != null">
+                and waybill_weight = #{waybillWeight}
+            </if>
+            <if test="printTimes != null">
+                and print_times = #{printTimes}
+            </if>
+            <if test="serviceType != null">
+                and service_type = #{serviceType}
+            </if>
+            <if test="orderType != null">
+                and order_type = #{orderType}
+            </if>
+            <if test="auxiliaryNetQuantity != null">
+                and auxiliary_net_quantity = #{auxiliaryNetQuantity}
+            </if>
+            <if test="deductQuantity != null">
+                and deduct_quantity = #{deductQuantity}
+            </if>
+            <if test="deductRate != null">
+                and deduct_rate = #{deductRate}
+            </if>
+            <if test="orderOrigin != null">
+                and order_origin = #{orderOrigin}
+            </if>
+            <if test="photo != null and photo != ''">
+                and photo = #{photo}
+            </if>
+            <if test="gpyPhoto != null and gpyPhoto != ''">
+                and gpy_photo = #{gpyPhoto}
+            </if>
+            <if test="signaturePhoto != null and signaturePhoto != ''">
+                and signature_photo = #{signaturePhoto}
+            </if>
+            <if test="material != null and material != ''">
+                and material = #{material}
+            </if>
+            <if test="tareQuantity != null">
+                and tare_quantity = #{tareQuantity}
+            </if>
+            <if test="roughQuantity != null">
+                and rough_quantity = #{roughQuantity}
+            </if>
+            <if test="isRed != null">
+                and is_red = #{isRed}
+            </if>
+            <if test="isExit != null">
+                and is_exit = #{isExit}
+            </if>
+            <if test="isTare != null">
+                and is_tare = #{isTare}
+            </if>
+            <if test="isAudit != null">
+                and is_audit = #{isAudit}
+            </if>
+            <if test="isReturn != null">
+                and is_return = #{isReturn}
+            </if>
+            <if test="isAffirm != null">
+                and is_affirm = #{isAffirm}
+            </if>
+            <if test="isRemoved != null">
+                and is_removed = #{isRemoved}
+            </if>
+            <if test="isMultiplication != null">
+                and is_multiplication = #{isMultiplication}
+            </if>
+            <if test="isUseOrinetQuantity != null">
+                and is_use_orinet_quantity = #{isUseOrinetQuantity}
+            </if>
+            <if test="createdAt != null">
+                and created_at = #{createdAt}
+            </if>
+            <if test="updatedAt != null">
+                and updated_at = #{updatedAt}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select id, s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version
+        from baishiling.sdk_data_access
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1) from sdk_data_access
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="sId != null and sId != ''">
+                and s_id = #{sId}
+            </if>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId}
+            </if>
+            <if test="oriRedId != null and oriRedId != ''">
+                and ori_red_id = #{oriRedId}
+            </if>
+            <if test="oriOrgId != null and oriOrgId != ''">
+                and ori_org_id = #{oriOrgId}
+            </if>
+            <if test="realOrgId != null and realOrgId != ''">
+                and real_org_id = #{realOrgId}
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                and supplier_id = #{supplierId}
+            </if>
+            <if test="stockbinId != null and stockbinId != ''">
+                and stockbin_id = #{stockbinId}
+            </if>
+            <if test="oriOrderId != null and oriOrderId != ''">
+                and ori_order_id = #{oriOrderId}
+            </if>
+            <if test="orderDataId != null and orderDataId != ''">
+                and order_data_id = #{orderDataId}
+            </if>
+            <if test="oriStockbinId != null and oriStockbinId != ''">
+                and ori_stockbin_id = #{oriStockbinId}
+            </if>
+            <if test="orgName != null and orgName != ''">
+                and org_name = #{orgName}
+            </if>
+            <if test="oriOrgName != null and oriOrgName != ''">
+                and ori_org_name = #{oriOrgName}
+            </if>
+            <if test="stockbinName != null and stockbinName != ''">
+                and stockbin_name = #{stockbinName}
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                and supplier_name = #{supplierName}
+            </if>
+            <if test="stockbinFullName != null and stockbinFullName != ''">
+                and stockbin_full_name = #{stockbinFullName}
+            </if>
+            <if test="orderCode != null and orderCode != ''">
+                and order_code = #{orderCode}
+            </if>
+            <if test="supplierOrgCode != null and supplierOrgCode != ''">
+                and supplier_org_code = #{supplierOrgCode}
+            </if>
+            <if test="auditDate != null and auditDate != ''">
+                and audit_date = #{auditDate}
+            </if>
+            <if test="orderDate != null and orderDate != ''">
+                and order_date = #{orderDate}
+            </if>
+            <if test="makerDate != null and makerDate != ''">
+                and maker_date = #{makerDate}
+            </if>
+            <if test="recordedDate != null and recordedDate != ''">
+                and recorded_date = #{recordedDate}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="auditor != null and auditor != ''">
+                and auditor = #{auditor}
+            </if>
+            <if test="maker != null and maker != ''">
+                and maker = #{maker}
+            </if>
+            <if test="plateNumber != null and plateNumber != ''">
+                and plate_number = #{plateNumber}
+            </if>
+            <if test="weightType != null and weightType != ''">
+                and weight_type = #{weightType}
+            </if>
+            <if test="exitTime != null and exitTime != ''">
+                and exit_time = #{exitTime}
+            </if>
+            <if test="enterTime != null and enterTime != ''">
+                and enter_time = #{enterTime}
+            </if>
+            <if test="waybillWeight != null">
+                and waybill_weight = #{waybillWeight}
+            </if>
+            <if test="printTimes != null">
+                and print_times = #{printTimes}
+            </if>
+            <if test="serviceType != null">
+                and service_type = #{serviceType}
+            </if>
+            <if test="orderType != null">
+                and order_type = #{orderType}
+            </if>
+            <if test="auxiliaryNetQuantity != null">
+                and auxiliary_net_quantity = #{auxiliaryNetQuantity}
+            </if>
+            <if test="deductQuantity != null">
+                and deduct_quantity = #{deductQuantity}
+            </if>
+            <if test="deductRate != null">
+                and deduct_rate = #{deductRate}
+            </if>
+            <if test="orderOrigin != null">
+                and order_origin = #{orderOrigin}
+            </if>
+            <if test="photo != null and photo != ''">
+                and photo = #{photo}
+            </if>
+            <if test="gpyPhoto != null and gpyPhoto != ''">
+                and gpy_photo = #{gpyPhoto}
+            </if>
+            <if test="signaturePhoto != null and signaturePhoto != ''">
+                and signature_photo = #{signaturePhoto}
+            </if>
+            <if test="material != null and material != ''">
+                and material = #{material}
+            </if>
+            <if test="tareQuantity != null">
+                and tare_quantity = #{tareQuantity}
+            </if>
+            <if test="roughQuantity != null">
+                and rough_quantity = #{roughQuantity}
+            </if>
+            <if test="isRed != null">
+                and is_red = #{isRed}
+            </if>
+            <if test="isExit != null">
+                and is_exit = #{isExit}
+            </if>
+            <if test="isTare != null">
+                and is_tare = #{isTare}
+            </if>
+            <if test="isAudit != null">
+                and is_audit = #{isAudit}
+            </if>
+            <if test="isReturn != null">
+                and is_return = #{isReturn}
+            </if>
+            <if test="isAffirm != null">
+                and is_affirm = #{isAffirm}
+            </if>
+            <if test="isRemoved != null">
+                and is_removed = #{isRemoved}
+            </if>
+            <if test="isMultiplication != null">
+                and is_multiplication = #{isMultiplication}
+            </if>
+            <if test="isUseOrinetQuantity != null">
+                and is_use_orinet_quantity = #{isUseOrinetQuantity}
+            </if>
+            <if test="createdAt != null">
+                and created_at = #{createdAt}
+            </if>
+            <if test="updatedAt != null">
+                and updated_at = #{updatedAt}
+            </if>
+            <if test="version != null and version != ''">
+                and version = #{version}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sdk_data_access(s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version)
+        values (#{sId}, #{orgId}, #{oriRedId}, #{oriOrgId}, #{realOrgId}, #{supplierId}, #{stockbinId}, #{oriOrderId}, #{orderDataId}, #{oriStockbinId}, #{orgName}, #{oriOrgName}, #{stockbinName}, #{supplierName}, #{stockbinFullName}, #{orderCode}, #{supplierOrgCode}, #{auditDate}, #{orderDate}, #{makerDate}, #{recordedDate}, #{remark}, #{auditor}, #{maker}, #{plateNumber}, #{weightType}, #{exitTime}, #{enterTime}, #{waybillWeight}, #{printTimes}, #{serviceType}, #{orderType}, #{auxiliaryNetQuantity}, #{deductQuantity}, #{deductRate}, #{orderOrigin}, #{photo}, #{gpyPhoto}, #{signaturePhoto}, #{material}, #{tareQuantity}, #{roughQuantity}, #{isRed}, #{isExit}, #{isTare}, #{isAudit}, #{isReturn}, #{isAffirm}, #{isRemoved}, #{isMultiplication}, #{isUseOrinetQuantity}, #{createdAt}, #{updatedAt}, #{version})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sdk_data_access(s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.sId}, #{entity.orgId}, #{entity.oriRedId}, #{entity.oriOrgId}, #{entity.realOrgId}, #{entity.supplierId}, #{entity.stockbinId}, #{entity.oriOrderId}, #{entity.orderDataId}, #{entity.oriStockbinId}, #{entity.orgName}, #{entity.oriOrgName}, #{entity.stockbinName}, #{entity.supplierName}, #{entity.stockbinFullName}, #{entity.orderCode}, #{entity.supplierOrgCode}, #{entity.auditDate}, #{entity.orderDate}, #{entity.makerDate}, #{entity.recordedDate}, #{entity.remark}, #{entity.auditor}, #{entity.maker}, #{entity.plateNumber}, #{entity.weightType}, #{entity.exitTime}, #{entity.enterTime}, #{entity.waybillWeight}, #{entity.printTimes}, #{entity.serviceType}, #{entity.orderType}, #{entity.auxiliaryNetQuantity}, #{entity.deductQuantity}, #{entity.deductRate}, #{entity.orderOrigin}, #{entity.photo}, #{entity.gpyPhoto}, #{entity.signaturePhoto}, #{entity.material}, #{entity.tareQuantity}, #{entity.roughQuantity}, #{entity.isRed}, #{entity.isExit}, #{entity.isTare}, #{entity.isAudit}, #{entity.isReturn}, #{entity.isAffirm}, #{entity.isRemoved}, #{entity.isMultiplication}, #{entity.isUseOrinetQuantity}, #{entity.createdAt}, #{entity.updatedAt}, #{entity.version})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sdk_data_access(s_id, org_id, ori_red_id, ori_org_id, real_org_id, supplier_id, stockbin_id, ori_order_id, order_data_id, ori_stockbin_id, org_name, ori_org_name, stockbin_name, supplier_name, stockbin_full_name, order_code, supplier_org_code, audit_date, order_date, maker_date, recorded_date, remark, auditor, maker, plate_number, weight_type, exit_time, enter_time, waybill_weight, print_times, service_type, order_type, auxiliary_net_quantity, deduct_quantity, deduct_rate, order_origin, photo, gpy_photo, signature_photo, material, tare_quantity, rough_quantity, is_red, is_exit, is_tare, is_audit, is_return, is_affirm, is_removed, is_multiplication, is_use_orinet_quantity, created_at, updated_at, version)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.sId}, #{entity.orgId}, #{entity.oriRedId}, #{entity.oriOrgId}, #{entity.realOrgId}, #{entity.supplierId}, #{entity.stockbinId}, #{entity.oriOrderId}, #{entity.orderDataId}, #{entity.oriStockbinId}, #{entity.orgName}, #{entity.oriOrgName}, #{entity.stockbinName}, #{entity.supplierName}, #{entity.stockbinFullName}, #{entity.orderCode}, #{entity.supplierOrgCode}, #{entity.auditDate}, #{entity.orderDate}, #{entity.makerDate}, #{entity.recordedDate}, #{entity.remark}, #{entity.auditor}, #{entity.maker}, #{entity.plateNumber}, #{entity.weightType}, #{entity.exitTime}, #{entity.enterTime}, #{entity.waybillWeight}, #{entity.printTimes}, #{entity.serviceType}, #{entity.orderType}, #{entity.auxiliaryNetQuantity}, #{entity.deductQuantity}, #{entity.deductRate}, #{entity.orderOrigin}, #{entity.photo}, #{entity.gpyPhoto}, #{entity.signaturePhoto}, #{entity.material}, #{entity.tareQuantity}, #{entity.roughQuantity}, #{entity.isRed}, #{entity.isExit}, #{entity.isTare}, #{entity.isAudit}, #{entity.isReturn}, #{entity.isAffirm}, #{entity.isRemoved}, #{entity.isMultiplication}, #{entity.isUseOrinetQuantity}, #{entity.createdAt}, #{entity.updatedAt}, #{entity.version})
+        </foreach>
+        on duplicate key update
+        s_id = values(s_id),
+        org_id = values(org_id),
+        ori_red_id = values(ori_red_id),
+        ori_org_id = values(ori_org_id),
+        real_org_id = values(real_org_id),
+        supplier_id = values(supplier_id),
+        stockbin_id = values(stockbin_id),
+        ori_order_id = values(ori_order_id),
+        order_data_id = values(order_data_id),
+        ori_stockbin_id = values(ori_stockbin_id),
+        org_name = values(org_name),
+        ori_org_name = values(ori_org_name),
+        stockbin_name = values(stockbin_name),
+        supplier_name = values(supplier_name),
+        stockbin_full_name = values(stockbin_full_name),
+        order_code = values(order_code),
+        supplier_org_code = values(supplier_org_code),
+        audit_date = values(audit_date),
+        order_date = values(order_date),
+        maker_date = values(maker_date),
+        recorded_date = values(recorded_date),
+        remark = values(remark),
+        auditor = values(auditor),
+        maker = values(maker),
+        plate_number = values(plate_number),
+        weight_type = values(weight_type),
+        exit_time = values(exit_time),
+        enter_time = values(enter_time),
+        waybill_weight = values(waybill_weight),
+        print_times = values(print_times),
+        service_type = values(service_type),
+        order_type = values(order_type),
+        auxiliary_net_quantity = values(auxiliary_net_quantity),
+        deduct_quantity = values(deduct_quantity),
+        deduct_rate = values(deduct_rate),
+        order_origin = values(order_origin),
+        photo = values(photo),
+        gpy_photo = values(gpy_photo),
+        signature_photo = values(signature_photo),
+        material = values(material),
+        tare_quantity = values(tare_quantity),
+        rough_quantity = values(rough_quantity),
+        is_red = values(is_red),
+        is_exit = values(is_exit),
+        is_tare = values(is_tare),
+        is_audit = values(is_audit),
+        is_return = values(is_return),
+        is_affirm = values(is_affirm),
+        is_removed = values(is_removed),
+        is_multiplication = values(is_multiplication),
+        is_use_orinet_quantity = values(is_use_orinet_quantity),
+        created_at = values(created_at),
+        updated_at = values(updated_at),
+        version = values(version)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sdk_data_access
+        <set>
+            <if test="sId != null and sId != ''">
+                s_id = #{sId},
+            </if>
+            <if test="orgId != null and orgId != ''">
+                org_id = #{orgId},
+            </if>
+            <if test="oriRedId != null and oriRedId != ''">
+                ori_red_id = #{oriRedId},
+            </if>
+            <if test="oriOrgId != null and oriOrgId != ''">
+                ori_org_id = #{oriOrgId},
+            </if>
+            <if test="realOrgId != null and realOrgId != ''">
+                real_org_id = #{realOrgId},
+            </if>
+            <if test="supplierId != null and supplierId != ''">
+                supplier_id = #{supplierId},
+            </if>
+            <if test="stockbinId != null and stockbinId != ''">
+                stockbin_id = #{stockbinId},
+            </if>
+            <if test="oriOrderId != null and oriOrderId != ''">
+                ori_order_id = #{oriOrderId},
+            </if>
+            <if test="orderDataId != null and orderDataId != ''">
+                order_data_id = #{orderDataId},
+            </if>
+            <if test="oriStockbinId != null and oriStockbinId != ''">
+                ori_stockbin_id = #{oriStockbinId},
+            </if>
+            <if test="orgName != null and orgName != ''">
+                org_name = #{orgName},
+            </if>
+            <if test="oriOrgName != null and oriOrgName != ''">
+                ori_org_name = #{oriOrgName},
+            </if>
+            <if test="stockbinName != null and stockbinName != ''">
+                stockbin_name = #{stockbinName},
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                supplier_name = #{supplierName},
+            </if>
+            <if test="stockbinFullName != null and stockbinFullName != ''">
+                stockbin_full_name = #{stockbinFullName},
+            </if>
+            <if test="orderCode != null and orderCode != ''">
+                order_code = #{orderCode},
+            </if>
+            <if test="supplierOrgCode != null and supplierOrgCode != ''">
+                supplier_org_code = #{supplierOrgCode},
+            </if>
+            <if test="auditDate != null and auditDate != ''">
+                audit_date = #{auditDate},
+            </if>
+            <if test="orderDate != null and orderDate != ''">
+                order_date = #{orderDate},
+            </if>
+            <if test="makerDate != null and makerDate != ''">
+                maker_date = #{makerDate},
+            </if>
+            <if test="recordedDate != null and recordedDate != ''">
+                recorded_date = #{recordedDate},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="auditor != null and auditor != ''">
+                auditor = #{auditor},
+            </if>
+            <if test="maker != null and maker != ''">
+                maker = #{maker},
+            </if>
+            <if test="plateNumber != null and plateNumber != ''">
+                plate_number = #{plateNumber},
+            </if>
+            <if test="weightType != null and weightType != ''">
+                weight_type = #{weightType},
+            </if>
+            <if test="exitTime != null and exitTime != ''">
+                exit_time = #{exitTime},
+            </if>
+            <if test="enterTime != null and enterTime != ''">
+                enter_time = #{enterTime},
+            </if>
+            <if test="waybillWeight != null">
+                waybill_weight = #{waybillWeight},
+            </if>
+            <if test="printTimes != null">
+                print_times = #{printTimes},
+            </if>
+            <if test="serviceType != null">
+                service_type = #{serviceType},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType},
+            </if>
+            <if test="auxiliaryNetQuantity != null">
+                auxiliary_net_quantity = #{auxiliaryNetQuantity},
+            </if>
+            <if test="deductQuantity != null">
+                deduct_quantity = #{deductQuantity},
+            </if>
+            <if test="deductRate != null">
+                deduct_rate = #{deductRate},
+            </if>
+            <if test="orderOrigin != null">
+                order_origin = #{orderOrigin},
+            </if>
+            <if test="photo != null and photo != ''">
+                photo = #{photo},
+            </if>
+            <if test="gpyPhoto != null and gpyPhoto != ''">
+                gpy_photo = #{gpyPhoto},
+            </if>
+            <if test="signaturePhoto != null and signaturePhoto != ''">
+                signature_photo = #{signaturePhoto},
+            </if>
+            <if test="material != null and material != ''">
+                material = #{material},
+            </if>
+            <if test="tareQuantity != null">
+                tare_quantity = #{tareQuantity},
+            </if>
+            <if test="roughQuantity != null">
+                rough_quantity = #{roughQuantity},
+            </if>
+            <if test="isRed != null">
+                is_red = #{isRed},
+            </if>
+            <if test="isExit != null">
+                is_exit = #{isExit},
+            </if>
+            <if test="isTare != null">
+                is_tare = #{isTare},
+            </if>
+            <if test="isAudit != null">
+                is_audit = #{isAudit},
+            </if>
+            <if test="isReturn != null">
+                is_return = #{isReturn},
+            </if>
+            <if test="isAffirm != null">
+                is_affirm = #{isAffirm},
+            </if>
+            <if test="isRemoved != null">
+                is_removed = #{isRemoved},
+            </if>
+            <if test="isMultiplication != null">
+                is_multiplication = #{isMultiplication},
+            </if>
+            <if test="isUseOrinetQuantity != null">
+                is_use_orinet_quantity = #{isUseOrinetQuantity},
+            </if>
+            <if test="createdAt != null">
+                created_at = #{createdAt},
+            </if>
+            <if test="updatedAt != null">
+                updated_at = #{updatedAt},
+            </if>
+            <if test="version != null and version != ''">
+                version = #{version},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sdk_data_access where id = #{id}
+    </delete>
+
+</mapper>
+

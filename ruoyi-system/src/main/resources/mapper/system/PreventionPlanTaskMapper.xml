@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionPlanTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionPlanTask">
+        <!--@Table prevention_plan_task-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="preventionPlanId" column="prevention_plan_id" jdbcType="INTEGER"/>
+        <result property="taskStartTime" column="task_start_time" jdbcType="VARCHAR"/>
+        <result property="taskEndTime" column="task_end_time" jdbcType="VARCHAR"/>
+        <result property="planUserIds" column="plan_user_ids" jdbcType="VARCHAR"/>
+        <result property="planUserNames" column="plan_user_names" jdbcType="VARCHAR"/>
+        <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
+        <result property="checkUserId" column="check_user_id" jdbcType="INTEGER"/>
+        <result property="checkTime" column="check_time" jdbcType="VARCHAR"/>
+        <result property="checkState" column="check_state" jdbcType="VARCHAR"/>
+        <result property="checkInfo" column="check_info" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info, create_time, update_time
+        from prevention_plan_task
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info, create_time, update_time
+        from prevention_plan_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="preventionPlanId != null">
+                and prevention_plan_id = #{preventionPlanId}
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                and task_start_time = #{taskStartTime}
+            </if>
+            <if test="taskEndTime != null and taskEndTime != ''">
+                and task_end_time = #{taskEndTime}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                and check_user_name = #{checkUserName}
+            </if>
+            <if test="checkUserId != null">
+                and check_user_id = #{checkUserId}
+            </if>
+            <if test="checkTime != null">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkState != null and checkState != ''">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                and check_info = #{checkInfo}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info, create_time, update_time
+        from prevention_plan_task
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_plan_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="preventionPlanId != null">
+                and prevention_plan_id = #{preventionPlanId}
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                and task_start_time = #{taskStartTime}
+            </if>
+            <if test="taskEndTime != null and taskEndTime != ''">
+                and task_end_time = #{taskEndTime}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                and check_user_name = #{checkUserName}
+            </if>
+            <if test="checkUserId != null">
+                and check_user_id = #{checkUserId}
+            </if>
+            <if test="checkTime != null">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkState != null and checkState != ''">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                and check_info = #{checkInfo}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByPlanId" resultType="com.ruoyi.system.entity.PreventionPlanTask">
+        select
+          id, prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info, create_time, update_time
+        from prevention_plan_task
+        where prevention_plan_id = #{id}
+        ORDER BY
+        create_time DESC
+        LIMIT 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_task(prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info)
+        values (#{preventionPlanId}, #{taskStartTime}, #{taskEndTime}, #{planUserIds}, #{planUserNames}, #{checkUserName}, #{checkUserId}, #{checkTime}, #{checkState}, #{checkInfo})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_task(prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.preventionPlanId}, #{entity.taskStartTime}, #{entity.taskEndTime}, #{entity.planUserIds}, #{entity.planUserNames}, #{entity.checkUserName}, #{entity.checkUserId}, #{entity.checkTime}, #{entity.checkState}, #{entity.checkInfo})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_task(prevention_plan_id, task_start_time, task_end_time, plan_user_ids, plan_user_names, check_user_name, check_user_id, check_time, check_state, check_info, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.preventionPlanId}, #{entity.taskStartTime}, #{entity.taskEndTime}, #{entity.planUserIds}, #{entity.planUserNames}, #{entity.checkUserName}, #{entity.checkUserId}, #{entity.checkTime}, #{entity.checkState}, #{entity.checkInfo}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        prevention_plan_id = values(prevention_plan_id),
+        task_start_time = values(task_start_time),
+        task_end_time = values(task_end_time),
+        plan_user_ids = values(plan_user_ids),
+        plan_user_names = values(plan_user_names),
+        check_user_name = values(check_user_name),
+        check_user_id = values(check_user_id),
+        check_time = values(check_time),
+        check_state = values(check_state),
+        check_info = values(check_info),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_plan_task
+        <set>
+            <if test="preventionPlanId != null">
+                prevention_plan_id = #{preventionPlanId},
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                task_start_time = #{taskStartTime},
+            </if>
+            <if test="taskEndTime != null and taskEndTime != ''">
+                task_end_time = #{taskEndTime},
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                plan_user_ids = #{planUserIds},
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                plan_user_names = #{planUserNames},
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                check_user_name = #{checkUserName},
+            </if>
+            <if test="checkUserId != null">
+                check_user_id = #{checkUserId},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime},
+            </if>
+            <if test="checkState != null and checkState != ''">
+                check_state = #{checkState},
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                check_info = #{checkInfo},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_plan_task where id = #{id}
+    </delete>
+
+</mapper>
+

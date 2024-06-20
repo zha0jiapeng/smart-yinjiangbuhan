@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ProjectConstructionMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.ProjectConstruction">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="wbs" column="wbs" jdbcType="VARCHAR"/>
+        <result property="loneWeight" column="lone_weight" jdbcType="VARCHAR"/>
+        <result property="engineeringPro" column="engineering_pro" jdbcType="VARCHAR"/>
+        <result property="taskName" column="task_name" jdbcType="VARCHAR"/>
+        <result property="engineeringDescription" column="engineering_description" jdbcType="VARCHAR"/>
+        <result property="weight" column="weight" jdbcType="VARCHAR"/>
+        <result property="numbers" column="numbers" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="todayFinish" column="today_finish" jdbcType="VARCHAR"/>
+        <result property="totalFinish" column="total_finish" jdbcType="VARCHAR"/>
+        <result property="totalPercentage" column="total_percentage" jdbcType="VARCHAR"/>
+        <result property="totalDescription" column="total_description" jdbcType="VARCHAR"/>
+        <result property="planDay" column="plan_day" jdbcType="VARCHAR"/>
+        <result property="planBegin" column="plan_begin" jdbcType="VARCHAR"/>
+        <result property="planFinish" column="plan_finish" jdbcType="VARCHAR"/>
+        <result property="actualBegin" column="actual_begin" jdbcType="VARCHAR"/>
+        <result property="actualFinish" column="actual_finish" jdbcType="VARCHAR"/>
+        <result property="actualDay" column="actual_day" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="isDel" column="is_del" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               wbs,
+               lone_weight,
+               engineering_pro,
+               engineering_description,
+               task_name,
+               weight,
+               numbers,
+               unit,
+               today_finish,
+               total_finish,
+               total_percentage,
+               total_description,
+               plan_day,
+               plan_begin,
+               plan_finish,
+               actual_begin,
+               actual_finish,
+               actual_day,
+               remark,
+               is_del,
+               create_time,
+               update_time
+        from project_construction
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id, wbs, lone_weight, engineering_pro, engineering_description, task_name, weight, numbers, unit,
+        today_finish, total_finish, total_percentage, total_description, plan_day, plan_begin, plan_finish,
+        actual_begin, actual_finish, actual_day, remark, is_del, create_time, update_time
+        from project_construction
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="wbs != null and wbs != ''">
+                and wbs = #{wbs}
+            </if>
+            <if test="loneWeight != null and loneWeight != ''">
+                and lone_weight = #{loneWeight}
+            </if>
+            <if test="engineeringPro != null and engineeringPro != ''">
+                and engineering_pro = #{engineeringPro}
+            </if>
+            <if test="engineeringDescription != null and engineeringDescription != ''">
+                and engineering_description = #{engineeringDescription}
+            </if>
+            <if test="task != null and task != ''">
+                and task = #{task}
+            </if>
+            <if test="taskName != null and taskName != ''">
+                and task_name = #{taskName}
+            </if>
+            <if test="weight != null and weight != ''">
+                and weight = #{weight}
+            </if>
+            <if test="numbers != null and numbers != ''">
+                and numbers = #{numbers}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="todayFinish != null and todayFinish != ''">
+                and today_finish = #{todayFinish}
+            </if>
+            <if test="totalFinish != null and totalFinish != ''">
+                and total_finish = #{totalFinish}
+            </if>
+            <if test="totalPercentage != null and totalPercentage != ''">
+                and total_percentage = #{totalPercentage}
+            </if>
+            <if test="totalDescription != null and totalDescription != ''">
+                and total_description = #{totalDescription}
+            </if>
+            <if test="planDay != null and planDay != ''">
+                and plan_day = #{planDay}
+            </if>
+            <if test="planBegin != null and planBegin != ''">
+                and plan_begin = #{planBegin}
+            </if>
+            <if test="planFinish != null and planFinish != ''">
+                and plan_finish = #{planFinish}
+            </if>
+            <if test="actualBegin != null and actualBegin != ''">
+                and actual_begin = #{actualBegin}
+            </if>
+            <if test="actualFinish != null and actualFinish != ''">
+                and actual_finish = #{actualFinish}
+            </if>
+            <if test="actualDay != null and actualDay != ''">
+                and actual_day = #{actualDay}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="isDel != null">
+                and is_del = #{isDel}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="reportChart" resultMap="BaseResultMap">
+        select id,
+        wbs,
+        lone_weight,
+        engineering_pro,
+        engineering_description,
+        task_name,
+        weight,
+        numbers,
+        unit,
+        today_finish,
+        total_finish,
+        total_percentage,
+        total_description,
+        plan_day,
+        plan_begin,
+        plan_finish,
+        actual_begin,
+        actual_finish,
+        actual_day,
+        remark,
+        is_del,
+        create_time,
+        update_time
+        from baishiling.project_construction
+        where substring(plan_begin, 1, 7) = #{startDate} or substring(plan_finish, 1, 7) = #{startDate}
+        or  (substring(plan_begin, 1, 7) &lt;= #{startDate} and substring(plan_finish, 1, 7) >= #{startDate})
+    </select>
+
+    <select id="queryAll" resultMap="BaseResultMap">
+        select id,
+               wbs,
+               lone_weight,
+               engineering_pro,
+               engineering_description,
+               task_name,
+               weight,
+               numbers,
+               unit,
+               today_finish,
+               total_finish,
+               total_percentage,
+               total_description,
+               plan_day,
+               plan_begin,
+               plan_finish,
+               actual_begin,
+               actual_finish,
+               actual_day,
+               remark,
+               is_del,
+               create_time,
+               update_time
+        from baishiling.project_construction
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from project_construction
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="wbs != null and wbs != ''">
+                and wbs = #{wbs}
+            </if>
+            <if test="loneWeight != null and loneWeight != ''">
+                and lone_weight = #{loneWeight}
+            </if>
+            <if test="engineeringPro != null and engineeringPro != ''">
+                and engineering_pro = #{engineeringPro}
+            </if>
+            <if test="engineeringDescription != null and engineeringDescription != ''">
+                and engineering_description = #{engineeringDescription}
+            </if>
+            <if test="task != null and task != ''">
+                and task = #{task}
+            </if>
+            <if test="taskName != null and taskName != ''">
+                and task_name = #{taskName}
+            </if>
+            <if test="weight != null and weight != ''">
+                and weight = #{weight}
+            </if>
+            <if test="numbers != null and numbers != ''">
+                and numbers = #{numbers}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="todayFinish != null and todayFinish != ''">
+                and today_finish = #{todayFinish}
+            </if>
+            <if test="totalFinish != null and totalFinish != ''">
+                and total_finish = #{totalFinish}
+            </if>
+            <if test="totalPercentage != null and totalPercentage != ''">
+                and total_percentage = #{totalPercentage}
+            </if>
+            <if test="totalDescription != null and totalDescription != ''">
+                and total_description = #{totalDescription}
+            </if>
+            <if test="planDay != null and planDay != ''">
+                and plan_day = #{planDay}
+            </if>
+            <if test="planBegin != null and planBegin != ''">
+                and plan_begin = #{planBegin}
+            </if>
+            <if test="planFinish != null and planFinish != ''">
+                and plan_finish = #{planFinish}
+            </if>
+            <if test="actualBegin != null and actualBegin != ''">
+                and actual_begin = #{actualBegin}
+            </if>
+            <if test="actualFinish != null and actualFinish != ''">
+                and actual_finish = #{actualFinish}
+            </if>
+            <if test="actualDay != null and actualDay != ''">
+                and actual_day = #{actualDay}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="isDel != null">
+                and is_del = #{isDel}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into project_construction(wbs, lone_weight, engineering_pro, engineering_description, task_name, weight,
+                                         numbers, unit, today_finish, total_finish, total_percentage, total_description,
+                                         plan_day, plan_begin, plan_finish, actual_begin, actual_finish, actual_day,
+                                         remark, is_del, create_time, update_time)
+        values (#{wbs}, #{loneWeight}, #{engineeringPro}, #{engineeringDescription}, #{taskName}, #{weight}, #{numbers},
+                #{unit}, #{todayFinish}, #{totalFinish}, #{totalPercentage}, #{totalDescription}, #{planDay},
+                #{planBegin}, #{planFinish}, #{actualBegin}, #{actualFinish}, #{actualDay}, #{remark}, #{isDel},
+                #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into project_construction(wbs, lone_weight, engineering_pro, engineering_description, task_name, weight,
+        numbers, unit, today_finish, total_finish, total_percentage, total_description, plan_day, plan_begin,
+        plan_finish, actual_begin, actual_finish, actual_day, remark, is_del, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.wbs}, #{entity.loneWeight}, #{entity.engineeringPro}, #{entity.engineeringDescription},
+            #{entity.taskName}, #{entity.weight}, #{entity.numbers}, #{entity.unit}, #{entity.todayFinish},
+            #{entity.totalFinish}, #{entity.totalPercentage}, #{entity.totalDescription}, #{entity.planDay},
+            #{entity.planBegin}, #{entity.planFinish}, #{entity.actualBegin}, #{entity.actualFinish},
+            #{entity.actualDay}, #{entity.remark}, #{entity.isDel}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into project_construction(wbs, lone_weight, engineering_pro, engineering_description, task_name, weight,
+        numbers, unit, today_finish, total_finish, total_percentage, total_description, plan_day, plan_begin,
+        plan_finish, actual_begin, actual_finish, actual_day, remark, is_del, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.wbs}, #{entity.loneWeight}, #{entity.engineeringPro}, #{entity.engineeringDescription},
+            #{entity.taskName}, #{entity.weight}, #{entity.numbers}, #{entity.unit}, #{entity.todayFinish},
+            #{entity.totalFinish}, #{entity.totalPercentage}, #{entity.totalDescription}, #{entity.planDay},
+            #{entity.planBegin}, #{entity.planFinish}, #{entity.actualBegin}, #{entity.actualFinish},
+            #{entity.actualDay}, #{entity.remark}, #{entity.isDel}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        wbs = values(wbs),
+        lone_weight = values(lone_weight),
+        engineering_pro = values(engineering_pro),
+        engineering_description = values(engineering_description),
+        task_name = values(task_name),
+        weight = values(weight),
+        numbers = values(numbers),
+        unit = values(unit),
+        today_finish = values(today_finish),
+        total_finish = values(total_finish),
+        total_percentage = values(total_percentage),
+        total_description = values(total_description),
+        plan_day = values(plan_day),
+        plan_begin = values(plan_begin),
+        plan_finish = values(plan_finish),
+        actual_begin = values(actual_begin),
+        actual_finish = values(actual_finish),
+        actual_day = values(actual_day),
+        remark = values(remark),
+        is_del = values(is_del),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update project_construction
+        <set>
+            <if test="loneWeight != null and loneWeight != ''">
+                lone_weight = #{loneWeight},
+            </if>
+            <if test="engineeringPro != null and engineeringPro != ''">
+                engineering_pro = #{engineeringPro},
+            </if>
+            <if test="engineeringDescription != null and engineeringDescription != ''">
+                engineering_description = #{engineeringDescription},
+            </if>
+            <if test="wbs != null and wbs != ''">
+                wbs = #{wbs},
+            </if>
+            <if test="task != null and task != ''">
+                task = #{task},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                task_name = #{taskName},
+            </if>
+            <if test="weight != null and weight != ''">
+                weight = #{weight},
+            </if>
+            <if test="numbers != null and numbers != ''">
+                numbers = #{numbers},
+            </if>
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="todayFinish != null and todayFinish != ''">
+                today_finish = #{todayFinish},
+            </if>
+            <if test="totalFinish != null and totalFinish != ''">
+                total_finish = #{totalFinish},
+            </if>
+            <if test="totalPercentage != null and totalPercentage != ''">
+                total_percentage = #{totalPercentage},
+            </if>
+            <if test="totalDescription != null and totalDescription != ''">
+                total_description = #{totalDescription},
+            </if>
+            <if test="planDay != null and planDay != ''">
+                plan_day = #{planDay},
+            </if>
+            <if test="planBegin != null and planBegin != ''">
+                plan_begin = #{planBegin},
+            </if>
+            <if test="planFinish != null and planFinish != ''">
+                plan_finish = #{planFinish},
+            </if>
+            <if test="actualBegin != null and actualBegin != ''">
+                actual_begin = #{actualBegin},
+            </if>
+            <if test="actualFinish != null and actualFinish != ''">
+                actual_finish = #{actualFinish},
+            </if>
+            <if test="actualDay != null and actualDay != ''">
+                actual_day = #{actualDay},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="isDel != null">
+                is_del = #{isDel},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="delete">
+        delete
+        from project_construction
+    </delete>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from project_construction
+        where id = #{id}
+    </delete>
+
+    <!--投资进度—— 正常 = 计划完成时间 < 当前时间 的实际完成额 * 预计投资额 -->
+    <select id="getZhengChang" resultType="java.lang.Float">
+        select sum(weight) as weight
+        from project_construction
+        where total_description = '完成'
+          and plan_finish !='' and plan_finish &lt; NOW()
+    </select>
+
+</mapper>
+

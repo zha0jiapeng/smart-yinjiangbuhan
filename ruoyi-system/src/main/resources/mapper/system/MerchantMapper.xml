@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MerchantMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.pojo.Merchant">
+        <id column="id" property="id" />
+        <result column="merchant_code" property="merchantCode" />
+        <result column="merchant_name" property="merchantName" />
+        <result column="merchant_server" property="merchantServer" />
+        <result column="created_by" property="createdBy" />
+        <result column="created_date" property="createdDate" />
+        <result column="modify_by" property="modifyBy" />
+        <result column="modify_date" property="modifyDate" />
+        <result column="yn" property="yn" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, merchant_code, merchant_name, merchant_server, created_by, created_date, modify_by, modify_date, yn
+    </sql>
+
+</mapper>

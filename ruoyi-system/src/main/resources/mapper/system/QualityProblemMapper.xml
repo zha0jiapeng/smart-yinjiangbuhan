@@ -1,0 +1,667 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QualityProblemMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.QualityProblem">
+        <!--@Table quality_problem-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="qualityTaskId" column="quality_task_id" jdbcType="INTEGER"/>
+        <result property="problemInfo" column="problem_info" jdbcType="VARCHAR"/>
+        <result property="problemFileName" column="problem_file_name" jdbcType="VARCHAR"/>
+        <result property="problemFileUrl" column="problem_file_url" jdbcType="VARCHAR"/>
+        <result property="problemLevel" column="problem_level" jdbcType="VARCHAR"/>
+        <result property="problemImageUrl" column="problem_image_url" jdbcType="VARCHAR"/>
+        <result property="handleOpinion" column="handle_opinion" jdbcType="VARCHAR"/>
+        <result property="handleResult" column="handle_result" jdbcType="VARCHAR"/>
+        <result property="handleImage" column="handle_image" jdbcType="VARCHAR"/>
+        <result property="handleFileName" column="handle_file_name" jdbcType="VARCHAR"/>
+        <result property="handleFileUrl" column="handle_file_url" jdbcType="VARCHAR"/>
+        <result property="problemProgress" column="problem_progress" jdbcType="VARCHAR"/>
+        <result property="problemType" column="problem_type" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="problemSpecies" column="problem_species" jdbcType="VARCHAR"/>
+        <result property="problemName" column="problem_name" jdbcType="VARCHAR"/>
+        <result property="problemAuditUserName" column="problem_audit_user_name" jdbcType="VARCHAR"/>
+        <result property="problemAuditUserId" column="problem_audit_user_id" jdbcType="INTEGER"/>
+        <result property="problemExecuteUserName" column="problem_execute_user_name" jdbcType="VARCHAR"/>
+        <result property="problemExecuteUserId" column="problem_execute_user_id" jdbcType="INTEGER"/>
+        <result property="problemReviewUserName" column="problem_review_user_name" jdbcType="VARCHAR"/>
+        <result property="problemReviewUserId" column="problem_review_user_id" jdbcType="INTEGER"/>
+        <result property="modelId" column="model_id" jdbcType="INTEGER"/>
+        <result property="modelIndex" column="model_index" jdbcType="VARCHAR"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="qualityTaskName" column="quality_task_name" jdbcType="VARCHAR"/>
+        <result property="problemAuditTime" column="problem_audit_time" jdbcType="VARCHAR"/>
+        <result property="problemExecuteTime" column="problem_execute_time" jdbcType="VARCHAR"/>
+        <result property="problemReviewTime" column="problem_review_time" jdbcType="VARCHAR"/>
+        <result property="projId" column="proj_id" jdbcType="INTEGER"/>
+        <result property="projName" column="proj_name" jdbcType="VARCHAR"/>
+        <result property="problemCopyUserName" column="problem_copy_user_name" jdbcType="VARCHAR"/>
+        <result property="problemCopyUserId" column="problem_copy_user_id" jdbcType="INTEGER"/>
+        <result property="checkStatus" column="check_status" jdbcType="INTEGER"/>
+        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="checkContent" column="check_content" jdbcType="VARCHAR"/>
+        <result property="examineOpinion" column="examine_opinion" jdbcType="VARCHAR"/>
+        <result property="abarbeitungTime" column="abarbeitung_time" jdbcType="VARCHAR"/>
+        <result property="auditTime" column="audit_time" jdbcType="VARCHAR"/>
+        <result property="moonBase" column="moon_base" jdbcType="VARCHAR"/>
+        <result property="patternBase" column="pattern_base" jdbcType="VARCHAR"/>
+        <result property="problemTypeBase" column="problem_type_base" jdbcType="VARCHAR"/>
+        <result property="region" column="region" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               quality_task_id,
+               file_url,
+               file_name,
+               check_content,
+               examine_opinion,
+               check_status,
+               problem_info,
+               problem_file_name,
+               problem_file_url,
+               problem_level,
+               problem_image_url,
+               handle_opinion,
+               handle_result,
+               handle_image,
+               handle_file_name,
+               handle_file_url,
+               problem_progress,
+               problem_type,
+               create_time,
+               update_time,
+               problem_species,
+               problem_name,
+               problem_audit_user_name,
+               problem_audit_user_id,
+               problem_execute_user_name,
+               problem_execute_user_id,
+               problem_review_user_name,
+               problem_review_user_id,
+               model_id,
+               model_index,
+               create_user_name,
+               create_user_id,
+               quality_task_name,
+               problem_audit_time,
+               problem_execute_time,
+               problem_review_time,
+               proj_id,
+               proj_name,
+               problem_copy_user_name,
+               problem_copy_user_id,
+               abarbeitung_time,
+               audit_time,
+               pile_number
+        from quality_problem
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, quality_task_id,file_url,file_name,check_content,examine_opinion, check_status,problem_info,
+        problem_file_name, problem_file_url, problem_level, problem_image_url, handle_opinion, handle_result,
+        handle_image, handle_file_name, handle_file_url, problem_progress, problem_type, create_time, update_time,
+        problem_species, problem_name, problem_audit_user_name, problem_audit_user_id, problem_execute_user_name,
+        problem_execute_user_id,
+        problem_review_user_name, problem_review_user_id, model_id, model_index, create_user_name, create_user_id,
+        quality_task_name, problem_audit_time,
+        problem_execute_time, problem_review_time, proj_id, proj_name, problem_copy_user_name,
+        problem_copy_user_id,abarbeitung_time,audit_time,moon_base,pattern_base,region, pile_number
+        from quality_problem
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="ids != null and ids.size()>0">
+                and id in
+                <foreach collection="ids" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="qualityTaskId != null">
+                and quality_task_id = #{qualityTaskId}
+            </if>
+            <if test="checkStatus != null">
+                and check_status = #{checkStatus}
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                and file_url = #{fileUrl}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and file_name = #{fileName}
+            </if>
+            <if test="checkContent != null and checkContent != ''">
+                and check_content = #{checkContent}
+            </if>
+            <if test="examineOpinion != null and examineOpinion != ''">
+                and examine_opinion = #{examineOpinion}
+            </if>
+            <if test="problemInfo != null and problemInfo != ''">
+                and problem_info = #{problemInfo}
+            </if>
+            <if test="problemFileName != null and problemFileName != ''">
+                and problem_file_name = #{problemFileName}
+            </if>
+            <if test="problemFileUrl != null and problemFileUrl != ''">
+                and problem_file_url = #{problemFileUrl}
+            </if>
+            <if test="problemLevel != null and problemLevel != ''">
+                and problem_level = #{problemLevel}
+            </if>
+            <if test="problemImageUrl != null and problemImageUrl != ''">
+                and problem_image_url = #{problemImageUrl}
+            </if>
+            <if test="handleOpinion != null and handleOpinion != ''">
+                and handle_opinion = #{handleOpinion}
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                and handle_result = #{handleResult}
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                and handle_image = #{handleImage}
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                and handle_file_name = #{handleFileName}
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                and handle_file_url = #{handleFileUrl}
+            </if>
+            <if test="problemProgress != null and problemProgress != ''">
+                and problem_progress = #{problemProgress}
+            </if>
+            <if test="problemType != null">
+                and problem_type = #{problemType}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="problemSpecies != null and problemSpecies != ''">
+                and problem_species = #{problemSpecies}
+            </if>
+            <if test="problemName != null and problemName != ''">
+                and problem_name like concat('%', #{problemName}, '%')
+            </if>
+            <if test="problemAuditUserName != null and problemAuditUserName != ''">
+                and problem_audit_user_name = #{problemAuditUserName}
+            </if>
+            <if test="problemAuditUserId != null">
+                and problem_audit_user_id = #{problemAuditUserId}
+            </if>
+            <if test="problemExecuteUserName != null and problemExecuteUserName != ''">
+                and problem_execute_user_name = #{problemExecuteUserName}
+            </if>
+            <if test="problemExecuteUserId != null">
+                and problem_execute_user_id = #{problemExecuteUserId}
+            </if>
+            <if test="problemReviewUserName != null and problemReviewUserName != ''">
+                and problem_review_user_name = #{problemReviewUserName}
+            </if>
+            <if test="problemReviewUserId != null">
+                and problem_review_user_id = #{problemReviewUserId}
+            </if>
+            <if test="modelId != null">
+                and model_id = #{modelId}
+            </if>
+            <if test="modelIndex != null and modelIndex != ''">
+                and model_index = #{modelIndex}
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                and create_user_name = #{createUserName}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId}
+            </if>
+            <if test="qualityTaskName != null and qualityTaskName != ''">
+                and quality_task_name = #{qualityTaskName}
+            </if>
+            <if test="problemAuditTime != null and problemAuditTime != ''">
+                and problem_audit_time = #{problemAuditTime}
+            </if>
+            <if test="problemExecuteTime != null and problemExecuteTime != ''">
+                and problem_execute_time = #{problemExecuteTime}
+            </if>
+            <if test="problemReviewTime != null and problemReviewTime != ''">
+                and problem_review_time = #{problemReviewTime}
+            </if>
+            <if test="projId != null">
+                and proj_id = #{projId}
+            </if>
+            <if test="projName != null and projName != ''">
+                and proj_name = #{projName}
+            </if>
+            <if test="problemCopyUserName != null and problemCopyUserName != ''">
+                and problem_copy_user_name = #{problemCopyUserName}
+            </if>
+            <if test="problemCopyUserId != null">
+                and problem_copy_user_id = #{problemCopyUserId}
+            </if>
+            <if test="abarbeitungTime != null">
+                and abarbeitung_time = #{abarbeitungTime}
+            </if>
+            <if test="auditTime != null">
+                and audit_time = #{auditTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select id,
+               quality_task_id,
+               problem_info,
+               problem_file_name,
+               problem_file_url,
+               problem_level,
+               problem_image_url,
+               handle_opinion,
+               handle_result,
+               handle_image,
+               handle_file_name,
+               handle_file_url,
+               problem_progress,
+               problem_type,
+               create_time,
+               update_time,
+               problem_species,
+               problem_name,
+               problem_audit_user_name,
+               problem_audit_user_id,
+               problem_execute_user_name,
+               problem_execute_user_id,
+               problem_review_user_name,
+               problem_review_user_id,
+               model_id,
+               model_index,
+               create_user_name,
+               create_user_id,
+               quality_task_name,
+               problem_audit_time,
+               problem_execute_time,
+               problem_review_time,
+               proj_id,
+               proj_name,
+               problem_copy_user_name,
+               problem_copy_user_id,
+               abarbeitung_time,
+               audit_time
+        from baishiling.quality_problem
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from quality_problem
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="qualityTaskId != null">
+                and quality_task_id = #{qualityTaskId}
+            </if>
+            <if test="problemInfo != null and problemInfo != ''">
+                and problem_info = #{problemInfo}
+            </if>
+            <if test="problemFileName != null and problemFileName != ''">
+                and problem_file_name = #{problemFileName}
+            </if>
+            <if test="problemFileUrl != null and problemFileUrl != ''">
+                and problem_file_url = #{problemFileUrl}
+            </if>
+            <if test="problemLevel != null and problemLevel != ''">
+                and problem_level = #{problemLevel}
+            </if>
+            <if test="problemImageUrl != null and problemImageUrl != ''">
+                and problem_image_url = #{problemImageUrl}
+            </if>
+            <if test="handleOpinion != null and handleOpinion != ''">
+                and handle_opinion = #{handleOpinion}
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                and handle_result = #{handleResult}
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                and handle_image = #{handleImage}
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                and handle_file_name = #{handleFileName}
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                and handle_file_url = #{handleFileUrl}
+            </if>
+            <if test="problemProgress != null and problemProgress != ''">
+                and problem_progress = #{problemProgress}
+            </if>
+            <if test="problemType != null">
+                and problem_type = #{problemType}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="problemSpecies != null and problemSpecies != ''">
+                and problem_species = #{problemSpecies}
+            </if>
+            <if test="problemName != null and problemName != ''">
+                and problem_nameand problem_name like concat('%', #{problemName}, '%')
+            </if>
+            <if test="problemAuditUserName != null and problemAuditUserName != ''">
+                and problem_audit_user_name = #{problemAuditUserName}
+            </if>
+            <if test="problemAuditUserId != null">
+                and problem_audit_user_id = #{problemAuditUserId}
+            </if>
+            <if test="problemExecuteUserName != null and problemExecuteUserName != ''">
+                and problem_execute_user_name = #{problemExecuteUserName}
+            </if>
+            <if test="problemExecuteUserId != null">
+                and problem_execute_user_id = #{problemExecuteUserId}
+            </if>
+            <if test="problemReviewUserName != null and problemReviewUserName != ''">
+                and problem_review_user_name = #{problemReviewUserName}
+            </if>
+            <if test="problemReviewUserId != null">
+                and problem_review_user_id = #{problemReviewUserId}
+            </if>
+            <if test="modelId != null">
+                and model_id = #{modelId}
+            </if>
+            <if test="modelIndex != null and modelIndex != ''">
+                and model_index = #{modelIndex}
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                and create_user_name = #{createUserName}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId}
+            </if>
+            <if test="qualityTaskName != null and qualityTaskName != ''">
+                and quality_task_name = #{qualityTaskName}
+            </if>
+            <if test="problemAuditTime != null and problemAuditTime != ''">
+                and problem_audit_time = #{problemAuditTime}
+            </if>
+            <if test="problemExecuteTime != null and problemExecuteTime != ''">
+                and problem_execute_time = #{problemExecuteTime}
+            </if>
+            <if test="problemReviewTime != null and problemReviewTime != ''">
+                and problem_review_time = #{problemReviewTime}
+            </if>
+            <if test="projId != null">
+                and proj_id = #{projId}
+            </if>
+            <if test="projName != null and projName != ''">
+                and proj_name = #{projName}
+            </if>
+            <if test="problemCopyUserName != null and problemCopyUserName != ''">
+                and problem_copy_user_name = #{problemCopyUserName}
+            </if>
+            <if test="problemCopyUserId != null">
+                and problem_copy_user_id = #{problemCopyUserId}
+            </if>
+            <if test="abarbeitungTime != null">
+                and abarbeitung_time = #{abarbeitungTime}
+            </if>
+            <if test="auditTime != null">
+                and audit_time = #{auditTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem(examine_opinion, check_content, file_name, file_url, check_status, quality_task_id,
+                                    problem_info, problem_file_name, problem_file_url, problem_level, problem_image_url,
+                                    handle_opinion, handle_result, handle_image, handle_file_name, handle_file_url,
+                                    problem_progress, problem_type, problem_type_base, problem_species, problem_name,
+                                    problem_audit_user_name, problem_audit_user_id, problem_execute_user_name,
+                                    problem_execute_user_id, problem_review_user_name, problem_review_user_id, model_id,
+                                    model_index, create_user_name, create_user_id, quality_task_name,
+                                    problem_audit_time, problem_execute_time, problem_review_time, proj_id, proj_name,
+                                    problem_copy_user_name, problem_copy_user_id, abarbeitung_time,
+                                    rectification_measure, pile_number, create_time, moon_base, pattern_base, region)
+        values (#{examineOpinion}, #{checkContent}, #{fileName}, #{fileUrl}, #{checkStatus}, #{qualityTaskId},
+                #{problemInfo}, #{problemFileName}, #{problemFileUrl}, #{problemLevel}, #{problemImageUrl},
+                #{handleOpinion}, #{handleResult}, #{handleImage}, #{handleFileName}, #{handleFileUrl},
+                #{problemProgress}, #{problemType}, #{problemTypeBase}, #{problemSpecies}, #{problemName},
+                #{problemAuditUserName},
+                #{problemAuditUserId}, #{problemExecuteUserName}, #{problemExecuteUserId}, #{problemReviewUserName},
+                #{problemReviewUserId}, #{modelId}, #{modelIndex}, #{createUserName}, #{createUserId},
+                #{qualityTaskName}, #{problemAuditTime}, #{problemExecuteTime}, #{problemReviewTime}, #{projId},
+                #{projName}, #{problemCopyUserName}, #{problemCopyUserId}, #{abarbeitungTime}, #{rectificationMeasure},
+                #{pileNumber}, #{createTime}, #{moonBase}, #{patternBase}, #{region})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem(quality_task_id, problem_info, problem_file_name, problem_file_url, problem_level,
+        problem_image_url, handle_opinion, handle_result, handle_image, handle_file_name, handle_file_url,
+        problem_progress, problem_type, create_time, update_time, problem_species, problem_name,
+        problem_audit_user_name, problem_audit_user_id, problem_execute_user_name, problem_execute_user_id,
+        problem_review_user_name, problem_review_user_id, model_id, model_index, create_user_name, create_user_id,
+        quality_task_name, problem_audit_time, problem_execute_time, problem_review_time, proj_id, proj_name,
+        problem_copy_user_name, problem_copy_user_id,abarbeitung_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.qualityTaskId}, #{entity.problemInfo}, #{entity.problemFileName}, #{entity.problemFileUrl},
+            #{entity.problemLevel}, #{entity.problemImageUrl}, #{entity.handleOpinion}, #{entity.handleResult},
+            #{entity.handleImage}, #{entity.handleFileName}, #{entity.handleFileUrl}, #{entity.problemProgress},
+            #{entity.problemType}, #{entity.createTime}, #{entity.updateTime}, #{entity.problemSpecies},
+            #{entity.problemName}, #{entity.problemAuditUserName}, #{entity.problemAuditUserId},
+            #{entity.problemExecuteUserName}, #{entity.problemExecuteUserId}, #{entity.problemReviewUserName},
+            #{entity.problemReviewUserId}, #{entity.modelId}, #{entity.modelIndex}, #{entity.createUserName},
+            #{entity.createUserId}, #{entity.qualityTaskName}, #{entity.problemAuditTime}, #{entity.problemExecuteTime},
+            #{entity.problemReviewTime}, #{entity.projId}, #{entity.projName}, #{entity.problemCopyUserName},
+            #{entity.problemCopyUserId},#{entity.abarbeitungTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem(quality_task_id, problem_info, problem_file_name, problem_file_url, problem_level,
+        problem_image_url, handle_opinion, handle_result, handle_image, handle_file_name, handle_file_url,
+        problem_progress, problem_type, create_time, update_time, problem_species, problem_name,
+        problem_audit_user_name, problem_audit_user_id, problem_execute_user_name, problem_execute_user_id,
+        problem_review_user_name, problem_review_user_id, model_id, model_index, create_user_name, create_user_id,
+        quality_task_name, problem_audit_time, problem_execute_time, problem_review_time, proj_id, proj_name,
+        problem_copy_user_name, problem_copy_user_id,abarbeitung_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.qualityTaskId}, #{entity.problemInfo}, #{entity.problemFileName}, #{entity.problemFileUrl},
+            #{entity.problemLevel}, #{entity.problemImageUrl}, #{entity.handleOpinion}, #{entity.handleResult},
+            #{entity.handleImage}, #{entity.handleFileName}, #{entity.handleFileUrl}, #{entity.problemProgress},
+            #{entity.problemType}, #{entity.createTime}, #{entity.updateTime}, #{entity.problemSpecies},
+            #{entity.problemName}, #{entity.problemAuditUserName}, #{entity.problemAuditUserId},
+            #{entity.problemExecuteUserName}, #{entity.problemExecuteUserId}, #{entity.problemReviewUserName},
+            #{entity.problemReviewUserId}, #{entity.modelId}, #{entity.modelIndex}, #{entity.createUserName},
+            #{entity.createUserId}, #{entity.qualityTaskName}, #{entity.problemAuditTime}, #{entity.problemExecuteTime},
+            #{entity.problemReviewTime}, #{entity.projId}, #{entity.projName}, #{entity.problemCopyUserName},
+            #{entity.problemCopyUserId},#{entity.abarbeitungTime})
+        </foreach>
+        on duplicate key update
+        quality_task_id = values(quality_task_id),
+        problem_info = values(problem_info),
+        problem_file_name = values(problem_file_name),
+        problem_file_url = values(problem_file_url),
+        problem_level = values(problem_level),
+        problem_image_url = values(problem_image_url),
+        handle_opinion = values(handle_opinion),
+        handle_result = values(handle_result),
+        handle_image = values(handle_image),
+        handle_file_name = values(handle_file_name),
+        handle_file_url = values(handle_file_url),
+        problem_progress = values(problem_progress),
+        problem_type = values(problem_type),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        problem_species = values(problem_species),
+        problem_name = values(problem_name),
+        problem_audit_user_name = values(problem_audit_user_name),
+        problem_audit_user_id = values(problem_audit_user_id),
+        problem_execute_user_name = values(problem_execute_user_name),
+        problem_execute_user_id = values(problem_execute_user_id),
+        problem_review_user_name = values(problem_review_user_name),
+        problem_review_user_id = values(problem_review_user_id),
+        model_id = values(model_id),
+        model_index = values(model_index),
+        create_user_name = values(create_user_name),
+        create_user_id = values(create_user_id),
+        quality_task_name = values(quality_task_name),
+        problem_audit_time = values(problem_audit_time),
+        problem_execute_time = values(problem_execute_time),
+        problem_review_time = values(problem_review_time),
+        proj_id = values(proj_id),
+        proj_name = values(proj_name),
+        problem_copy_user_name = values(problem_copy_user_name),
+        problem_copy_user_id = values(problem_copy_user_id),
+        abarbeitung_time = values(abarbeitung_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update quality_problem
+        <set>
+            <if test="qualityTaskId != null">
+                quality_task_id = #{qualityTaskId},
+            </if>
+            <if test="checkStatus != null">
+                check_status = #{checkStatus},
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                file_url = #{fileUrl},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                file_name = #{fileName},
+            </if>
+            <if test="checkContent != null and checkContent != ''">
+                check_content = #{checkContent},
+            </if>
+            <if test="examineOpinion != null and examineOpinion != ''">
+                examine_opinion = #{examineOpinion},
+            </if>
+            <if test="problemInfo != null and problemInfo != ''">
+                problem_info = #{problemInfo},
+            </if>
+            <if test="problemFileName != null and problemFileName != ''">
+                problem_file_name = #{problemFileName},
+            </if>
+            <if test="problemFileUrl != null and problemFileUrl != ''">
+                problem_file_url = #{problemFileUrl},
+            </if>
+            <if test="problemLevel != null and problemLevel != ''">
+                problem_level = #{problemLevel},
+            </if>
+            <if test="problemImageUrl != null and problemImageUrl != ''">
+                problem_image_url = #{problemImageUrl},
+            </if>
+            <if test="handleOpinion != null and handleOpinion != ''">
+                handle_opinion = #{handleOpinion},
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                handle_result = #{handleResult},
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                handle_image = #{handleImage},
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                handle_file_name = #{handleFileName},
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                handle_file_url = #{handleFileUrl},
+            </if>
+            <if test="problemProgress != null and problemProgress != ''">
+                problem_progress = #{problemProgress},
+            </if>
+            <if test="problemType != null">
+                problem_type = #{problemType},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="problemSpecies != null and problemSpecies != ''">
+                problem_species = #{problemSpecies},
+            </if>
+            <if test="problemName != null and problemName != ''">
+                problem_name = #{problemName},
+            </if>
+            <if test="problemAuditUserName != null and problemAuditUserName != ''">
+                problem_audit_user_name = #{problemAuditUserName},
+            </if>
+            <if test="problemAuditUserId != null">
+                problem_audit_user_id = #{problemAuditUserId},
+            </if>
+            <if test="problemExecuteUserName != null and problemExecuteUserName != ''">
+                problem_execute_user_name = #{problemExecuteUserName},
+            </if>
+            <if test="problemExecuteUserId != null">
+                problem_execute_user_id = #{problemExecuteUserId},
+            </if>
+            <if test="problemReviewUserName != null and problemReviewUserName != ''">
+                problem_review_user_name = #{problemReviewUserName},
+            </if>
+            <if test="problemReviewUserId != null">
+                problem_review_user_id = #{problemReviewUserId},
+            </if>
+            <if test="modelId != null">
+                model_id = #{modelId},
+            </if>
+            <if test="modelIndex != null and modelIndex != ''">
+                model_index = #{modelIndex},
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                create_user_name = #{createUserName},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId},
+            </if>
+            <if test="qualityTaskName != null and qualityTaskName != ''">
+                quality_task_name = #{qualityTaskName},
+            </if>
+            <if test="problemAuditTime != null and problemAuditTime != ''">
+                problem_audit_time = #{problemAuditTime},
+            </if>
+            <if test="problemExecuteTime != null and problemExecuteTime != ''">
+                problem_execute_time = #{problemExecuteTime},
+            </if>
+            <if test="problemReviewTime != null and problemReviewTime != ''">
+                problem_review_time = #{problemReviewTime},
+            </if>
+            <if test="projId != null">
+                proj_id = #{projId},
+            </if>
+            <if test="projName != null and projName != ''">
+                proj_name = #{projName},
+            </if>
+            <if test="problemCopyUserName != null and problemCopyUserName != ''">
+                problem_copy_user_name = #{problemCopyUserName},
+            </if>
+            <if test="problemCopyUserId != null">
+                problem_copy_user_id = #{problemCopyUserId},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from quality_problem
+        where id = #{id}
+    </delete>
+
+</mapper>
+

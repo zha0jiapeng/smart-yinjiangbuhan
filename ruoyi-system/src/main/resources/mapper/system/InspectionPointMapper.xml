@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InspectionPointMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.InspectionPoint">
+        <!--@Table inspection_point-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pointCode" column="point_code" jdbcType="VARCHAR"/>
+        <result property="pointName" column="point_name" jdbcType="VARCHAR"/>
+        <result property="pointState" column="point_state" jdbcType="VARCHAR"/>
+        <result property="pointType" column="point_type" jdbcType="VARCHAR"/>
+        <result property="minImages" column="min_images" jdbcType="VARCHAR"/>
+        <result property="maxImages" column="max_images" jdbcType="VARCHAR"/>
+        <result property="routeId" column="route_id" jdbcType="INTEGER"/>
+        <result property="routeName" column="route_name" jdbcType="VARCHAR"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="subjectCatalog" column="subject_catalog" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="stopCheck" column="stop_check" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="codeImageFileUrl" column="code_image_file_url" jdbcType="VARCHAR"/>
+        <result property="codeImageFileId" column="code_image_file_id" jdbcType="INTEGER"/>
+    </resultMap>
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, stop_check, point_code, point_name, point_state, point_type, min_images, max_images, route_id, route_name, project_id, project_name, subject_catalog, remarks, create_time, update_time, code_image_file_url, code_image_file_id
+        from inspection_point
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, stop_check, point_code, point_name, point_state, point_type, min_images, max_images, route_id, route_name, project_id, project_name, subject_catalog, remarks, create_time, update_time, code_image_file_url, code_image_file_id
+        from inspection_point
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="stopCheck != null">
+                and stop_check = #{stopCheck}
+            </if>
+            <if test="pointCode != null and pointCode != ''">
+                and point_code = #{pointCode}
+            </if>
+            <if test="pointName != null and pointName != ''">
+                and point_name = #{pointName}
+            </if>
+            <if test="pointState != null and pointState != ''">
+                and point_state = #{pointState}
+            </if>
+            <if test="pointType != null and pointType != ''">
+                and point_type = #{pointType}
+            </if>
+            <if test="minImages != null and minImages != ''">
+                and min_images = #{minImages}
+            </if>
+            <if test="maxImages != null and maxImages != ''">
+                and max_images = #{maxImages}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="projectId != null">
+                and project_id = #{projectId}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="subjectCatalog != null and subjectCatalog != ''">
+                and subject_catalog = #{subjectCatalog}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="codeImageFileUrl != null and codeImageFileUrl != ''">
+                and code_image_file_url = #{codeImageFileUrl}
+            </if>
+            <if test="codeImageFileId != null">
+                and code_image_file_id = #{codeImageFileId}
+            </if>
+        </where>
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from inspection_point
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="stopCheck != null">
+                and stop_check = #{stopCheck}
+            </if>
+            <if test="pointCode != null and pointCode != ''">
+                and point_code = #{pointCode}
+            </if>
+            <if test="pointName != null and pointName != ''">
+                and point_name = #{pointName}
+            </if>
+            <if test="pointState != null and pointState != ''">
+                and point_state = #{pointState}
+            </if>
+            <if test="pointType != null and pointType != ''">
+                and point_type = #{pointType}
+            </if>
+            <if test="minImages != null and minImages != ''">
+                and min_images = #{minImages}
+            </if>
+            <if test="maxImages != null and maxImages != ''">
+                and max_images = #{maxImages}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="projectId != null">
+                and project_id = #{projectId}
+            </if>
+            <if test="projectName != null and projectName != ''">
+                and project_name = #{projectName}
+            </if>
+            <if test="subjectCatalog != null and subjectCatalog != ''">
+                and subject_catalog = #{subjectCatalog}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="codeImageFileUrl != null and codeImageFileUrl != ''">
+                and code_image_file_url = #{codeImageFileUrl}
+            </if>
+            <if test="codeImageFileId != null">
+                and code_image_file_id = #{codeImageFileId}
+            </if>
+        </where>
+    </select>
+
+
+    <resultMap id="PointProjectVOMap" type="com.ruoyi.system.domain.vo.PointProjectVO">
+        <!--@Table inspection_point-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pointCode" column="point_code" jdbcType="VARCHAR"/>
+        <result property="pointName" column="point_name" jdbcType="VARCHAR"/>
+        <result property="pointState" column="point_state" jdbcType="VARCHAR"/>
+        <result property="pointType" column="point_type" jdbcType="VARCHAR"/>
+        <result property="minImages" column="min_images" jdbcType="VARCHAR"/>
+        <result property="maxImages" column="max_images" jdbcType="VARCHAR"/>
+        <result property="routeId" column="route_id" jdbcType="INTEGER"/>
+        <result property="routeName" column="route_name" jdbcType="VARCHAR"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="subjectCatalog" column="subject_catalog" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="stopCheck" column="stop_check" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="projectCode" column="project_code" jdbcType="VARCHAR"/>
+        <result property="formData" column="form_data" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="getPointAndProjectById" resultMap="PointProjectVOMap">
+        SELECT
+            t1.id,
+            t1.stop_check,
+            t1.point_code,
+            t1.point_name,
+            t1.point_state,
+            t1.point_type,
+            t1.min_images,
+            t1.max_images,
+            t1.route_id,
+            t1.route_name,
+            t1.project_id,
+            t1.project_name,
+            t1.subject_catalog,
+            t1.remarks,
+            t1.create_time,
+            t1.update_time,
+            t2.form_data,
+            t2.project_code
+        FROM
+            inspection_point t1
+            LEFT JOIN inspection_project t2 ON t1.project_id = t2.id
+        WHERE
+            t1.id = #{id}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_point(point_code, point_name, point_state, point_type, min_images, max_images, route_id, route_name, project_id, project_name, subject_catalog, remarks, code_image_file_url, code_image_file_id)
+        values (#{pointCode}, #{pointName}, #{pointState}, #{pointType}, #{minImages}, #{maxImages}, #{routeId}, #{routeName}, #{projectId}, #{projectName}, #{subjectCatalog}, #{remarks}, #{codeImageFileUrl}, #{codeImageFileId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_point(point_code, point_name, point_state, point_type, min_images, max_images, route_id, route_name, project_id, project_name, subject_catalog, remarks, create_time, update_time, code_image_file_url, code_image_file_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pointCode}, #{entity.pointName}, #{entity.pointState}, #{entity.pointType}, #{entity.minImages}, #{entity.maxImages}, #{entity.routeId}, #{entity.routeName}, #{entity.projectId}, #{entity.projectName}, #{entity.subjectCatalog}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime}, #{entity.codeImageFileUrl}, #{entity.codeImageFileId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_point(point_code, point_name, point_state, point_type, min_images, max_images, route_id, route_name, project_id, project_name, subject_catalog, remarks, create_time, update_time, code_image_file_url, code_image_file_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pointCode}, #{entity.pointName}, #{entity.pointState}, #{entity.pointType}, #{entity.minImages}, #{entity.maxImages}, #{entity.routeId}, #{entity.routeName}, #{entity.projectId}, #{entity.projectName}, #{entity.subjectCatalog}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime}, #{entity.codeImageFileUrl}, #{entity.codeImageFileId})
+        </foreach>
+        on duplicate key update
+        point_code = values(point_code),
+        point_name = values(point_name),
+        point_state = values(point_state),
+        point_type = values(point_type),
+        min_images = values(min_images),
+        max_images = values(max_images),
+        route_id = values(route_id),
+        route_name = values(route_name),
+        project_id = values(project_id),
+        project_name = values(project_name),
+        subject_catalog = values(subject_catalog),
+        remarks = values(remarks),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        code_image_file_url = values(code_image_file_url),
+        code_image_file_id = values(code_image_file_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update inspection_point
+        <set>
+            <if test="pointCode != null and pointCode != ''">
+                point_code = #{pointCode},
+            </if>
+            <if test="pointName != null and pointName != ''">
+                point_name = #{pointName},
+            </if>
+            <if test="pointState != null and pointState != ''">
+                point_state = #{pointState},
+            </if>
+            <if test="pointType != null and pointType != ''">
+                point_type = #{pointType},
+            </if>
+            <if test="minImages != null and minImages != ''">
+                min_images = #{minImages},
+            </if>
+            <if test="maxImages != null and maxImages != ''">
+                max_images = #{maxImages},
+            </if>
+            <if test="routeId != null">
+                route_id = #{routeId},
+            </if>
+            <if test="stopCheck != null">
+                stop_check = #{stopCheck},
+            </if>
+            <if test="routeName != null and routeName != ''">
+                route_name = #{routeName},
+            </if>
+            <if test="projectId != null">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="subjectCatalog != null and subjectCatalog != ''">
+                subject_catalog = #{subjectCatalog},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="codeImageFileUrl != null and codeImageFileUrl != ''">
+                code_image_file_url = #{codeImageFileUrl},
+            </if>
+            <if test="codeImageFileId != null">
+                code_image_file_id = #{codeImageFileId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from inspection_point where id = #{id}
+    </delete>
+
+</mapper>
+

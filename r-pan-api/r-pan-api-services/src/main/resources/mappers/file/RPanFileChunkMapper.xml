@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rubin.rpan.services.modules.file.dao.RPanFileChunkMapper">
+    <resultMap id="BaseResultMap" type="com.rubin.rpan.services.modules.file.entity.RPanFileChunk">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="identifier" jdbcType="VARCHAR" property="identifier"/>
+        <result column="real_path" jdbcType="VARCHAR" property="realPath"/>
+        <result column="chunk_number" jdbcType="INTEGER" property="chunkNumber"/>
+        <result column="expiration_time" jdbcType="TIMESTAMP" property="expirationTime"/>
+        <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, identifier, real_path, chunk_number, expiration_time, create_user, create_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from r_pan_file_chunk
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from r_pan_file_chunk
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.rubin.rpan.services.modules.file.entity.RPanFileChunk">
+        insert into r_pan_file_chunk (id, identifier, real_path,
+                                      chunk_number, expiration_time, create_user,
+                                      create_time)
+        values (#{id,jdbcType=BIGINT}, #{identifier,jdbcType=VARCHAR}, #{realPath,jdbcType=VARCHAR},
+                #{chunkNumber,jdbcType=INTEGER}, #{expirationTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=BIGINT},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.rubin.rpan.services.modules.file.entity.RPanFileChunk">
+        insert into r_pan_file_chunk
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="identifier != null">
+                identifier,
+            </if>
+            <if test="realPath != null">
+                real_path,
+            </if>
+            <if test="chunkNumber != null">
+                chunk_number,
+            </if>
+            <if test="expirationTime != null">
+                expiration_time,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="identifier != null">
+                #{identifier,jdbcType=VARCHAR},
+            </if>
+            <if test="realPath != null">
+                #{realPath,jdbcType=VARCHAR},
+            </if>
+            <if test="chunkNumber != null">
+                #{chunkNumber,jdbcType=INTEGER},
+            </if>
+            <if test="expirationTime != null">
+                #{expirationTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.rubin.rpan.services.modules.file.entity.RPanFileChunk">
+        update r_pan_file_chunk
+        <set>
+            <if test="identifier != null">
+                identifier = #{identifier,jdbcType=VARCHAR},
+            </if>
+            <if test="realPath != null">
+                real_path = #{realPath,jdbcType=VARCHAR},
+            </if>
+            <if test="chunkNumber != null">
+                chunk_number = #{chunkNumber,jdbcType=INTEGER},
+            </if>
+            <if test="expirationTime != null">
+                expiration_time = #{expirationTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.rubin.rpan.services.modules.file.entity.RPanFileChunk">
+        update r_pan_file_chunk
+        set identifier      = #{identifier,jdbcType=VARCHAR},
+            real_path       = #{realPath,jdbcType=VARCHAR},
+            chunk_number    = #{chunkNumber,jdbcType=INTEGER},
+            expiration_time = #{expirationTime,jdbcType=TIMESTAMP},
+            create_user     = #{createUser,jdbcType=BIGINT},
+            create_time     = #{createTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--==================================================私有==================================================-->
+
+    <select id="selectRPanFileChunkListByIdentifierAndUserId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            r_pan_file_chunk
+        WHERE
+            identifier = #{identifier}
+        AND create_user = #{userId}
+    </select>
+
+    <delete id="deleteByIdentifierAndUserId">
+        DELETE FROM
+            r_pan_file_chunk
+        WHERE
+            identifier = #{identifier}
+        AND create_user = #{userId}
+    </delete>
+
+    <select id="selectExpiredFileChunkRecords" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            r_pan_file_chunk
+        WHERE
+            expiration_time &lt;= now()
+        AND
+            id &gt;= ( SELECT id FROM r_pan_file_chunk LIMIT #{batchIndex}, 1 )
+        LIMIT #{batchSize}
+    </select>
+
+    <select id="selectUploadedChunkCount" resultType="integer">
+        SELECT
+            COUNT(*)
+        FROM
+            r_pan_file_chunk
+        WHERE
+            identifier = #{identifier}
+        AND create_user = #{userId}
+    </select>
+
+</mapper>

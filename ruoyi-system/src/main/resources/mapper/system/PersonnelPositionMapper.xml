@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PersonnelPositionMapper">
+
+    <resultMap type="PersonnelPositionBus" id="PersonnelPositionBusResult">
+        <result property="id" column="id"/>
+        <result property="imei" column="imei"/>
+        <result property="name" column="name"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="outsiders" column="outsiders"/>
+        <result property="bloodType" column="blood_type"/>
+        <result property="integral" column="integral"/>
+        <result property="flat" column="flat"/>
+        <result property="floor" column="floor"/>
+        <result property="address" column="address"/>
+        <result property="x" column="x"/>
+        <result property="y" column="y"/>
+        <result property="uploadTime" column="upload_time"/>
+        <result property="phone" column="phone"/>
+        <result property="createdDate" column="created_date"/>
+    </resultMap>
+
+    <select id="queryPersonnelPositionRelationPersonnel" parameterType="com.ruoyi.system.domain.basic.PersonnelPosition"
+            resultMap="PersonnelPositionBusResult">
+        SELECT
+        personnel_position.id,
+        personnel_position.imei,
+        sys_work_people.NAME,
+        sys_work_people.dept_id,
+        sys_work_people.dept_name,
+        personnel_position.outsiders,
+        sys_work_people.blood_type,
+        sys_work_people.integral,
+        personnel_position.flat,
+        personnel_position.floor,
+        personnel_position.address,
+        personnel_position.x,
+        personnel_position.y,
+        personnel_position.upload_time,
+        sys_work_people.phone,
+        personnel_position.created_date
+        FROM
+        personnel_position
+        LEFT JOIN sys_work_people ON personnel_position.imei = sys_work_people.crad_number
+        <where>
+            sys_work_people.name is not null
+            <if test="name != null  and name != ''">and sys_work_people.name = #{name}</if>
+            <if test="phone != null  and phone != ''">and sys_work_people.phone = #{phone}</if>
+            <if test="uploadTime != null"> and personnel_position.upload_time &gt;= #{uploadTime}</if>
+        </where>
+        order by personnel_position.id desc
+    </select>
+
+</mapper>

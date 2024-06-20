@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QualityProblemHandleMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.QualityProblemHandle">
+        <!--@Table quality_problem_handle-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="problemId" column="problem_id" jdbcType="INTEGER"/>
+        <result property="problemType" column="problem_type" jdbcType="VARCHAR"/>
+        <result property="frequency" column="frequency" jdbcType="INTEGER"/>
+        <result property="handleResult" column="handle_result" jdbcType="VARCHAR"/>
+        <result property="handleImage" column="handle_image" jdbcType="VARCHAR"/>
+        <result property="handleFileName" column="handle_file_name" jdbcType="VARCHAR"/>
+        <result property="handleFileUrl" column="handle_file_url" jdbcType="VARCHAR"/>
+        <result property="pass" column="pass" jdbcType="INTEGER"/>
+        <result property="execUserName" column="exec_user_name" jdbcType="VARCHAR"/>
+        <result property="execUserId" column="exec_user_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time
+        from quality_problem_handle
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time
+        from quality_problem_handle
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="problemId != null">
+                and problem_id = #{problemId}
+            </if>
+            <if test="problemType != null and problemType != ''">
+                and problem_type = #{problemType}
+            </if>
+            <if test="frequency != null">
+                and frequency = #{frequency}
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                and handle_result = #{handleResult}
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                and handle_image = #{handleImage}
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                and handle_file_name = #{handleFileName}
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                and handle_file_url = #{handleFileUrl}
+            </if>
+            <if test="pass != null">
+                and pass = #{pass}
+            </if>
+            <if test="execUserName != null and execUserName != ''">
+                and exec_user_name = #{execUserName}
+            </if>
+            <if test="execUserId != null">
+                and exec_user_id = #{execUserId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+    select
+    id, problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time
+    from quality_problem_handle
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from quality_problem_handle
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="problemId != null">
+                and problem_id = #{problemId}
+            </if>
+            <if test="problemType != null and problemType != ''">
+                and problem_type = #{problemType}
+            </if>
+            <if test="frequency != null">
+                and frequency = #{frequency}
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                and handle_result = #{handleResult}
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                and handle_image = #{handleImage}
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                and handle_file_name = #{handleFileName}
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                and handle_file_url = #{handleFileUrl}
+            </if>
+            <if test="pass != null">
+                and pass = #{pass}
+            </if>
+            <if test="execUserName != null and execUserName != ''">
+                and exec_user_name = #{execUserName}
+            </if>
+            <if test="execUserId != null">
+                and exec_user_id = #{execUserId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+    <select id="queryByProblemId" resultType="com.ruoyi.system.entity.QualityProblemHandle">
+        select
+            id, problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time
+        from quality_problem_handle WHERE problem_id = #{id} ORDER BY frequency
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem_handle(problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id)
+        values (#{problemId}, #{problemType}, #{frequency}, #{handleResult}, #{handleImage}, #{handleFileName}, #{handleFileUrl}, #{pass}, #{execUserName}, #{execUserId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem_handle(problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.problemId}, #{entity.problemType}, #{entity.frequency}, #{entity.handleResult}, #{entity.handleImage}, #{entity.handleFileName}, #{entity.handleFileUrl}, #{entity.pass}, #{entity.execUserName}, #{entity.execUserId}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_problem_handle(problem_id, problem_type, frequency, handle_result, handle_image, handle_file_name, handle_file_url, pass, exec_user_name, exec_user_id, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.problemId}, #{entity.problemType}, #{entity.frequency}, #{entity.handleResult}, #{entity.handleImage}, #{entity.handleFileName}, #{entity.handleFileUrl}, #{entity.pass}, #{entity.execUserName}, #{entity.execUserId}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        problem_id = values(problem_id),
+        problem_type = values(problem_type),
+        frequency = values(frequency),
+        handle_result = values(handle_result),
+        handle_image = values(handle_image),
+        handle_file_name = values(handle_file_name),
+        handle_file_url = values(handle_file_url),
+        pass = values(pass),
+        exec_user_name = values(exec_user_name),
+        exec_user_id = values(exec_user_id),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update quality_problem_handle
+        <set>
+            <if test="problemId != null">
+                problem_id = #{problemId},
+            </if>
+            <if test="problemType != null and problemType != ''">
+                problem_type = #{problemType},
+            </if>
+            <if test="frequency != null">
+                frequency = #{frequency},
+            </if>
+            <if test="handleResult != null and handleResult != ''">
+                handle_result = #{handleResult},
+            </if>
+            <if test="handleImage != null and handleImage != ''">
+                handle_image = #{handleImage},
+            </if>
+            <if test="handleFileName != null and handleFileName != ''">
+                handle_file_name = #{handleFileName},
+            </if>
+            <if test="handleFileUrl != null and handleFileUrl != ''">
+                handle_file_url = #{handleFileUrl},
+            </if>
+            <if test="pass != null">
+                pass = #{pass},
+            </if>
+            <if test="execUserName != null and execUserName != ''">
+                exec_user_name = #{execUserName},
+            </if>
+            <if test="execUserId != null">
+                exec_user_id = #{execUserId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from quality_problem_handle where id = #{id}
+    </delete>
+</mapper>
+

@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysPersonnelMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.SysPersonnel">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="uniqueNumber" column="unique_number" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="jobType" column="job_type" jdbcType="VARCHAR"/>
+        <result property="jobWork" column="job_work" jdbcType="VARCHAR"/>
+        <result property="approachTime" column="approach_time" jdbcType="VARCHAR"/>
+        <result property="safetyTrainingName" column="safety_training_name" jdbcType="VARCHAR"/>
+        <result property="safetyTrainingId" column="safety_training_id" jdbcType="INTEGER"/>
+        <result property="signFileName" column="sign_file_name" jdbcType="VARCHAR"/>
+        <result property="signFileUrl" column="sign_file_url" jdbcType="VARCHAR"/>
+        <result property="corporate" column="corporate" jdbcType="VARCHAR"/>
+        <result property="matter" column="matter" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="approveStatus" column="approve_status" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="yearCase" column="year_case" jdbcType="VARCHAR"/>
+        <result property="monthCase" column="month_case" jdbcType="VARCHAR"/>
+        <result property="dayCase" column="day_case" jdbcType="VARCHAR"/>
+        <result property="weekCase" column="week_case" jdbcType="VARCHAR"/>
+        <result property="hourCase" column="hour_case" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               user_name,
+               sex,
+               age,
+               unique_number,
+               phone,
+               address,
+               job_type,
+               job_work,
+               approach_time,
+               safety_training_name,
+               safety_training_id,
+               sign_file_name,
+               sign_file_url,
+               create_time,
+               update_time,
+               approve_status,year_case,month_case,day_case,week_case,hour_case
+        from sys_personnel
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time, safety_training_name,
+        safety_training_id, sign_file_name, sign_file_url, corporate,year_case,month_case,day_case,week_case,hour_case,
+        matter, create_time, update_time, status, approve_status
+        from sys_personnel
+        <where>
+            <if test="yearCase != null and yearCase != ''">
+                and year_case = #{yearCase}
+            </if>
+            <if test="monthCase != null and monthCase != ''">
+                and month_case = #{monthCase}
+            </if>
+            <if test="dayCase != null and dayCase != ''">
+                and day_case = #{dayCase}
+            </if>
+            <if test="weekCase != null and weekCase != ''">
+                and week_case = #{weekCase}
+            </if>
+            <if test="hourCase != null and hourCase != ''">
+                and hour_case = #{hourCase}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="uniqueNumber != null and uniqueNumber != ''">
+                and unique_number = #{uniqueNumber}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="jobType != null and jobType != ''">
+                and job_type = #{jobType}
+            </if>
+            <if test="jobWork != null and jobWork != ''">
+                and job_work = #{jobWork}
+            </if>
+            <if test="approachTime != null and approachTime != ''">
+                and approach_time = #{approachTime}
+            </if>
+            <if test="safetyTrainingName != null and safetyTrainingName != ''">
+                and safety_training_name = #{safetyTrainingName}
+            </if>
+            <if test="safetyTrainingId != null">
+                and safety_training_id = #{safetyTrainingId}
+            </if>
+            <if test="signFileName != null and signFileName != ''">
+                and sign_file_name = #{signFileName}
+            </if>
+            <if test="signFileUrl != null and signFileUrl != ''">
+                and sign_file_url = #{signFileUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select id, user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time, safety_training_name,
+        safety_training_id, sign_file_name, sign_file_url, create_time, update_time, approve_status,year_case,month_case,
+        day_case,week_case,hour_case
+        from sys_personnel
+        <where>
+            <if test="yearCase != null and yearCase != ''">
+                and year_case = #{yearCase}
+            </if>
+            <if test="monthCase != null and monthCase != ''">
+                and month_case = #{monthCase}
+            </if>
+            <if test="dayCase != null and dayCase != ''">
+                and day_case = #{dayCase}
+            </if>
+            <if test="weekCase != null and weekCase != ''">
+                and week_case = #{weekCase}
+            </if>
+            <if test="hourCase != null and hourCase != ''">
+                and hour_case = #{hourCase}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="uniqueNumber != null and uniqueNumber != ''">
+                and unique_number = #{uniqueNumber}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="jobType != null and jobType != ''">
+                and job_type = #{jobType}
+            </if>
+            <if test="jobWork != null and jobWork != ''">
+                and job_work = #{jobWork}
+            </if>
+            <if test="approachTime != null and approachTime != ''">
+                and approach_time = #{approachTime}
+            </if>
+            <if test="safetyTrainingName != null and safetyTrainingName != ''">
+                and safety_training_name = #{safetyTrainingName}
+            </if>
+            <if test="safetyTrainingId != null">
+                and safety_training_id = #{safetyTrainingId}
+            </if>
+            <if test="signFileName != null and signFileName != ''">
+                and sign_file_name = #{signFileName}
+            </if>
+            <if test="signFileUrl != null and signFileUrl != ''">
+                and sign_file_url = #{signFileUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sys_personnel
+        <where>
+            <if test="yearCase != null and yearCase != ''">
+                and year_case = #{yearCase}
+            </if>
+            <if test="monthCase != null and monthCase != ''">
+                and month_case = #{monthCase}
+            </if>
+            <if test="dayCase != null and dayCase != ''">
+                and day_case = #{dayCase}
+            </if>
+            <if test="weekCase != null and weekCase != ''">
+                and week_case = #{weekCase}
+            </if>
+            <if test="hourCase != null and hourCase != ''">
+                and hour_case = #{hourCase}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="uniqueNumber != null and uniqueNumber != ''">
+                and unique_number = #{uniqueNumber}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="jobType != null and jobType != ''">
+                and job_type = #{jobType}
+            </if>
+            <if test="jobWork != null and jobWork != ''">
+                and job_work = #{jobWork}
+            </if>
+            <if test="approachTime != null and approachTime != ''">
+                and approach_time = #{approachTime}
+            </if>
+            <if test="safetyTrainingName != null and safetyTrainingName != ''">
+                and safety_training_name = #{safetyTrainingName}
+            </if>
+            <if test="safetyTrainingId != null">
+                and safety_training_id = #{safetyTrainingId}
+            </if>
+            <if test="signFileName != null and signFileName != ''">
+                and sign_file_name = #{signFileName}
+            </if>
+            <if test="signFileUrl != null and signFileUrl != ''">
+                and sign_file_url = #{signFileUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_personnel(year_case,month_case,day_case,week_case,hour_case,user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time,
+                                  safety_training_name, safety_training_id, sign_file_name, sign_file_url, corporate,
+                                  matter, status, create_time, update_time,approve_status)
+        values (#{yearCase},#{monthCase},#{dayCase},#{weekCase},#{hourCase},#{userName}, #{sex}, #{age}, #{uniqueNumber}, #{phone}, #{address}, #{jobType}, #{jobWork},
+                #{approachTime}, #{safetyTrainingName}, #{safetyTrainingId}, #{signFileName}, #{signFileUrl},
+                #{corporate}, #{matter}, #{status}, #{createTime}, #{updateTime},#{approveStatus})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_personnel(user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time,
+        safety_training_name, safety_training_id, sign_file_name, sign_file_url, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userName}, #{entity.sex}, #{entity.age}, #{entity.uniqueNumber}, #{entity.phone},
+            #{entity.address}, #{entity.jobType}, #{entity.jobWork}, #{entity.approachTime},
+            #{entity.safetyTrainingName}, #{entity.safetyTrainingId}, #{entity.signFileName}, #{entity.signFileUrl},
+            #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_personnel(user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time,
+        safety_training_name, safety_training_id, sign_file_name, sign_file_url, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userName}, #{entity.sex}, #{entity.age}, #{entity.uniqueNumber}, #{entity.phone},
+            #{entity.address}, #{entity.jobType}, #{entity.jobWork}, #{entity.approachTime},
+            #{entity.safetyTrainingName}, #{entity.safetyTrainingId}, #{entity.signFileName}, #{entity.signFileUrl},
+            #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        user_name = values(user_name),
+        sex = values(sex),
+        age = values(age),
+        unique_number = values(unique_number),
+        phone = values(phone),
+        address = values(address),
+        job_type = values(job_type),
+        job_work = values(job_work),
+        approach_time = values(approach_time),
+        safety_training_name = values(safety_training_name),
+        safety_training_id = values(safety_training_id),
+        sign_file_name = values(sign_file_name),
+        sign_file_url = values(sign_file_url),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sys_personnel
+        <set>
+            <if test="yearCase != null and yearCase != ''">
+                 year_case = #{yearCase},
+            </if>
+            <if test="monthCase != null and monthCase != ''">
+                 month_case = #{monthCase},
+            </if>
+            <if test="dayCase != null and dayCase != ''">
+                 day_case = #{dayCase},
+            </if>
+            <if test="weekCase != null and weekCase != ''">
+                 week_case = #{weekCase},
+            </if>
+            <if test="hourCase != null and hourCase != ''">
+                 hour_case = #{hourCase},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="uniqueNumber != null and uniqueNumber != ''">
+                unique_number = #{uniqueNumber},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="jobType != null and jobType != ''">
+                job_type = #{jobType},
+            </if>
+            <if test="jobWork != null and jobWork != ''">
+                job_work = #{jobWork},
+            </if>
+            <if test="approachTime != null and approachTime != ''">
+                approach_time = #{approachTime},
+            </if>
+            <if test="safetyTrainingName != null and safetyTrainingName != ''">
+                safety_training_name = #{safetyTrainingName},
+            </if>
+            <if test="safetyTrainingId != null">
+                safety_training_id = #{safetyTrainingId},
+            </if>
+            <if test="signFileName != null and signFileName != ''">
+                sign_file_name = #{signFileName},
+            </if>
+            <if test="signFileUrl != null and signFileUrl != ''">
+                sign_file_url = #{signFileUrl},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="approveStatus != null">
+                approve_status = #{approveStatus},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from sys_personnel
+        where id = #{id}
+    </delete>
+
+    <select id="queryAllPersonnel" resultMap="BaseResultMap">
+        select id, user_name, sex, age, unique_number, phone, address, job_type, job_work, approach_time, safety_training_name,
+        safety_training_id, sign_file_name, sign_file_url, create_time, update_time, approve_status,year_case,month_case,day_case,week_case,hour_case,corporate,matter
+        from sys_personnel
+       <where>
+           <if test="dayBegin != null and dayBegin != ''">
+               and approach_time >= #{dayBegin}
+           </if>
+           <if test="dayEnd != null and dayEnd != ''">
+               AND approach_time &lt;= #{dayEnd}
+           </if>
+       </where>
+    </select>
+
+
+</mapper>
+

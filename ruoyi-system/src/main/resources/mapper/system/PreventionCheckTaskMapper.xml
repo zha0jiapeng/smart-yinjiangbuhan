@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionCheckTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionCheckTask">
+        <!--@Table prevention_check_task-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="checkTaskConfigId" column="check_task_config_id" jdbcType="INTEGER"/>
+        <result property="taskState" column="task_state" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+        <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
+        <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, check_task_config_id, task_state, start_time, end_time, check_time, check_user_name, check_result, create_time, update_time
+        from prevention_check_task
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, check_task_config_id, task_state, start_time, end_time, check_time, check_user_name, check_result, create_time, update_time
+        from prevention_check_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="checkTaskConfigId != null">
+                and check_task_config_id = #{checkTaskConfigId}
+            </if>
+            <if test="taskState != null and taskState != ''">
+                and task_state = #{taskState}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="checkTime != null">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                and check_user_name = #{checkUserName}
+            </if>
+            <if test="checkResult != null and checkResult != ''">
+                and check_result = #{checkResult}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_check_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="checkTaskConfigId != null">
+                and check_task_config_id = #{checkTaskConfigId}
+            </if>
+            <if test="taskState != null and taskState != ''">
+                and task_state = #{taskState}
+            </if>
+            <if test="startTime != null">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and end_time = #{endTime}
+            </if>
+            <if test="checkTime != null">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                and check_user_name = #{checkUserName}
+            </if>
+            <if test="checkResult != null and checkResult != ''">
+                and check_result = #{checkResult}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByConfigId" resultMap="BaseResultMap">
+        SELECT
+            id,
+            check_task_config_id,
+            task_state,
+            start_time,
+            end_time,
+            check_time,
+            check_user_name,
+            check_result,
+            create_time,
+            update_time
+        FROM
+            `prevention_check_task`
+        WHERE
+            check_task_config_id = #{id}
+        ORDER BY
+            create_time DESC
+            LIMIT 1
+    </select>
+
+    <resultMap id="BaseResultVOMap" type="com.ruoyi.system.domain.vo.PreventionCheckTaskVO">
+        <!--@Table prevention_check_task_config-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="checkTaskConfigId" column="check_task_config_id" jdbcType="INTEGER"/>
+        <result property="taskState" column="task_state" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+        <result property="checkTime" column="check_time" jdbcType="TIMESTAMP"/>
+        <result property="checkUserName" column="check_user_name" jdbcType="VARCHAR"/>
+        <result property="checkResult" column="check_result" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="checkUserNames" column="check_user_names" jdbcType="VARCHAR"/>
+        <result property="checkUserIds" column="check_user_ids" jdbcType="VARCHAR"/>
+        <result property="analysisUnit" column="analysis_unit" jdbcType="VARCHAR"/>
+        <result property="dangerEvent" column="danger_event" jdbcType="VARCHAR"/>
+        <result property="hiddenContent" column="hidden_content" jdbcType="VARCHAR"/>
+        <result property="deviceName" column="device_name" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getTaskInfoById" resultMap="BaseResultVOMap">
+        SELECT
+            t1.id,
+            t1.check_task_config_id,
+            t1.task_state,
+            t1.start_time,
+            t1.end_time,
+            t1.check_time,
+            t1.check_user_name,
+            t1.check_result,
+            t1.create_time,
+            t1.update_time,
+            t2.check_user_names,
+            t2.check_user_ids,
+            t3.analysis_unit,
+            t3.danger_event,
+            t3.hidden_content,
+            t3.user_id,
+            t3.user_name,
+            t4.device_name
+        FROM
+            prevention_check_task t1
+                LEFT JOIN prevention_check_task_config t2 ON t1.check_task_config_id = t2.id
+                LEFT JOIN prevention_security_risk t3 ON t2.security_risk_id = t3.id
+                LEFT JOIN prevention_device t4 ON t3.device_id = t4.id
+        WHERE t1.id = #{taskId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task(check_task_config_id, task_state, start_time, end_time, check_time, check_user_name, check_result)
+        values (#{checkTaskConfigId}, #{taskState}, #{startTime}, #{endTime}, #{checkTime}, #{checkUserName}, #{checkResult})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task(check_task_config_id, task_state, start_time, end_time, check_time, check_user_name, check_result)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.checkTaskConfigId}, #{entity.taskState}, #{entity.startTime}, #{entity.endTime}, #{entity.checkTime}, #{entity.checkUserName}, #{entity.checkResult})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task(check_task_config_id, task_state, start_time, end_time, check_time, check_user_name, check_result)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.checkTaskConfigId}, #{entity.taskState}, #{entity.startTime}, #{entity.endTime}, #{entity.checkTime}, #{entity.checkUserName}, #{entity.checkResult})
+        </foreach>
+        on duplicate key update
+        check_task_config_id = values(check_task_config_id),
+        task_state = values(task_state),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        check_time = values(check_time),
+        check_user_name = values(check_user_name),
+        check_result = values(check_result)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_check_task
+        <set>
+            <if test="checkTaskConfigId != null">
+                check_task_config_id = #{checkTaskConfigId},
+            </if>
+            <if test="taskState != null and taskState != ''">
+                task_state = #{taskState},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+            <if test="checkTime != null">
+                check_time = #{checkTime},
+            </if>
+            <if test="checkUserName != null and checkUserName != ''">
+                check_user_name = #{checkUserName},
+            </if>
+            <if test="checkResult != null and checkResult != ''">
+                check_result = #{checkResult},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_check_task where id = #{id}
+    </delete>
+
+</mapper>
+

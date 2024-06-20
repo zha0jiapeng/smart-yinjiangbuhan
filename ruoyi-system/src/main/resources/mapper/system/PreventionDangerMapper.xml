@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionDangerMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionDanger">
+        <!--@Table prevention_danger-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="dangerName" column="danger_name" jdbcType="VARCHAR"/>
+        <result property="material" column="material" jdbcType="VARCHAR"/>
+        <result property="maxStorage" column="max_storage" jdbcType="VARCHAR"/>
+        <result property="rValue" column="r_value" jdbcType="VARCHAR"/>
+        <result property="dangerLevel" column="danger_level" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time
+        from prevention_danger
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time
+        from prevention_danger
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="dangerName != null and dangerName != ''">
+                and danger_name = #{dangerName}
+            </if>
+            <if test="material != null and material != ''">
+                and material = #{material}
+            </if>
+            <if test="maxStorage != null and maxStorage != ''">
+                and max_storage = #{maxStorage}
+            </if>
+            <if test="rValue != null and rValue != ''">
+                and r_value = #{rValue}
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                and danger_level = #{dangerLevel}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time
+        from prevention_danger
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_danger
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="dangerName != null and dangerName != ''">
+                and danger_name = #{dangerName}
+            </if>
+            <if test="material != null and material != ''">
+                and material = #{material}
+            </if>
+            <if test="maxStorage != null and maxStorage != ''">
+                and max_storage = #{maxStorage}
+            </if>
+            <if test="rValue != null and rValue != ''">
+                and r_value = #{rValue}
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                and danger_level = #{dangerLevel}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_danger(danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time)
+        values (#{dangerName}, #{material}, #{maxStorage}, #{rValue}, #{dangerLevel}, #{remarks}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_danger(danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.dangerName}, #{entity.material}, #{entity.maxStorage}, #{entity.rValue}, #{entity.dangerLevel}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_danger(danger_name, material, max_storage, r_value, danger_level, remarks, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.dangerName}, #{entity.material}, #{entity.maxStorage}, #{entity.rValue}, #{entity.dangerLevel}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        danger_name = values(danger_name),
+        material = values(material),
+        max_storage = values(max_storage),
+        r_value = values(r_value),
+        danger_level = values(danger_level),
+        remarks = values(remarks),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_danger
+        <set>
+            <if test="dangerName != null and dangerName != ''">
+                danger_name = #{dangerName},
+            </if>
+            <if test="material != null and material != ''">
+                material = #{material},
+            </if>
+            <if test="maxStorage != null and maxStorage != ''">
+                max_storage = #{maxStorage},
+            </if>
+            <if test="rValue != null and rValue != ''">
+                r_value = #{rValue},
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                danger_level = #{dangerLevel},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_danger where id = #{id}
+    </delete>
+
+</mapper>
+

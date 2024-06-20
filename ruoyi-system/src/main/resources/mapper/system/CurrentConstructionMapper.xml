@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.CurrentConstructionMapper">
+
+    <!--通过主键修改数据-->
+    <update id="updateCurrentConstruction">
+        update current_construction
+        <set>
+            <if test="currentSchedule != null and currentSchedule != ''">
+                current_schedule = #{currentSchedule},
+            </if>
+            <if test="currentConstruction != null and currentConstruction != ''">
+                current_construction = #{currentConstruction},
+            </if>
+            <if test="currentQuantity != null and currentQuantity != ''">
+                current_quantity = #{currentQuantity},
+            </if>
+            <if test="bolt != null and bolt != ''">
+                bolt = #{bolt},
+            </if>
+            <if test="cement != null and cement != ''">
+                cement = #{cement},
+            </if>
+            <if test="segment != null and segment != ''">
+                segment = #{segment},
+            </if>
+            <if test="saveArray != null and saveArray != ''">
+                save_array = #{saveArray},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+</mapper>

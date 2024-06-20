@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserNoticeMapper">
+    
+    <resultMap type="SysUserNotice" id="SysUserNoticeResult">
+        <result property="id"       column="id"       />
+        <result property="noticeTitle"    column="notice_title"    />
+        <result property="noticeType"     column="notice_type"     />
+        <result property="content"  column="content"  />
+        <result property="status"         column="status"          />
+        <result property="userId"         column="user_id"        />
+        <result property="modelName"         column="model_name"        />
+        <result property="readTime"         column="read_time"     />
+        <result property="readUserId"         column="read_user_id"        />
+        <result property="portSort"         column="port_sort"        />
+        <result property="createdBy"       column="create_by"       />
+        <result property="createdDate"     column="create_time"     />
+        <result property="modifyBy"       column="modify_by"       />
+        <result property="modifyDate"     column="modify_date"     />
+        <result property="yn"         column="yn"          />
+    </resultMap>
+    
+    <sql id="selectNoticeVo">
+        select id, notice_title, notice_type, cast(content as char) as content, status, user_id, model_name, read_time,
+               read_user_id, create_by, create_time, modify_by, modify_date,port_sort
+		from sys_user_notice
+    </sql>
+    
+    <select id="selectById" parameterType="Long" resultMap="SysUserNoticeResult">
+        <include refid="selectNoticeVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectList" resultMap="SysUserNoticeResult">
+        <include refid="selectNoticeVo"/>
+        <where>
+            yn = 1
+			<if test="lastId != null and lastId != ''">
+				AND lastId > #{lastId}
+			</if>
+			<if test="userId != null and userId > 0">
+				AND userId in (#{userId})
+			</if>
+		</where>
+        order by create_date
+        <if test="limit != null and limit != ''">
+            limit 10
+        </if>
+    </select>
+
+    <select id="queryAll" resultMap="SysUserNoticeResult">
+        <include refid="selectNoticeVo"/>
+        <where>
+            yn = 1
+        </where>
+    </select>
+
+    <select id="selectUnReadList" parameterType="Long" resultMap="SysUserNoticeResult">
+        <include refid="selectNoticeVo"/>
+        <where>
+            yn = 1
+            <if test="useId != null and useId != ''">
+                AND user_id = #{useId}
+            </if>
+            and read_user_id is null
+        </where>
+    </select>
+
+    <select id="selectUnReadCount" parameterType="Long" resultType="Integer">
+        select count(*)
+        from sys_user_notice
+        <where>
+            yn = 1
+            <if test="useId != null and useId != ''">
+                AND user_id in (#{useId})
+            </if>
+        </where>
+    </select>
+    
+    <insert id="insert" parameterType="SysUserNotice">
+        insert into sys_user_notice (
+			<if test="noticeTitle != null and noticeTitle != '' ">notice_title, </if>
+			<if test="noticeType != null and noticeType != '' ">notice_type, </if>
+			<if test="content != null and content != '' ">content, </if>
+			<if test="status != null and status != '' ">status, </if>
+            <if test="userId != null and userId != '' ">user_id, </if>
+            <if test="modelName != null and modelName != '' ">model_name, </if>
+            <if test="readTime != null and readTime != '' ">read_time, </if>
+            <if test="readUserId != null and readUserId != '' ">read_user_id, </if>
+			<if test="remark != null and remark != ''">remark,</if>
+ 			<if test="createdBy != null and createdBy != ''">create_by,</if>
+            <if test="yn != null">yn,</if>
+ 			create_time
+ 		)values(
+			<if test="noticeTitle != null and noticeTitle != ''">#{noticeTitle}, </if>
+			<if test="noticeType != null and noticeType != ''">#{noticeType}, </if>
+			<if test="content != null and content != ''">#{content}, </if>
+			<if test="status != null and status != ''">#{status}, </if>
+			<if test="userId != null and userId != ''">#{userId}, </if>
+            <if test="modelName != null and modelName != '' ">#{modelName}, </if>
+			<if test="readTime != null and readTime != ''">#{readTime}, </if>
+            <if test="readUserId != null and readUserId != '' ">#{readUserId}, </if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+ 			<if test="createdBy != null and createdBy != ''">#{createdBy},</if>
+            <if test="yn != null">#{yn},</if>
+ 			sysdate()
+		)
+    </insert>
+	 
+    <update id="update" parameterType="SysUserNotice">
+        update sys_user_notice 
+        <set>
+            <if test="readTime != null and readTime != ''">read_time = #{readTime},</if>
+            <if test="readUserId != null and readUserId != ''">read_user_id = #{readUserId},</if>
+            modify_date = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="readNotice" parameterType="String">
+        update sys_user_notice
+        <set>
+            read_time = sysdate()
+            <if test="readUserId != null and readUserId != '' ">#{readUserId}, </if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        <where>
+            <if test="id != null and id != ''">
+                AND `id` in (#{id})
+            </if>
+        </where>
+    </update>
+	
+    <delete id="deleteById" parameterType="Long">
+        update from sys_user_notice set yn = 0 where id = #{id}
+    </delete>
+    
+    <delete id="deleteByIds" parameterType="Long">
+        update from sys_user_notice set yn = 0 where notice_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysQuestionDescribeMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.SysQuestionDescribe">
+        <id column="id" property="id" />
+        <result column="pid" property="pid" />
+        <result column="problem_content" property="problemContent" />
+        <result column="create_name" property="createName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pid, problem_content, create_name, create_time, update_time
+    </sql>
+
+    <insert id="create">
+        INSERT INTO sys_question_describe(
+        id,pid,problem_content, create_name,create_time,update_time
+        )
+        VALUES(
+        #{id},
+        #{pid},
+        #{problemContent},
+        #{createName},
+        #{createTime},
+        #{updateTime}
+        );
+    </insert>
+
+</mapper>

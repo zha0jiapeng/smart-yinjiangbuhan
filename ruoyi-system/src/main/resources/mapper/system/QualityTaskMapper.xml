@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QualityTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.QualityTask">
+        <!--@Table quality_task-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="projId" column="proj_id" jdbcType="INTEGER"/>
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <result property="projName" column="proj_name" jdbcType="VARCHAR"/>
+        <result property="taskName" column="task_name" jdbcType="VARCHAR"/>
+        <result property="templateId" column="template_id" jdbcType="INTEGER"/>
+        <result property="templateName" column="template_name" jdbcType="VARCHAR"/>
+        <result property="templateFormData" column="template_form_data" jdbcType="VARCHAR"/>
+        <result property="taskSource" column="task_source" jdbcType="VARCHAR"/>
+        <result property="createUserName" column="create_user_name" jdbcType="VARCHAR"/>
+        <result property="createUserId" column="create_user_id" jdbcType="INTEGER"/>
+        <result property="executorUserNames" column="executor_user_names" jdbcType="VARCHAR"/>
+        <result property="executorUserIds" column="executor_user_ids" jdbcType="VARCHAR"/>
+        <result property="taskDescribe" column="task_describe" jdbcType="VARCHAR"/>
+        <result property="checkResult" column="check_result" jdbcType="INTEGER"/>
+        <result property="taskState" column="task_state" jdbcType="INTEGER"/>
+        <result property="checkQualityFileUrl" column="check_quality_file_url" jdbcType="VARCHAR"/>
+        <result property="checkQualityFileName" column="check_quality_file_name" jdbcType="VARCHAR"/>
+        <result property="checkQualityImageUrl" column="check_quality_image_url" jdbcType="VARCHAR"/>
+        <result property="modelId" column="model_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="templateFormStyle" column="template_form_style" jdbcType="VARCHAR"/>
+        <result property="taskProblemId" column="task_problem_Id" jdbcType="VARCHAR"/>
+        <result property="taskNumberTwo" column="task_number_two" jdbcType="VARCHAR"/>
+        <result property="checkStatus" column="check_status" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id,file_id, proj_id,check_status,dept_name,proj_name,task_number_two, task_name, task_problem_Id,template_id, template_name, template_form_data, task_source, create_user_name, create_user_id, executor_user_names, executor_user_ids, task_describe, check_result, task_state, check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id, create_time, update_time, template_form_style
+        from quality_task
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id,file_id, proj_id,check_status,dept_name, proj_name,task_number_two, task_name, task_problem_Id,template_id, template_name, template_form_data, task_source, create_user_name, create_user_id, executor_user_names, executor_user_ids, task_describe, check_result, task_state, check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id, create_time, update_time, template_form_style
+        from quality_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projId != null">
+                and proj_id = #{projId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="projName != null and projName != ''">
+                and proj_name = #{projName}
+            </if>
+            <if test="taskName != null and taskName != ''">
+                and task_name like concat('%', #{taskName}, '%')
+            </if>
+            <if test="templateId != null">
+                and template_id = #{templateId}
+            </if>
+            <if test="templateName != null and templateName != ''">
+                and template_name = #{templateName}
+            </if>
+            <if test="templateFormData != null and templateFormData != ''">
+                and template_form_data = #{templateFormData}
+            </if>
+            <if test="taskSource != null and taskSource != ''">
+                and task_source = #{taskSource}
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                and create_user_name = #{createUserName}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId}
+            </if>
+            <if test="executorUserNames != null and executorUserNames != ''">
+                and executor_user_names = #{executorUserNames}
+            </if>
+            <if test="executorUserIds != null and executorUserIds != ''">
+                and executor_user_ids = #{executorUserIds}
+            </if>
+            <if test="taskDescribe != null and taskDescribe != ''">
+                and task_describe like concat('%', #{taskDescribe}, '%')
+            </if>
+            <if test="checkResult != null">
+                and check_result = #{checkResult}
+            </if>
+            <if test="taskState != null">
+                and task_state = #{taskState}
+            </if>
+            <if test="checkQualityFileUrl != null and checkQualityFileUrl != ''">
+                and check_quality_file_url = #{checkQualityFileUrl}
+            </if>
+            <if test="checkQualityFileName != null and checkQualityFileName != ''">
+                and check_quality_file_name = #{checkQualityFileName}
+            </if>
+            <if test="checkQualityImageUrl != null and checkQualityImageUrl != ''">
+                and check_quality_image_url = #{checkQualityImageUrl}
+            </if>
+            <if test="modelId != null">
+                and model_id = #{modelId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="templateFormStyle != null and templateFormStyle != ''">
+                and template_form_style = #{templateFormStyle}
+            </if>
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+    select
+    id, proj_id,proj_id, proj_name, task_name, template_id, template_name, template_form_data, task_source, create_user_name, create_user_id, executor_user_names, executor_user_ids, task_describe, check_result, task_state, check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id, create_time, update_time, template_form_style
+    from baishiling.quality_task
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from quality_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="projId != null">
+                and proj_id = #{projId}
+            </if>
+            <if test="projName != null and projName != ''">
+                and proj_name = #{projName}
+            </if>
+            <if test="taskName != null and taskName != ''">
+                and task_name like concat('%', #{taskName}, '%')
+            </if>
+            <if test="templateId != null">
+                and template_id = #{templateId}
+            </if>
+            <if test="templateName != null and templateName != ''">
+                and template_name = #{templateName}
+            </if>
+            <if test="templateFormData != null and templateFormData != ''">
+                and template_form_data = #{templateFormData}
+            </if>
+            <if test="taskSource != null and taskSource != ''">
+                and task_source = #{taskSource}
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                and create_user_name = #{createUserName}
+            </if>
+            <if test="createUserId != null">
+                and create_user_id = #{createUserId}
+            </if>
+            <if test="executorUserNames != null and executorUserNames != ''">
+                and executor_user_names = #{executorUserNames}
+            </if>
+            <if test="executorUserIds != null and executorUserIds != ''">
+                and executor_user_ids = #{executorUserIds}
+            </if>
+            <if test="taskDescribe != null and taskDescribe != ''">
+                and task_describe like concat('%', #{taskDescribe}, '%')
+            </if>
+            <if test="checkResult != null">
+                and check_result = #{checkResult}
+            </if>
+            <if test="taskState != null">
+                and task_state = #{taskState}
+            </if>
+            <if test="checkQualityFileUrl != null and checkQualityFileUrl != ''">
+                and check_quality_file_url = #{checkQualityFileUrl}
+            </if>
+            <if test="checkQualityFileName != null and checkQualityFileName != ''">
+                and check_quality_file_name = #{checkQualityFileName}
+            </if>
+            <if test="checkQualityImageUrl != null and checkQualityImageUrl != ''">
+                and check_quality_image_url = #{checkQualityImageUrl}
+            </if>
+            <if test="modelId != null">
+                and model_id = #{modelId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="templateFormStyle != null and templateFormStyle != ''">
+                and template_form_style = #{templateFormStyle}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_task(
+        check_status,file_id,proj_id,dept_name, proj_name, task_name, template_id,
+        template_name,template_form_data, task_source, create_user_name, create_user_id,
+        executor_user_names, executor_user_ids, task_describe, check_result, task_state,
+        check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id,
+        template_form_style,task_problem_Id,task_number_two)
+        values (
+        #{checkStatus},#{fileId},#{projId}, #{deptName}, #{projName}, #{taskName},#{templateId},
+        #{templateName}, #{templateFormData}, #{taskSource}, #{createUserName},#{createUserId},
+        #{executorUserNames}, #{executorUserIds}, #{taskDescribe}, #{checkResult},
+        #{taskState}, #{checkQualityFileUrl}, #{checkQualityFileName}, #{checkQualityImageUrl},
+        #{modelId}, #{templateFormStyle}, #{taskProblemId}, #{taskNumberTwo})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_task(proj_id, proj_name, task_name, template_id, template_name, template_form_data, task_source, create_user_name, create_user_id, executor_user_names, executor_user_ids, task_describe, check_result, task_state, check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id, create_time, update_time, template_form_style)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.projId}, #{entity.projName}, #{entity.taskName}, #{entity.templateId}, #{entity.templateName}, #{entity.templateFormData}, #{entity.taskSource}, #{entity.createUserName}, #{entity.createUserId}, #{entity.executorUserNames}, #{entity.executorUserIds}, #{entity.taskDescribe}, #{entity.checkResult}, #{entity.taskState}, #{entity.checkQualityFileUrl}, #{entity.checkQualityFileName}, #{entity.checkQualityImageUrl}, #{entity.modelId}, #{entity.createTime}, #{entity.updateTime}, #{entity.templateFormStyle})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into quality_task(proj_id, proj_name, task_name, template_id, template_name, template_form_data, task_source, create_user_name, create_user_id, executor_user_names, executor_user_ids, task_describe, check_result, task_state, check_quality_file_url, check_quality_file_name, check_quality_image_url, model_id, create_time, update_time, template_form_style)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.projId}, #{entity.projName}, #{entity.taskName}, #{entity.templateId}, #{entity.templateName}, #{entity.templateFormData}, #{entity.taskSource}, #{entity.createUserName}, #{entity.createUserId}, #{entity.executorUserNames}, #{entity.executorUserIds}, #{entity.taskDescribe}, #{entity.checkResult}, #{entity.taskState}, #{entity.checkQualityFileUrl}, #{entity.checkQualityFileName}, #{entity.checkQualityImageUrl}, #{entity.modelId}, #{entity.createTime}, #{entity.updateTime}, #{entity.templateFormStyle})
+        </foreach>
+        on duplicate key update
+        proj_id = values(proj_id),
+        proj_name = values(proj_name),
+        task_name = values(task_name),
+        template_id = values(template_id),
+        template_name = values(template_name),
+        template_form_data = values(template_form_data),
+        task_source = values(task_source),
+        create_user_name = values(create_user_name),
+        create_user_id = values(create_user_id),
+        executor_user_names = values(executor_user_names),
+        executor_user_ids = values(executor_user_ids),
+        task_describe = values(task_describe),
+        check_result = values(check_result),
+        task_state = values(task_state),
+        check_quality_file_url = values(check_quality_file_url),
+        check_quality_file_name = values(check_quality_file_name),
+        check_quality_image_url = values(check_quality_image_url),
+        model_id = values(model_id),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        template_form_style = values(template_form_style)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update quality_task
+        <set>
+            <if test="projId != null">
+                proj_id = #{projId},
+            </if>
+            <if test="checkStatus != null">
+                check_status = #{checkStatus},
+            </if>
+            <if test="fileId != null and fileId != ''">
+                file_id = #{fileId},
+             </if>
+            <if test="projName != null and projName != ''">
+                proj_name = #{projName},
+            </if>
+            <if test="taskName != null and taskName != ''">
+                task_name = #{taskName},
+            </if>
+            <if test="templateId != null">
+                template_id = #{templateId},
+            </if>
+            <if test="templateName != null and templateName != ''">
+                template_name = #{templateName},
+            </if>
+            <if test="templateFormData != null and templateFormData != ''">
+                template_form_data = #{templateFormData},
+            </if>
+            <if test="taskSource != null and taskSource != ''">
+                task_source = #{taskSource},
+            </if>
+            <if test="createUserName != null and createUserName != ''">
+                create_user_name = #{createUserName},
+            </if>
+            <if test="createUserId != null">
+                create_user_id = #{createUserId},
+            </if>
+            <if test="executorUserNames != null and executorUserNames != ''">
+                executor_user_names = #{executorUserNames},
+            </if>
+            <if test="executorUserIds != null and executorUserIds != ''">
+                executor_user_ids = #{executorUserIds},
+            </if>
+            <if test="taskDescribe != null and taskDescribe != ''">
+                task_describe = #{taskDescribe},
+            </if>
+            <if test="checkResult != null">
+                check_result = #{checkResult},
+            </if>
+            <if test="taskState != null">
+                task_state = #{taskState},
+            </if>
+            <if test="checkQualityFileUrl != null and checkQualityFileUrl != ''">
+                check_quality_file_url = #{checkQualityFileUrl},
+            </if>
+            <if test="checkQualityFileName != null and checkQualityFileName != ''">
+                check_quality_file_name = #{checkQualityFileName},
+            </if>
+            <if test="checkQualityImageUrl != null and checkQualityImageUrl != ''">
+                check_quality_image_url = #{checkQualityImageUrl},
+            </if>
+            <if test="modelId != null">
+                model_id = #{modelId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="templateFormStyle != null and templateFormStyle != ''">
+                template_form_style = #{templateFormStyle},
+            </if>
+            <if test="taskProblemId != null and taskProblemId != ''">
+                task_problem_Id = #{taskProblemId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from quality_task where id = #{id}
+    </delete>
+
+
+
+</mapper>
+

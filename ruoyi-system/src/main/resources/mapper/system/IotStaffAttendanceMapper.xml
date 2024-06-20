@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.IotStaffAttendanceMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.domain.basic.IotStaffAttendance">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="orgId" column="org_id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="employeeId" column="employee_id" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="wayBase" column="way_base" jdbcType="INTEGER"/>
+        <result property="way" column="way" jdbcType="VARCHAR"/>
+        <result property="datetime" column="datetime" jdbcType="VARCHAR"/>
+        <result property="groupName" column="groups_name" jdbcType="VARCHAR"/>
+        <result property="workType" column="work_type" jdbcType="VARCHAR"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="yearCase" column="year_case" jdbcType="VARCHAR"/>
+        <result property="monthCase" column="month_case" jdbcType="VARCHAR"/>
+        <result property="dayCase" column="day_case" jdbcType="VARCHAR"/>
+        <result property="weekCase" column="week_case" jdbcType="VARCHAR"/>
+        <result property="hourCase" column="hour_case" jdbcType="VARCHAR"/>
+        <result property="personnelConfigType" column="personnel_config_type" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select image from lot_staff_attendance where pid = #{pid}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        SELECT
+        lot_staff_attendance.id,
+        lot_staff_attendance.pid,
+        lot_staff_attendance.org_id,
+        sys_work_people.NAME,
+        lot_staff_attendance.phone,
+        lot_staff_attendance.employee_id,
+        lot_staff_attendance.way_base,
+        lot_staff_attendance.way,
+        lot_staff_attendance.datetime
+        FROM
+        lot_staff_attendance
+        LEFT JOIN sys_work_people ON lot_staff_attendance.phone = sys_work_people.phone
+        <where>
+            <if test="yearCase != null and yearCase != ''">
+                and year_case = #{yearCase}
+            </if>
+            <if test="monthCase != null and monthCase != ''">
+                and month_case = #{monthCase}
+            </if>
+            <if test="dayCase != null and dayCase != ''">
+                and day_case = #{dayCase}
+            </if>
+            <if test="weekCase != null and weekCase != ''">
+                and week_case = #{weekCase}
+            </if>
+            <if test="hourCase != null and hourCase != ''">
+                and hour_case = #{hourCase}
+            </if>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="wayBase != null">
+                and way_base = #{wayBase}
+            </if>
+            <if test="orgId != null and orgId != ''">
+                and org_id = #{orgId}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="employeeId != null and employeeId != ''">
+                and employee_id = #{employeeId}
+            </if>
+            <if test="way != null and way != ''">
+                and way = #{way}
+            </if>
+            <if test="datetime != null and datetime != ''">
+                and datetime = #{datetime}
+            </if>
+        </where>
+        order by datetime desc
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        SELECT
+        lot_staff_attendance.id,
+        sys_work_people.`name`,
+        sys_work_people.groups_name,
+        sys_work_people.work_type,
+        sys_work_people.company,
+        sys_work_people.personnel_config_type,
+        pid,
+        org_id,
+        sys_work_people.NAME,
+        lot_staff_attendance.phone,
+        employee_id,
+        way_base,
+        way,
+        datetime,
+        year_case,
+        month_case,
+        day_case,
+        week_case,
+        hour_case
+        FROM
+        lot_staff_attendance
+        LEFT JOIN sys_work_people ON lot_staff_attendance.phone = sys_work_people.phone
+        <where>
+            <if test="dayBegin != null and dayBegin != ''">
+                and datetime >= #{dayBegin}
+            </if>
+            <if test="dayEnd != null and dayEnd != ''">
+                AND datetime &lt;= #{dayEnd}
+            </if>
+        </where>
+        order by datetime desc
+    </select>
+
+
+
+</mapper>
+

@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionPlanMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionPlan">
+        <!--@Table prevention_plan-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="userNames" column="user_names" jdbcType="VARCHAR"/>
+        <result property="userIds" column="user_ids" jdbcType="VARCHAR"/>
+        <result property="planName" column="plan_name" jdbcType="VARCHAR"/>
+        <result property="checkType" column="check_type" jdbcType="VARCHAR"/>
+        <result property="checkScope" column="check_scope" jdbcType="VARCHAR"/>
+        <result property="checkLevel" column="check_level" jdbcType="VARCHAR"/>
+        <result property="checkStartTime" column="check_start_time" jdbcType="VARCHAR"/>
+        <result property="checkEndTime" column="check_end_time" jdbcType="VARCHAR"/>
+        <result property="workContactPerson" column="work_contact_person" jdbcType="VARCHAR"/>
+        <result property="planState" column="plan_state" jdbcType="INTEGER"/>
+        <result property="planInfo" column="plan_info" jdbcType="VARCHAR"/>
+        <result property="cycle" column="cycle" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="createId" column="create_id" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, file_id, dept_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id, create_time, update_time
+        from prevention_plan
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, dept_id, file_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id, create_time, update_time
+        from prevention_plan
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="userNames != null and userNames != ''">
+                and user_names = #{userNames}
+            </if>
+            <if test="userIds != null">
+                and user_ids = #{userIds}
+            </if>
+            <if test="planName != null and planName != ''">
+                and plan_name = #{planName}
+            </if>
+            <if test="checkType != null and checkType != ''">
+                and check_type = #{checkType}
+            </if>
+            <if test="checkScope != null and checkScope != ''">
+                and check_scope = #{checkScope}
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                and check_level = #{checkLevel}
+            </if>
+            <if test="checkStartTime != null and checkStartTime != ''">
+                and check_start_time = #{checkStartTime}
+            </if>
+            <if test="checkEndTime != null and checkEndTime != ''">
+                and check_end_time = #{checkEndTime}
+            </if>
+            <if test="workContactPerson != null and workContactPerson != ''">
+                and work_contact_person = #{workContactPerson}
+            </if>
+            <if test="planState != null">
+                and plan_state = #{planState}
+            </if>
+            <if test="planInfo != null and planInfo != ''">
+                and plan_info = #{planInfo}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="createUser != null and createUser != ''">
+                and create_user = #{createUser}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, dept_id, file_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id, create_time, update_time
+        from prevention_plan
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_plan
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="userNames != null and userNames != ''">
+                and user_names = #{userNames}
+            </if>
+            <if test="userIds != null">
+                and user_ids = #{userIds}
+            </if>
+            <if test="planName != null and planName != ''">
+                and plan_name = #{planName}
+            </if>
+            <if test="checkType != null and checkType != ''">
+                and check_type = #{checkType}
+            </if>
+            <if test="checkScope != null and checkScope != ''">
+                and check_scope = #{checkScope}
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                and check_level = #{checkLevel}
+            </if>
+            <if test="checkStartTime != null and checkStartTime != ''">
+                and check_start_time = #{checkStartTime}
+            </if>
+            <if test="checkEndTime != null and checkEndTime != ''">
+                and check_end_time = #{checkEndTime}
+            </if>
+            <if test="workContactPerson != null and workContactPerson != ''">
+                and work_contact_person = #{workContactPerson}
+            </if>
+            <if test="planState != null">
+                and plan_state = #{planState}
+            </if>
+            <if test="planInfo != null and planInfo != ''">
+                and plan_info = #{planInfo}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+            <if test="createUser != null and createUser != ''">
+                and create_user = #{createUser}
+            </if>
+            <if test="createId != null">
+                and create_id = #{createId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan(file_id, dept_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id)
+        values (#{fileId},#{deptId}, #{deptName}, #{userNames}, #{userIds}, #{planName}, #{checkType}, #{checkScope}, #{checkLevel}, #{checkStartTime}, #{checkEndTime}, #{workContactPerson}, #{planState}, #{planInfo}, #{cycle}, #{unit}, #{createUser}, #{createId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan(file_id, dept_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.fileId},#{entity.deptId}, #{entity.deptName}, #{entity.userNames}, #{entity.userIds}, #{entity.planName}, #{entity.checkType}, #{entity.checkScope}, #{entity.checkLevel}, #{entity.checkStartTime}, #{entity.checkEndTime}, #{entity.workContactPerson}, #{entity.planState}, #{entity.planInfo}, #{entity.cycle}, #{entity.unit}, #{entity.createUser}, #{entity.createId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan(dept_id, dept_name, user_names, user_ids, plan_name, check_type, check_scope, check_level, check_start_time, check_end_time, work_contact_person, plan_state, plan_info, cycle, unit, create_user, create_id, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.deptId}, #{entity.deptName}, #{entity.userNames}, #{entity.userIds}, #{entity.planName}, #{entity.checkType}, #{entity.checkScope}, #{entity.checkLevel}, #{entity.checkStartTime}, #{entity.checkEndTime}, #{entity.workContactPerson}, #{entity.planState}, #{entity.planInfo}, #{entity.cycle}, #{entity.unit}, #{entity.createUser}, #{entity.createId}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        dept_id = values(dept_id),
+        dept_name = values(dept_name),
+        user_names = values(user_names),
+        user_ids = values(user_ids),
+        plan_name = values(plan_name),
+        check_type = values(check_type),
+        check_scope = values(check_scope),
+        check_level = values(check_level),
+        check_start_time = values(check_start_time),
+        check_end_time = values(check_end_time),
+        work_contact_person = values(work_contact_person),
+        plan_state = values(plan_state),
+        plan_info = values(plan_info),
+        cycle = values(cycle),
+        unit = values(unit),
+        create_user = values(create_user),
+        create_id = values(create_id),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_plan
+        <set>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="fileId != null and fileId != ''">
+                file_id = #{fileId},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="userNames != null and userNames != ''">
+                user_names = #{userNames},
+            </if>
+            <if test="userIds != null">
+                user_ids = #{userIds},
+            </if>
+            <if test="planName != null and planName != ''">
+                plan_name = #{planName},
+            </if>
+            <if test="checkType != null and checkType != ''">
+                check_type = #{checkType},
+            </if>
+            <if test="checkScope != null and checkScope != ''">
+                check_scope = #{checkScope},
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                check_level = #{checkLevel},
+            </if>
+            <if test="checkStartTime != null and checkStartTime != ''">
+                check_start_time = #{checkStartTime},
+            </if>
+            <if test="checkEndTime != null and checkEndTime != ''">
+                check_end_time = #{checkEndTime},
+            </if>
+            <if test="workContactPerson != null and workContactPerson != ''">
+                work_contact_person = #{workContactPerson},
+            </if>
+            <if test="planState != null">
+                plan_state = #{planState},
+            </if>
+            <if test="planInfo != null and planInfo != ''">
+                plan_info = #{planInfo},
+            </if>
+            <if test="cycle != null and cycle != ''">
+                cycle = #{cycle},
+            </if>
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+            <if test="createUser != null and createUser != ''">
+                create_user = #{createUser},
+            </if>
+            <if test="createId != null">
+                create_id = #{createId},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_plan where id = #{id}
+    </delete>
+
+</mapper>
+

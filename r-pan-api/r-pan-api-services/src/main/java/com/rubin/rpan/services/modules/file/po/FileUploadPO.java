@@ -1,0 +1,108 @@
+package com.rubin.rpan.services.modules.file.po;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Objects;
+
+@ApiModel(value = "文件上传PO")
+public class FileUploadPO implements Serializable {
+
+    private static final long serialVersionUID = -6712494353573613150L;
+
+    @ApiModelProperty(value = "文件名称", required = true)
+    @NotBlank(message = "文件名称不能为空")
+    private String filename;
+
+    @ApiModelProperty(value = "文件对应的唯一标识", required = true)
+    @NotBlank(message = "文件对应的唯一标识不能为空")
+    private String identifier;
+
+    @ApiModelProperty(value = "文件大小", required = true)
+    @NotNull(message = "文件大小不能为空")
+    private Long totalSize;
+
+    @ApiModelProperty(value = "父id", required = true)
+    @NotNull(message = "父id不能为空")
+    private Long parentId;
+
+    @ApiModelProperty(value = "上传文件", required = true)
+    @NotNull(message = "上传文件不能为空")
+    private MultipartFile file;
+
+    public FileUploadPO() {
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public Long getTotalSize() {
+        return totalSize;
+    }
+
+    public void setTotalSize(Long totalSize) {
+        this.totalSize = totalSize;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileUploadPO that = (FileUploadPO) o;
+        return Objects.equals(filename, that.filename) &&
+                Objects.equals(identifier, that.identifier) &&
+                Objects.equals(totalSize, that.totalSize) &&
+                Objects.equals(parentId, that.parentId) &&
+                Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filename, identifier, totalSize, parentId, file);
+    }
+
+    @Override
+    public String toString() {
+        return "FileUploadPO{" +
+                "filename='" + filename + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", totalSize=" + totalSize +
+                ", parentId=" + parentId +
+                ", file=" + file +
+                '}';
+    }
+    
+}

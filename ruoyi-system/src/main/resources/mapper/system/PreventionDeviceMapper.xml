@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionDeviceMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionDevice">
+        <!--@Table prevention_device-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="deviceName" column="device_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="dangerName" column="danger_name" jdbcType="VARCHAR"/>
+        <result property="dangerLevel" column="danger_level" jdbcType="VARCHAR"/>
+        <result property="state" column="state" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, device_name, dept_name, dept_id, danger_name, danger_level, state, remarks, create_time, update_time
+        from prevention_device
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, device_name, dept_name, dept_id, danger_name, danger_level, state, remarks, create_time, update_time
+        from prevention_device
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                and device_name = #{deviceName}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="dangerName != null and dangerName != ''">
+                and danger_name = #{dangerName}
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                and danger_level = #{dangerLevel}
+            </if>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, device_name, dept_name, dept_id, danger_name, danger_level, state, remarks, create_time, update_time
+        from prevention_device
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_device
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="deviceName != null and deviceName != ''">
+                and device_name = #{deviceName}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="dangerName != null and dangerName != ''">
+                and danger_name = #{dangerName}
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                and danger_level = #{dangerLevel}
+            </if>
+            <if test="state != null and state != ''">
+                and state = #{state}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+    <select id="getCheckCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `prevention_check_task` t1
+            LEFT JOIN prevention_check_task_config t2 ON t1.check_task_config_id = t2.id
+            LEFT JOIN prevention_security_risk t3 ON t3.id = t2.security_risk_id
+            LEFT JOIN prevention_device t4 ON t3.device_id = t4.id
+        WHERE
+            t4.danger_name = #{dangerName}
+            AND t1.task_state = '已排查'
+            AND t1.create_time &gt; #{startTime}
+            AND t1.create_time &lt; #{endTime}
+    </select>
+
+    <select id="hiddenCount" resultType="java.util.Map">
+        SELECT
+            COUNT(*) progress_count,
+            hidden_progress
+        FROM
+            `prevention_hidden_register`
+        WHERE
+            create_time &gt; #{startTime}
+            AND create_time &lt; #{endTime}
+        GROUP BY
+            hidden_progress
+    </select>
+
+    <select id="listByLevel" resultMap="BaseResultMap">
+        select
+          id, device_name, dept_name, dept_id, danger_name, danger_level, state, remarks, create_time, update_time
+        from prevention_device
+        where danger_level != '无重大'
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_device(device_name, dept_name, dept_id, danger_name, danger_level, state, remarks)
+        values (#{deviceName}, #{deptName}, #{deptId}, #{dangerName}, #{dangerLevel}, #{state}, #{remarks})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_device(device_name, dept_name, dept_id, danger_name, danger_level, state, remarks)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.deviceName}, #{entity.deptName}, #{entity.deptId}, #{entity.dangerName}, #{entity.dangerLevel}, #{entity.state}, #{entity.remarks})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_device(device_name, dept_name, dept_id, danger_name, danger_level, state, remarks)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.deviceName}, #{entity.deptName}, #{entity.deptId}, #{entity.dangerName}, #{entity.dangerLevel}, #{entity.state}, #{entity.remarks})
+        </foreach>
+        on duplicate key update
+        device_name = values(device_name),
+        dept_name = values(dept_name),
+        dept_id = values(dept_id),
+        danger_name = values(danger_name),
+        danger_level = values(danger_level),
+        state = values(state),
+        remarks = values(remarks),
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_device
+        <set>
+            <if test="deviceName != null and deviceName != ''">
+                device_name = #{deviceName},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="dangerName != null and dangerName != ''">
+                danger_name = #{dangerName},
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                danger_level = #{dangerLevel},
+            </if>
+            <if test="state != null and state != ''">
+                state = #{state},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_device where id = #{id}
+    </delete>
+
+</mapper>
+

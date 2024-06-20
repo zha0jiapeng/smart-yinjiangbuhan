@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysDangerMapper">
+
+    <resultMap type="SysDanger" id="SysDangerResult">
+        <id     property="id"      column="id"      />
+        <result property="dangerName"    column="danger_name"    />
+        <result property="materialName"     column="material_name"     />
+        <result property="maxStorage"   column="max_storage"   />
+        <result property="dangerLevel"    column="danger_level"    />
+        <result property="quota"      column="quota"      />
+        <result property="remarksInfo"      column="remarks_info"      />
+        <result property="addressInfo"      column="address_info"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="columns">
+        id,danger_name,material_name,max_storage,danger_level,remarks_info,address_info,quota,create_time,update_time
+    </sql>
+
+    <insert id="create">
+        INSERT INTO sys_danger(danger_name,material_name,max_storage,danger_level,quota,remarks_info,address_info) VALUES(#{dangerName},#{materialName},#{maxStorage},#{dangerLevel},#{quota},#{remarksInfo}.#{addressInfo});
+    </insert>
+
+    <update id="update">
+        UPDATE sys_danger
+        <set>
+            <if test="dangerName != null and dangerName != ''">danger_name = #{dangerName},</if>
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="maxStorage != null and maxStorage != ''">max_storage = #{maxStorage},</if>
+            <if test="dangerLevel != null and dangerLevel != ''">danger_level = #{dangerLevel},</if>
+            <if test="quota != null and quota != ''">quota = #{quota},</if>
+            <if test="remarksInfo != null and remarksInfo != ''">remarks_info = #{remarksInfo},</if>
+            <if test="addressInfo != null and addressInfo != ''">address_info = #{addressInfo},</if>
+            update_time = sysdate()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM sys_danger WHERE id = #{id}
+    </delete>
+
+    <select id="list" resultMap="SysDangerResult">
+        SELECT <include refid="columns" /> FROM sys_danger
+        <where>
+            <if test="dangerName != null and dangerName != ''">
+                AND danger_name LIKE concat('%', #{dangerName}, '%')
+            </if>
+            <if test="dangerLevel != null and dangerLevel != ''">
+                AND danger_level = #{dangerLevel}
+            </if>
+        </where>
+    </select>
+    <select id="listByLevel" resultMap="SysDangerResult">
+        SELECT <include refid="columns" /> FROM sys_danger WHERE danger_level = '无重大'
+    </select>
+
+</mapper>

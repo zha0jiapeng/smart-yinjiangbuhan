@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionPlanFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionPlanFile">
+        <!--@Table prevention_plan_file-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="preventionPlanId" column="prevention_plan_id" jdbcType="INTEGER"/>
+        <result property="fileId" column="file_id" jdbcType="INTEGER"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="fileUrl" column="file_url" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, file_id, file_name, file_url, create_time, update_time
+        from prevention_plan_file
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, file_id, file_name, file_url, create_time, update_time
+        from prevention_plan_file
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="preventionPlanId != null">
+                and prevention_plan_id = #{preventionPlanId}
+            </if>
+            <if test="fileId != null">
+                and file_id = #{fileId}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and file_name = #{fileName}
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                and file_url = #{fileUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, prevention_plan_id, file_id, file_name, file_url, create_time, update_time
+        from prevention_plan_file
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_plan_file
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="preventionPlanId != null">
+                and prevention_plan_id = #{preventionPlanId}
+            </if>
+            <if test="fileId != null">
+                and file_id = #{fileId}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and file_name = #{fileName}
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                and file_url = #{fileUrl}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_file(prevention_plan_id, file_id, file_name, file_url)
+        values (#{preventionPlanId}, #{fileId}, #{fileName}, #{fileUrl})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_file(prevention_plan_id, file_id, file_name, file_url)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.preventionPlanId}, #{entity.fileId}, #{entity.fileName}, #{entity.fileUrl})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_plan_file(prevention_plan_id, file_id, file_name, file_url, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.preventionPlanId}, #{entity.fileId}, #{entity.fileName}, #{entity.fileUrl}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        prevention_plan_id = values(prevention_plan_id),
+        file_id = values(file_id),
+        file_name = values(file_name),
+        file_url = values(file_url),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_plan_file
+        <set>
+            <if test="preventionPlanId != null">
+                prevention_plan_id = #{preventionPlanId},
+            </if>
+            <if test="fileId != null">
+                file_id = #{fileId},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                file_name = #{fileName},
+            </if>
+            <if test="fileUrl != null and fileUrl != ''">
+                file_url = #{fileUrl},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_plan_file where id = #{id}
+    </delete>
+
+</mapper>
+

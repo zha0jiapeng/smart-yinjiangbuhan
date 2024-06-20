@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysHiddenDangerMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.SysHiddenDanger">
+        <id column="id" property="id" />
+        <result column="file_id" property="fileId" />
+        <result column="file_name" property="fileName" />
+        <result column="file_url" property="fileUrl" />
+        <result column="area_id" property="areaId" />
+        <result column="area_name" property="areaName" />
+        <result column="problem_id" property="problemId" />
+        <result column="problem" property="problem" />
+        <result column="task_type" property="taskType" />
+        <result column="change_date" property="changeDate" />
+        <result column="duty_unit" property="dutyUnit" />
+        <result column="duty_unit_id" property="dutyUnitId" />
+        <result column="duty_person_id" property="dutyPersonId" />
+        <result column="duty_person" property="dutyPerson" />
+        <result column="change_measure" property="changeMeasure" />
+        <result column="change_describe" property="changeDescribe" />
+        <result column="status" property="status" />
+        <result column="problem_name" property="problemName" />
+        <result column="problem_grade" property="problemGrade" />
+        <result column="del_flag" property="delFlag" />
+        <result column="create_by" property="createBy" />
+        <result column="update_by" property="updateBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="examine_verify_date" property="examineVerifyDate" />
+        <result column="within_date" property="withinDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, file_id, file_name, file_url, area_id, area_name, problem_id, problem,task_type, change_date,
+            duty_unit, duty_unit_id, duty_person_id, duty_person, status,change_measure,change_describe, problem_name, problem_grade, del_flag, create_by, update_by, create_time, update_time,
+            examine_verify_date,within_date
+    </sql>
+
+    <select id="list" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" /> FROM sys_hidden_danger
+        <where>
+            <if test="areaName != null and areaName != ''">
+                and area_name = #{areaName}
+            </if>
+            <if test="problem != null and problem != ''">
+                AND problem = #{problem}
+            </if>
+            <if test="fileId != null and fileId != ''">
+                AND file_id = #{fileId}
+            </if>
+            <if test="areaId != null and areaId != ''">
+                AND area_id = #{areaId}
+            </if>
+            <if test="problemId != null and problemId != ''">
+                AND problem_id = #{problemId}
+            </if>
+            <if test="taskType != null and taskType != ''">
+                AND task_type = #{taskType}
+            </if>
+            <if test="changeDate != null and changeDate != ''">
+                AND change_date = #{changeDate}
+            </if>
+            <if test="month != null and month != ''">
+                AND month = #{month}
+            </if>
+            <if test="week != null and week != ''">
+                AND week = #{week}
+            </if>
+            <if test="dutyUnitId != null">
+                AND duty_unit_id = #{dutyUnitId}
+            </if>
+            <if test="dutyUnit != null and dutyUnit != ''">
+                AND duty_unit = #{dutyUnit}
+            </if>
+            <if test="dutyPerson != null and dutyPerson != ''">
+                AND duty_person = #{dutyPerson}
+            </if>
+            <if test="changeMeasure != null and changeMeasure != ''">
+                AND change_measure = #{changeMeasure}
+            </if>
+            <if test="changeDescribe != null and changeDescribe != ''">
+                AND change_describe = #{changeDescribe}
+            </if>
+            <if test="problemName != null and problemName != ''">
+                AND problem_name = #{problemName}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                AND del_flag = #{delFlag}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                AND create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND update_by = #{updateBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="stateDate != null and stateDate != '' and endDate != null and endDate != ''">
+                and create_time &gt;=#{stateDate} AND  create_time &lt;=#{endDate}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="create">
+        INSERT INTO sys_hidden_danger(
+        id,file_id,area_id,area_name, problem_id,problem, problem_grade, task_type,
+        change_date,duty_unit,duty_unit_id,duty_person_id,duty_person,change_measure,change_describe,
+        problem_name,status,week,month,del_flag,create_by,update_by,create_time,update_time,within_date
+        )
+        VALUES(
+        #{id},
+        #{fileId},
+        #{areaId},
+        #{areaName},
+        #{problemId},
+        #{problem},
+        #{problemGrade},
+        #{taskType},
+        #{changeDate},
+        #{dutyUnit},
+        #{dutyUnitId},
+        #{dutyPersonId},
+        #{dutyPerson},
+        #{changeMeasure},
+        #{changeDescribe},
+        #{problemName},
+        #{status},
+        #{week},
+        #{month},
+        #{delFlag},
+        #{createBy},
+        #{updateBy},
+        #{createTime},
+        #{updateTime},
+        #{withinDate}
+        );
+    </insert>
+
+    <update id="update">
+        UPDATE sys_hidden_danger
+        <set>
+            <if test="fileId != null and fileId != ''">file_id = #{fileId},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="fileUrl != null and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="areaId != null">area_id = #{areaId},</if>
+            <if test="areaName != null and areaName != ''">area_name = #{areaName},</if>
+            <if test="problemId != null">problem_id = #{problemId},</if>
+            <if test="problem != null and problem != ''">problem = #{problem},</if>
+            <if test="taskType != null">task_type = #{taskType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="changeDate != null and changeDate != ''">change_date = #{changeDate},</if>
+            <if test="dutyUnitId != null">duty_unit_id = #{dutyUnitId},</if>
+            <if test="dutyUnit != null and dutyUnit != ''">duty_unit = #{dutyUnit},</if>
+            <if test="dutyPerson != null and dutyPerson != ''">duty_person = #{dutyPerson},</if>
+            <if test="changeMeasure != null and changeMeasure != ''">change_measure = #{changeMeasure},</if>
+            <if test="changeDescribe != null and changeDescribe != ''">change_describe = #{changeDescribe},</if>
+            <if test="problemName != null and problemName != ''">problem_name = #{problemName},</if>
+            <if test="delFlag != null and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM sys_hidden_danger WHERE id = #{id}
+    </delete>
+
+    <update id="updateStatus">
+        UPDATE sys_hidden_danger
+        <set>
+            <if test="examineIdea != null and examineIdea != ''">examine_idea = #{examineIdea},</if>
+            <if test="examineVerifyDate != null">examine_verify_date = #{examineVerifyDate},</if>
+            <if test="status != null">status = #{status}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateFour">
+        UPDATE sys_hidden_danger
+        <set>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="fileUrl != null and fileUrl != ''">file_url = #{fileUrl},</if>
+            <if test="changeDescribe != null and changeDescribe != ''">change_describe = #{changeDescribe},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+
+
+
+
+
+
+
+
+</mapper>

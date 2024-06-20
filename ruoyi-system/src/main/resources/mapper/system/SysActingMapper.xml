@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysActingMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.SysActing">
+        <!--@Table sys_acting-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="titleName" column="title_name" jdbcType="VARCHAR"/>
+        <result property="titleType" column="title_type" jdbcType="VARCHAR"/>
+        <result property="sourceId" column="source_id" jdbcType="INTEGER"/>
+        <result property="state" column="state" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="titleInfo" column="title_info" jdbcType="VARCHAR"/>
+        <result property="originatorName" column="originator_name" jdbcType="VARCHAR"/>
+        <result property="originatorId" column="originator_id" jdbcType="INTEGER"/>
+        <result property="executorName" column="executor_name" jdbcType="VARCHAR"/>
+        <result property="executorId" column="executor_id" jdbcType="INTEGER"/>
+        <result property="completeTime" column="complete_time" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, title_name, title_type, source_id, state, create_time, update_time, title_info, originator_name, originator_id, executor_name, executor_id, complete_time
+        from sys_acting
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, title_name, title_type, source_id, state, create_time, update_time, title_info, originator_name, originator_id, executor_name, executor_id, complete_time
+        from sys_acting
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="titleName != null and titleName != ''">
+                and title_name = #{titleName}
+            </if>
+            <if test="titleType != null and titleType != ''">
+                and title_type = #{titleType}
+            </if>
+            <if test="sourceId != null">
+                and source_id = #{sourceId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="titleInfo != null and titleInfo != ''">
+                and title_info = #{titleInfo}
+            </if>
+            <if test="originatorName != null and originatorName != ''">
+                and originator_name = #{originatorName}
+            </if>
+            <if test="originatorId != null">
+                and originator_id = #{originatorId}
+            </if>
+            <if test="executorName != null and executorName != ''">
+                and executor_name = #{executorName}
+            </if>
+            <if test="executorId != null">
+                and executor_id = #{executorId}
+            </if>
+            <if test="completeTime != null and completeTime != ''">
+                and complete_time = #{completeTime}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sys_acting
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="titleName != null and titleName != ''">
+                and title_name = #{titleName}
+            </if>
+            <if test="titleType != null and titleType != ''">
+                and title_type = #{titleType}
+            </if>
+            <if test="sourceId != null">
+                and source_id = #{sourceId}
+            </if>
+            <if test="state != null">
+                and state = #{state}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="titleInfo != null and titleInfo != ''">
+                and title_info = #{titleInfo}
+            </if>
+            <if test="originatorName != null and originatorName != ''">
+                and originator_name = #{originatorName}
+            </if>
+            <if test="originatorId != null">
+                and originator_id = #{originatorId}
+            </if>
+            <if test="executorName != null and executorName != ''">
+                and executor_name = #{executorName}
+            </if>
+            <if test="executorId != null">
+                and executor_id = #{executorId}
+            </if>
+            <if test="completeTime != null and completeTime != ''">
+                and complete_time = #{completeTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_acting(title_name, title_type, source_id, title_info, originator_name, originator_id, executor_name, executor_id, complete_time)
+        values (#{titleName}, #{titleType}, #{sourceId}, #{titleInfo}, #{originatorName}, #{originatorId}, #{executorName}, #{executorId}, #{completeTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_acting(title_name, title_type, source_id, title_info, originator_name, originator_id, executor_name, executor_id, complete_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.titleName}, #{entity.titleType}, #{entity.sourceId}, #{entity.titleInfo}, #{entity.originatorName}, #{entity.originatorId}, #{entity.executorName}, #{entity.executorId}, #{entity.completeTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sys_acting(title_name, title_type, source_id, create_time, update_time, title_info, originator_name, originator_id, executor_name, executor_id, complete_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.titleName}, #{entity.titleType}, #{entity.sourceId}, #{entity.createTime}, #{entity.updateTime}, #{entity.titleInfo}, #{entity.originatorName}, #{entity.originatorId}, #{entity.executorName}, #{entity.executorId}, #{entity.completeTime})
+        </foreach>
+        on duplicate key update
+        title_name = values(title_name),
+        title_type = values(title_type),
+        source_id = values(source_id),
+        state = values(state),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        title_info = values(title_info),
+        originator_name = values(originator_name),
+        originator_id = values(originator_id),
+        executor_name = values(executor_name),
+        executor_id = values(executor_id),
+        complete_time = values(complete_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sys_acting
+        <set>
+            <if test="titleName != null and titleName != ''">
+                title_name = #{titleName},
+            </if>
+            <if test="titleType != null and titleType != ''">
+                title_type = #{titleType},
+            </if>
+            <if test="sourceId != null">
+                source_id = #{sourceId},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="titleInfo != null and titleInfo != ''">
+                title_info = #{titleInfo},
+            </if>
+            <if test="originatorName != null and originatorName != ''">
+                originator_name = #{originatorName},
+            </if>
+            <if test="originatorId != null">
+                originator_id = #{originatorId},
+            </if>
+            <if test="executorName != null and executorName != ''">
+                executor_name = #{executorName},
+            </if>
+            <if test="executorId != null">
+                executor_id = #{executorId},
+            </if>
+            <if test="completeTime != null and completeTime != ''">
+                complete_time = #{completeTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="completeActing">
+        update sys_acting SET state = #{state}, complete_time = #{completeTime}
+        where title_name = #{titleName} AND title_type = #{titleType} AND source_id = #{sourceId} AND state = 0
+    </update>
+    <update id="updateExecutorUser">
+        update sys_acting SET executor_name = #{executorName}, executor_id = #{executorId}
+        where title_name = #{titleName} AND title_type = #{titleType} AND source_id = #{sourceId} AND state = 0
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sys_acting where id = #{id}
+    </delete>
+
+
+</mapper>
+

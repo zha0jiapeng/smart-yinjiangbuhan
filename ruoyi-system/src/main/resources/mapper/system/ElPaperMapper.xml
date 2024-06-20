@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ElPaperMapper">
+
+    <resultMap type="ElPaper" id="ElPaperResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="departId" column="depart_id"/>
+        <result property="examId" column="exam_id"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="totalTime" column="total_time"/>
+        <result property="userTime" column="user_time"/>
+        <result property="totalScore" column="total_score"/>
+        <result property="qualifyScore" column="qualify_score"/>
+        <result property="subjScore" column="subj_score"/>
+        <result property="userScore" column="user_score"/>
+        <result property="hasSaq" column="has_saq"/>
+        <result property="state" column="state" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <result property="limitTime" column="limit_time" />
+    </resultMap>
+
+    <sql id="selectPaperVo">
+
+    </sql>
+
+    <select id="selectUserList" parameterType="String" resultMap="ElPaperResult">
+        select title, user_score,p.create_time
+        from el_paper p
+                 left join sys_user u on u.user_id = p.user_id
+        where u.phonenumber = #{phone}
+    </select>
+
+</mapper>

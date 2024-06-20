@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InspectionPlanTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.InspectionPlanTask">
+        <!--@Table inspection_plan_task-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="planId" column="plan_id" jdbcType="INTEGER"/>
+        <result property="startTime" column="start_time" jdbcType="VARCHAR"/>
+        <result property="endTime" column="end_time" jdbcType="VARCHAR"/>
+        <result property="planUserNames" column="plan_user_names" jdbcType="VARCHAR"/>
+        <result property="planUserIds" column="plan_user_ids" jdbcType="VARCHAR"/>
+        <result property="routeId" column="route_id" jdbcType="INTEGER"/>
+        <result property="routeName" column="route_name" jdbcType="VARCHAR"/>
+        <result property="planTaskState" column="plan_task_state" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time
+        from inspection_plan_task
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time
+        from inspection_plan_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planId != null">
+                and plan_id = #{planId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and end_time = #{endTime}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="planTaskState != null and planTaskState != ''">
+                and plan_task_state = #{planTaskState}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from inspection_plan_task
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planId != null">
+                and plan_id = #{planId}
+            </if>
+            <if test="startTime != null and startTime != ''">
+                and start_time = #{startTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and end_time = #{endTime}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="planTaskState != null and planTaskState != ''">
+                and plan_task_state = #{planTaskState}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryByPlanId" resultMap="BaseResultMap">
+        select
+          id, plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time
+        from inspection_plan_task
+        where plan_id = #{id}
+        ORDER BY
+        end_time DESC
+        LIMIT 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task(plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time)
+        values (#{planId}, #{startTime}, #{endTime}, #{planUserNames}, #{planUserIds}, #{routeId}, #{routeName}, #{planTaskState}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task(plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.planId}, #{entity.startTime}, #{entity.endTime}, #{entity.planUserNames}, #{entity.planUserIds}, #{entity.routeId}, #{entity.routeName}, #{entity.planTaskState}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task(plan_id, start_time, end_time, plan_user_names, plan_user_ids, route_id, route_name, plan_task_state, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.planId}, #{entity.startTime}, #{entity.endTime}, #{entity.planUserNames}, #{entity.planUserIds}, #{entity.routeId}, #{entity.routeName}, #{entity.planTaskState}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        plan_id = values(plan_id),
+        start_time = values(start_time),
+        end_time = values(end_time),
+        plan_user_names = values(plan_user_names),
+        plan_user_ids = values(plan_user_ids),
+        route_id = values(route_id),
+        route_name = values(route_name),
+        plan_task_state = values(plan_task_state),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update inspection_plan_task
+        <set>
+            <if test="planId != null">
+                plan_id = #{planId},
+            </if>
+            <if test="startTime != null and startTime != ''">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null and endTime != ''">
+                end_time = #{endTime},
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                plan_user_names = #{planUserNames},
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                plan_user_ids = #{planUserIds},
+            </if>
+            <if test="routeId != null">
+                route_id = #{routeId},
+            </if>
+            <if test="routeName != null and routeName != ''">
+                route_name = #{routeName},
+            </if>
+            <if test="planTaskState != null and planTaskState != ''">
+                plan_task_state = #{planTaskState},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from inspection_plan_task where id = #{id}
+    </delete>
+
+</mapper>
+

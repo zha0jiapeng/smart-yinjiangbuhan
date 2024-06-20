@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionCheckTaskConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionCheckTaskConfig">
+        <!--@Table prevention_check_task_config-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="securityRiskId" column="security_risk_id" jdbcType="INTEGER"/>
+        <result property="taskStartTime" column="task_start_time" jdbcType="VARCHAR"/>
+        <result property="checkUserNames" column="check_user_names" jdbcType="VARCHAR"/>
+        <result property="checkUserIds" column="check_user_ids" jdbcType="VARCHAR"/>
+        <result property="whetherConfig" column="whether_config" jdbcType="INTEGER"/>
+        <result property="whetherRelease" column="whether_release" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="BaseResultVOMap" type="com.ruoyi.system.domain.vo.PreventionCheckTaskConfigVO">
+        <!--@Table prevention_check_task_config-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="securityRiskId" column="security_risk_id" jdbcType="INTEGER"/>
+        <result property="taskStartTime" column="task_start_time" jdbcType="VARCHAR"/>
+        <result property="checkUserNames" column="check_user_names" jdbcType="VARCHAR"/>
+        <result property="checkUserIds" column="check_user_ids" jdbcType="VARCHAR"/>
+        <result property="whetherConfig" column="whether_config" jdbcType="INTEGER"/>
+        <result property="whetherRelease" column="whether_release" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="analysisUnit" column="analysis_unit" jdbcType="VARCHAR"/>
+        <result property="dangerEvent" column="danger_event" jdbcType="VARCHAR"/>
+        <result property="hiddenContent" column="hidden_content" jdbcType="VARCHAR"/>
+        <result property="cycle" column="cycle" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+        <result property="deviceName" column="device_name" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, security_risk_id, task_start_time, check_user_names, check_user_ids, whether_config, whether_release, create_time, update_time
+        from prevention_check_task_config
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultVOMap">
+        SELECT
+            t1.id,
+            t1.security_risk_id,
+            t1.task_start_time,
+            t1.check_user_names,
+            t1.check_user_ids,
+            t1.whether_config,
+            t1.whether_release,
+            t1.create_time,
+            t1.update_time,
+            t2.analysis_unit,
+            t2.danger_event,
+            t2.hidden_content,
+            t2.cycle,
+            t2.unit,
+            t2.dept_name,
+            t3.device_name
+        FROM
+        prevention_check_task_config t1
+        LEFT JOIN prevention_security_risk t2 ON t1.security_risk_id = t2.id
+        LEFT JOIN prevention_device t3 ON t2.device_id = t3.id
+        <where>
+            <if test="id != null">
+                and t1.id = #{id}
+            </if>
+            <if test="securityRiskId != null">
+                and t1.security_risk_id = #{securityRiskId}
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                and t1.task_start_time = #{taskStartTime}
+            </if>
+            <if test="checkUserNames != null and checkUserNames != ''">
+                and t1.check_user_names = #{checkUserNames}
+            </if>
+            <if test="checkUserIds != null and checkUserIds != ''">
+                and t1.check_user_ids = #{checkUserIds}
+            </if>
+            <if test="whetherConfig != null">
+                and t1.whether_config = #{whetherConfig}
+            </if>
+            <if test="whetherRelease != null">
+                and t1.whether_release = #{whetherRelease}
+            </if>
+            <if test="createTime != null">
+                and t1.create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and t1.update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, security_risk_id, task_start_time, check_user_names, check_user_ids, whether_config, whether_release, create_time, update_time
+        from prevention_check_task_config
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_check_task_config
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="securityRiskId != null">
+                and security_risk_id = #{securityRiskId}
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                and task_start_time = #{taskStartTime}
+            </if>
+            <if test="checkUserNames != null and checkUserNames != ''">
+                and check_user_names = #{checkUserNames}
+            </if>
+            <if test="checkUserIds != null and checkUserIds != ''">
+                and check_user_ids = #{checkUserIds}
+            </if>
+            <if test="whetherConfig != null">
+                and whether_config = #{whetherConfig}
+            </if>
+            <if test="whetherRelease != null">
+                and whether_release = #{whetherRelease}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task_config(security_risk_id, task_start_time, check_user_names, check_user_ids, whether_config, whether_release)
+        values (#{securityRiskId}, #{taskStartTime}, #{checkUserNames}, #{checkUserIds}, #{whetherConfig}, #{whetherRelease})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task_config(security_risk_id, task_start_time, check_user_names, check_user_ids, whether_config, whether_release)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.securityRiskId}, #{entity.taskStartTime}, #{entity.checkUserNames}, #{entity.checkUserIds}, #{entity.whetherConfig}, #{entity.whetherRelease})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_check_task_config(security_risk_id, task_start_time, check_user_names, check_user_ids, whether_config, whether_release)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.securityRiskId}, #{entity.taskStartTime}, #{entity.checkUserNames}, #{entity.checkUserIds}, #{entity.whetherConfig}, #{entity.whetherRelease})
+        </foreach>
+        on duplicate key update
+        security_risk_id = values(security_risk_id),
+        task_start_time = values(task_start_time),
+        check_user_names = values(check_user_names),
+        check_user_ids = values(check_user_ids),
+        whether_config = values(whether_config),
+        whether_release = values(whether_release)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_check_task_config
+        <set>
+            <if test="securityRiskId != null">
+                security_risk_id = #{securityRiskId},
+            </if>
+            <if test="taskStartTime != null and taskStartTime != ''">
+                task_start_time = #{taskStartTime},
+            </if>
+            <if test="checkUserNames != null and checkUserNames != ''">
+                check_user_names = #{checkUserNames},
+            </if>
+            <if test="checkUserIds != null and checkUserIds != ''">
+                check_user_ids = #{checkUserIds},
+            </if>
+            <if test="whetherConfig != null">
+                whether_config = #{whetherConfig},
+            </if>
+            <if test="whetherRelease != null">
+                whether_release = #{whetherRelease},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_check_task_config where id = #{id}
+    </delete>
+
+</mapper>
+

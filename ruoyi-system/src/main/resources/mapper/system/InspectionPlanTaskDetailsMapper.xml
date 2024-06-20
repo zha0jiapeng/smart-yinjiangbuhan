@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InspectionPlanTaskDetailsMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.InspectionPlanTaskDetails">
+        <!--@Table inspection_plan_task_details-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="planTaskId" column="plan_task_id" jdbcType="INTEGER"/>
+        <result property="pointName" column="point_name" jdbcType="VARCHAR"/>
+        <result property="pointId" column="point_id" jdbcType="INTEGER"/>
+        <result property="checkUser" column="check_user" jdbcType="VARCHAR"/>
+        <result property="checkTime" column="check_time" jdbcType="VARCHAR"/>
+        <result property="checkState" column="check_state" jdbcType="VARCHAR"/>
+        <result property="checkInfo" column="check_info" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="formData" column="form_data" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, plan_task_id, point_name, point_id, check_user, check_time, check_state, check_info, create_time, update_time, form_data
+        from inspection_plan_task_details
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, plan_task_id, point_name, point_id, check_user, check_time, check_state, check_info, create_time, update_time, form_data
+        from inspection_plan_task_details
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planTaskId != null">
+                and plan_task_id = #{planTaskId}
+            </if>
+            <if test="pointName != null and pointName != ''">
+                and point_name = #{pointName}
+            </if>
+            <if test="pointId != null">
+                and point_id = #{pointId}
+            </if>
+            <if test="checkUser != null and checkUser != ''">
+                and check_user = #{checkUser}
+            </if>
+            <if test="checkTime != null and checkTime != ''">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkState != null and checkState != ''">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                and check_info = #{checkInfo}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="formData != null and formData != ''">
+                and form_data = #{formData}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from inspection_plan_task_details
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planTaskId != null">
+                and plan_task_id = #{planTaskId}
+            </if>
+            <if test="pointName != null and pointName != ''">
+                and point_name = #{pointName}
+            </if>
+            <if test="pointId != null">
+                and point_id = #{pointId}
+            </if>
+            <if test="checkUser != null and checkUser != ''">
+                and check_user = #{checkUser}
+            </if>
+            <if test="checkTime != null and checkTime != ''">
+                and check_time = #{checkTime}
+            </if>
+            <if test="checkState != null and checkState != ''">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                and check_info = #{checkInfo}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="formData != null and formData != ''">
+                and form_data = #{formData}
+            </if>
+        </where>
+    </select>
+
+    <select id="countCheckStateByTaskId" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM inspection_plan_task_details WHERE plan_task_id = #{planTaskId} AND check_state = '未排查'
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task_details(plan_task_id, point_name, point_id, check_user, check_time, check_state, check_info, create_time, update_time, form_data)
+        values (#{planTaskId}, #{pointName}, #{pointId}, #{checkUser}, #{checkTime}, #{checkState}, #{checkInfo}, #{createTime}, #{updateTime}, #{formData})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task_details(plan_task_id, point_name, point_id, check_user, check_time, check_state, check_info, create_time, update_time, form_data)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.planTaskId}, #{entity.pointName}, #{entity.pointId}, #{entity.checkUser}, #{entity.checkTime}, #{entity.checkState}, #{entity.checkInfo}, #{entity.createTime}, #{entity.updateTime}, #{entity.formData})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan_task_details(plan_task_id, point_name, point_id, check_user, check_time, check_state, check_info, create_time, update_time, form_data)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.planTaskId}, #{entity.pointName}, #{entity.pointId}, #{entity.checkUser}, #{entity.checkTime}, #{entity.checkState}, #{entity.checkInfo}, #{entity.createTime}, #{entity.updateTime}, #{entity.formData})
+        </foreach>
+        on duplicate key update
+        plan_task_id = values(plan_task_id),
+        point_name = values(point_name),
+        point_id = values(point_id),
+        check_user = values(check_user),
+        check_time = values(check_time),
+        check_state = values(check_state),
+        check_info = values(check_info),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        form_data = values(form_data)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update inspection_plan_task_details
+        <set>
+            <if test="planTaskId != null">
+                plan_task_id = #{planTaskId},
+            </if>
+            <if test="pointName != null and pointName != ''">
+                point_name = #{pointName},
+            </if>
+            <if test="pointId != null">
+                point_id = #{pointId},
+            </if>
+            <if test="checkUser != null and checkUser != ''">
+                check_user = #{checkUser},
+            </if>
+            <if test="checkTime != null and checkTime != ''">
+                check_time = #{checkTime},
+            </if>
+            <if test="checkState != null and checkState != ''">
+                check_state = #{checkState},
+            </if>
+            <if test="checkInfo != null and checkInfo != ''">
+                check_info = #{checkInfo},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="formData != null and formData != ''">
+                form_data = #{formData},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from inspection_plan_task_details where id = #{id}
+    </delete>
+
+</mapper>
+

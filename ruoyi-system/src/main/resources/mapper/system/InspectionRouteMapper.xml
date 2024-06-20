@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InspectionRouteMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.InspectionRoute">
+        <!--@Table inspection_route-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="routeCode" column="route_code" jdbcType="VARCHAR"/>
+        <result property="routeName" column="route_name" jdbcType="VARCHAR"/>
+        <result property="chargePeople" column="charge_people" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="stopCheck" column="stop_check" jdbcType="INTEGER"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, stop_check, route_code, route_name, charge_people, phone, dept_id, dept_name, user_name, user_id, remarks, create_time, update_time
+        from inspection_route
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, stop_check, route_code, route_name, charge_people, phone, dept_id, dept_name, user_name, user_id, remarks, create_time, update_time
+        from inspection_route
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="stopCheck != null">
+                and stop_check = #{stopCheck}
+            </if>
+            <if test="routeCode != null and routeCode != ''">
+                and route_code = #{routeCode}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="chargePeople != null and chargePeople != ''">
+                and charge_people = #{chargePeople}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from inspection_route
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="stopCheck != null">
+                and stop_check = #{stopCheck}
+            </if>
+            <if test="routeCode != null and routeCode != ''">
+                and route_code = #{routeCode}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="chargePeople != null and chargePeople != ''">
+                and charge_people = #{chargePeople}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="userName != null and userName != ''">
+                and user_name = #{userName}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_route(route_code, route_name, charge_people, phone, dept_id, dept_name, user_name, user_id, remarks, create_time, update_time)
+        values (#{routeCode}, #{routeName}, #{chargePeople}, #{phone}, #{deptId}, #{deptName}, #{userName}, #{userId}, #{remarks}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_route(route_code, route_name, charge_people, phone, dept_id, dept_name, user_name, user_id, remarks, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.routeCode}, #{entity.routeName}, #{entity.chargePeople}, #{entity.phone}, #{entity.deptId}, #{entity.deptName}, #{entity.userName}, #{entity.userId}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_route(route_code, route_name, charge_people, phone, dept_id, dept_name, user_name, user_id, remarks, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.routeCode}, #{entity.routeName}, #{entity.chargePeople}, #{entity.phone}, #{entity.deptId}, #{entity.deptName}, #{entity.userName}, #{entity.userId}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        route_code = values(route_code),
+        route_name = values(route_name),
+        charge_people = values(charge_people),
+        phone = values(phone),
+        dept_id = values(dept_id),
+        dept_name = values(dept_name),
+        user_name = values(user_name),
+        user_id = values(user_id),
+        remarks = values(remarks),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update inspection_route
+        <set>
+            <if test="routeCode != null and routeCode != ''">
+                route_code = #{routeCode},
+            </if>
+            <if test="routeName != null and routeName != ''">
+                route_name = #{routeName},
+            </if>
+            <if test="chargePeople != null and chargePeople != ''">
+                charge_people = #{chargePeople},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="stopCheck != null">
+                stop_check = #{stopCheck},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from inspection_route where id = #{id}
+    </delete>
+
+</mapper>
+

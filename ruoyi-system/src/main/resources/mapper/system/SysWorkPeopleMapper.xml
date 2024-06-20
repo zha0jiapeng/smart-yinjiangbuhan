@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysWorkPeopleMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.domain.SysWorkPeople">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="idCard" column="id_card" jdbcType="VARCHAR"/>
+        <result property="phone" column="work_type" jdbcType="VARCHAR"/>
+        <result property="company" column="company" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="groupsName" column="groups_name" jdbcType="VARCHAR"/>
+        <result property="cradNumber" column="crad_number" jdbcType="VARCHAR"/>
+        <result property="bloodType" column="blood_type" jdbcType="VARCHAR"/>
+        <result property="integral" column="integral" jdbcType="VARCHAR"/>
+        <result property="personnelConfigType" column="personnel_config_type" jdbcType="INTEGER"/>
+        <result property="enclosureName" column="enclosure_name" jdbcType="VARCHAR"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdDate" column="created_date" jdbcType="TIMESTAMP"/>
+        <result property="modifyBy" column="modify_by" jdbcType="VARCHAR"/>
+        <result property="modifyDate" column="modify_date" jdbcType="TIMESTAMP"/>
+        <result property="yn" column="yn" jdbcType="INTEGER"/>
+        <result property="educationForm" column="education_form" jdbcType="VARCHAR"/>
+        <result property="educationalContent" column="educational_content" jdbcType="VARCHAR"/>
+        <result property="lastExamTestPaper" column="last_exam_test_paper" jdbcType="VARCHAR"/>
+        <result property="lastExamScore" column="last_exam_score" jdbcType="VARCHAR"/>
+        <result property="lastExamTime" column="last_exam_time" jdbcType="TIMESTAMP"/>
+        <result property="lastFileTime" column="last_file_time" jdbcType="VARCHAR"/>
+        <result property="learnFileTime" column="learn_file_time" jdbcType="VARCHAR"/>
+        <result property="lastVideoTime" column="last_video_time" jdbcType="VARCHAR"/>
+        <result property="watchVideoTime" column="watch_video_time" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--通过主键修改数据-->
+    <update id="updateByCode">
+        update sys_work_people
+        <set>
+            <if test="qrCode != null and qrCode != ''">
+                qr_code = #{qrCode},
+            </if>
+            <if test="enclosureName != null and enclosureName != ''">
+                enclosure_name = #{enclosureName},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateIntegralByPid">
+        update sys_work_people
+        <set>
+            <if test="integral != null">
+                integral = #{integral},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updWorkPeopleDeparture">
+        update sys_work_people
+        <set>
+            <if test="yn != null">
+                yn = #{yn},
+            </if>
+            <if test="departureDate != null">
+                departure_date = #{departureDate},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
+

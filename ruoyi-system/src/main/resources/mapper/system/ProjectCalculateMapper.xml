@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ProjectCalculateMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.ProjectCalculate">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="modelKey" column="model_key" jdbcType="VARCHAR"/>
+        <result property="modelValue" column="model_value" jdbcType="VARCHAR"/>
+        <result property="checkState" column="check_state" jdbcType="INTEGER"/>
+        <result property="checkBy" column="check_by" jdbcType="VARCHAR"/>
+        <result property="checkDate" column="check_date" jdbcType="TIMESTAMP"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="createdDate" column="created_date" jdbcType="TIMESTAMP"/>
+        <result property="modifyBy" column="modify_by" jdbcType="VARCHAR"/>
+        <result property="modifyDate" column="modify_date" jdbcType="TIMESTAMP"/>
+        <result property="yn" column="yn" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select id,
+               model_key,
+               model_value,
+               check_state,
+               check_by,
+               check_date,
+               created_by,
+               created_date,
+               modify_by,
+               modify_date,
+               yn
+        from project_calculate
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select id, model_key, model_value, check_state, check_by, check_date, created_by, created_date, modify_by,
+        modify_date, yn
+        from project_calculate
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="modelKey != null and modelKey != ''">
+                and model_key = #{modelKey}
+            </if>
+            <if test="modelValue != null and modelValue != ''">
+                and model_value = #{modelValue}
+            </if>
+            <if test="checkState != null">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkBy != null and checkBy != ''">
+                and check_by = #{checkBy}
+            </if>
+            <if test="checkDate != null">
+                and check_date = #{checkDate}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                and created_by = #{createdBy}
+            </if>
+            <if test="createdDate != null">
+                and created_date = #{createdDate}
+            </if>
+            <if test="modifyBy != null and modifyBy != ''">
+                and modify_by = #{modifyBy}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+            <if test="yn != null">
+                and yn = #{yn}
+            </if>
+            <if test="checkDateStart != null and checkDateStart != '' and checkDateEnd != null and checkDateEnd != ''">
+                and check_date &gt;=#{checkDateStart} AND  check_date &lt;=#{checkDateEnd}
+            </if>
+        </where>
+        order by project_sort
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select id,
+               model_key,
+               model_value,
+               check_state,
+               check_by,
+               check_date,
+               created_by,
+               created_date,
+               modify_by,
+               modify_date,
+               yn
+        from baishiling.project_calculate WHERE check_state='3L'
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1) from project_calculate
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="modelKey != null and modelKey != ''">
+                and model_key = #{modelKey}
+            </if>
+            <if test="modelValue != null and modelValue != ''">
+                and model_value = #{modelValue}
+            </if>
+            <if test="checkState != null">
+                and check_state = #{checkState}
+            </if>
+            <if test="checkBy != null and checkBy != ''">
+                and check_by = #{checkBy}
+            </if>
+            <if test="checkDate != null">
+                and check_date = #{checkDate}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                and created_by = #{createdBy}
+            </if>
+            <if test="createdDate != null">
+                and created_date = #{createdDate}
+            </if>
+            <if test="modifyBy != null and modifyBy != ''">
+                and modify_by = #{modifyBy}
+            </if>
+            <if test="modifyDate != null">
+                and modify_date = #{modifyDate}
+            </if>
+            <if test="yn != null">
+                and yn = #{yn}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into project_calculate(model_key, model_value, check_state, check_by, check_date, created_by,
+                                      created_date, modify_by, modify_date, yn)
+        values (#{modelKey}, #{modelValue}, #{checkState}, #{checkBy}, #{checkDate}, #{createdBy}, #{createdDate},
+                #{modifyBy}, #{modifyDate}, #{yn})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into project_calculate(model_key, model_value, check_state, check_by, check_date, created_by,
+        created_date, modify_by, modify_date, yn)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.modelKey}, #{entity.modelValue}, #{entity.checkState}, #{entity.checkBy}, #{entity.checkDate},
+            #{entity.createdBy}, #{entity.createdDate}, #{entity.modifyBy}, #{entity.modifyDate}, #{entity.yn})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into project_calculate(model_key, model_value, check_state, check_by, check_date, created_by,
+        created_date, modify_by, modify_date, yn)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.modelKey}, #{entity.modelValue}, #{entity.checkState}, #{entity.checkBy}, #{entity.checkDate},
+            #{entity.createdBy}, #{entity.createdDate}, #{entity.modifyBy}, #{entity.modifyDate}, #{entity.yn})
+        </foreach>
+        on duplicate key update
+        model_key = values(model_key),
+        model_value = values(model_value),
+        check_state = values(check_state),
+        check_by = values(check_by),
+        check_date = values(check_date),
+        created_by = values(created_by),
+        created_date = values(created_date),
+        modify_by = values(modify_by),
+        modify_date = values(modify_date),
+        yn = values(yn)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update project_calculate
+        <set>
+            <if test="modelKey != null and modelKey != ''">
+                model_key = #{modelKey},
+            </if>
+            <if test="modelValue != null and modelValue != ''">
+                model_value = #{modelValue},
+            </if>
+            <if test="checkState != null">
+                check_state = #{checkState},
+            </if>
+            <if test="checkBy != null and checkBy != ''">
+                check_by = #{checkBy},
+            </if>
+            <if test="checkDate != null">
+                check_date = #{checkDate},
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                created_by = #{createdBy},
+            </if>
+            <if test="createdDate != null">
+                created_date = #{createdDate},
+            </if>
+            <if test="modifyBy != null and modifyBy != ''">
+                modify_by = #{modifyBy},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="yn != null">
+                yn = #{yn},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from project_calculate
+        where id = #{id}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.InspectionPlanMapper">
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.InspectionPlan">
+        <!--@Table inspection_plan-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="planCode" column="plan_code" jdbcType="VARCHAR"/>
+        <result property="planName" column="plan_name" jdbcType="VARCHAR"/>
+        <result property="planState" column="plan_state" jdbcType="VARCHAR"/>
+        <result property="planType" column="plan_type" jdbcType="VARCHAR"/>
+        <result property="planStartTime" column="plan_start_time" jdbcType="VARCHAR"/>
+        <result property="planEndTime" column="plan_end_time" jdbcType="VARCHAR"/>
+        <result property="planUserNames" column="plan_user_names" jdbcType="VARCHAR"/>
+        <result property="planUserIds" column="plan_user_ids" jdbcType="VARCHAR"/>
+        <result property="planDeptId" column="plan_dept_id" jdbcType="INTEGER"/>
+        <result property="planDeptName" column="plan_dept_name" jdbcType="VARCHAR"/>
+        <result property="routeId" column="route_id" jdbcType="INTEGER"/>
+        <result property="routeName" column="route_name" jdbcType="VARCHAR"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="planEnable" column="plan_enable" jdbcType="INTEGER"/>
+        <result property="cycle" column="cycle" jdbcType="VARCHAR"/>
+        <result property="unit" column="unit" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, plan_code, plan_name, plan_state, plan_type, plan_start_time, plan_end_time, plan_user_names, plan_user_ids, plan_dept_id, plan_dept_name, route_id, route_name, remarks, create_time, update_time, plan_enable, cycle, unit
+        from inspection_plan
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, plan_code, plan_name, plan_state, plan_type, plan_start_time, plan_end_time, plan_user_names, plan_user_ids, plan_dept_id, plan_dept_name, route_id, route_name, remarks, create_time, update_time, plan_enable, cycle, unit
+        from inspection_plan
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planCode != null and planCode != ''">
+                and plan_code = #{planCode}
+            </if>
+            <if test="planName != null and planName != ''">
+                and plan_name = #{planName}
+            </if>
+            <if test="planState != null and planState != ''">
+                and plan_state = #{planState}
+            </if>
+            <if test="planType != null and planType != ''">
+                and plan_type = #{planType}
+            </if>
+            <if test="planStartTime != null">
+                and plan_start_time = #{planStartTime}
+            </if>
+            <if test="planEndTime != null">
+                and plan_end_time = #{planEndTime}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="planDeptId != null">
+                and plan_dept_id = #{planDeptId}
+            </if>
+            <if test="planDeptName != null and planDeptName != ''">
+                and plan_dept_name = #{planDeptName}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="planEnable != null">
+                and plan_enable = #{planEnable}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from inspection_plan
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="planCode != null and planCode != ''">
+                and plan_code = #{planCode}
+            </if>
+            <if test="planName != null and planName != ''">
+                and plan_name = #{planName}
+            </if>
+            <if test="planState != null and planState != ''">
+                and plan_state = #{planState}
+            </if>
+            <if test="planType != null and planType != ''">
+                and plan_type = #{planType}
+            </if>
+            <if test="planStartTime != null">
+                and plan_start_time = #{planStartTime}
+            </if>
+            <if test="planEndTime != null">
+                and plan_end_time = #{planEndTime}
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                and plan_user_names = #{planUserNames}
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                and plan_user_ids = #{planUserIds}
+            </if>
+            <if test="planDeptId != null">
+                and plan_dept_id = #{planDeptId}
+            </if>
+            <if test="planDeptName != null and planDeptName != ''">
+                and plan_dept_name = #{planDeptName}
+            </if>
+            <if test="routeId != null">
+                and route_id = #{routeId}
+            </if>
+            <if test="routeName != null and routeName != ''">
+                and route_name = #{routeName}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and remarks = #{remarks}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="planEnable != null">
+                and plan_enable = #{planEnable}
+            </if>
+            <if test="cycle != null and cycle != ''">
+                and cycle = #{cycle}
+            </if>
+            <if test="unit != null and unit != ''">
+                and unit = #{unit}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan(plan_code, plan_name, plan_state, plan_type, plan_start_time, plan_end_time, plan_user_names, plan_user_ids, plan_dept_id, plan_dept_name, route_id, route_name, remarks, create_time, update_time, plan_enable, cycle, unit)
+        values (#{planCode}, #{planName}, #{planState}, #{planType}, #{planStartTime}, #{planEndTime}, #{planUserNames}, #{planUserIds}, #{planDeptId}, #{planDeptName}, #{routeId}, #{routeName}, #{remarks}, #{createTime}, #{updateTime}, #{planEnable}, #{cycle}, #{unit})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan(plan_code, plan_name, plan_state, plan_type, plan_start_time, plan_end_time, plan_user_names, plan_user_ids, plan_dept_id, plan_dept_name, route_id, route_name, remarks, create_time, update_time, plan_enable, cycle, unit)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.planCode}, #{entity.planName}, #{entity.planState}, #{entity.planType}, #{entity.planStartTime}, #{entity.planEndTime}, #{entity.planUserNames}, #{entity.planUserIds}, #{entity.planDeptId}, #{entity.planDeptName}, #{entity.routeId}, #{entity.routeName}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime}, #{entity.planEnable}, #{entity.cycle}, #{entity.unit})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into inspection_plan(plan_code, plan_name, plan_state, plan_type, plan_start_time, plan_end_time, plan_user_names, plan_user_ids, plan_dept_id, plan_dept_name, route_id, route_name, remarks, create_time, update_time, plan_enable, cycle, unit)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.planCode}, #{entity.planName}, #{entity.planState}, #{entity.planType}, #{entity.planStartTime}, #{entity.planEndTime}, #{entity.planUserNames}, #{entity.planUserIds}, #{entity.planDeptId}, #{entity.planDeptName}, #{entity.routeId}, #{entity.routeName}, #{entity.remarks}, #{entity.createTime}, #{entity.updateTime}, #{entity.planEnable}, #{entity.cycle}, #{entity.unit})
+        </foreach>
+        on duplicate key update
+        plan_code = values(plan_code),
+        plan_name = values(plan_name),
+        plan_state = values(plan_state),
+        plan_type = values(plan_type),
+        plan_start_time = values(plan_start_time),
+        plan_end_time = values(plan_end_time),
+        plan_user_names = values(plan_user_names),
+        plan_user_ids = values(plan_user_ids),
+        plan_dept_id = values(plan_dept_id),
+        plan_dept_name = values(plan_dept_name),
+        route_id = values(route_id),
+        route_name = values(route_name),
+        remarks = values(remarks),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        plan_enable = values(plan_enable),
+        cycle = values(cycle),
+        unit = values(unit)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update inspection_plan
+        <set>
+            <if test="planCode != null and planCode != ''">
+                plan_code = #{planCode},
+            </if>
+            <if test="planName != null and planName != ''">
+                plan_name = #{planName},
+            </if>
+            <if test="planState != null and planState != ''">
+                plan_state = #{planState},
+            </if>
+            <if test="planType != null and planType != ''">
+                plan_type = #{planType},
+            </if>
+            <if test="planStartTime != null">
+                plan_start_time = #{planStartTime},
+            </if>
+            <if test="planEndTime != null">
+                plan_end_time = #{planEndTime},
+            </if>
+            <if test="planUserNames != null and planUserNames != ''">
+                plan_user_names = #{planUserNames},
+            </if>
+            <if test="planUserIds != null and planUserIds != ''">
+                plan_user_ids = #{planUserIds},
+            </if>
+            <if test="planDeptId != null">
+                plan_dept_id = #{planDeptId},
+            </if>
+            <if test="planDeptName != null and planDeptName != ''">
+                plan_dept_name = #{planDeptName},
+            </if>
+            <if test="routeId != null">
+                route_id = #{routeId},
+            </if>
+            <if test="routeName != null and routeName != ''">
+                route_name = #{routeName},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="planEnable != null">
+                plan_enable = #{planEnable},
+            </if>
+            <if test="cycle != null and cycle != ''">
+                cycle = #{cycle},
+            </if>
+            <if test="unit != null and unit != ''">
+                unit = #{unit},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from inspection_plan where id = #{id}
+    </delete>
+
+
+</mapper>
+

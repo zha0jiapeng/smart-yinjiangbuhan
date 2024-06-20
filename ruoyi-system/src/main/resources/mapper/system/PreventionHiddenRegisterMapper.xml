@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PreventionHiddenRegisterMapper">
+
+
+    <resultMap id="BaseResultMap" type="com.ruoyi.system.entity.PreventionHiddenRegister">
+        <!--@Table prevention_hidden_register-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="hiddenCheckType" column="hidden_check_type" jdbcType="VARCHAR"/>
+        <result property="hiddenSource" column="hidden_source" jdbcType="VARCHAR"/>
+        <result property="hiddenCheckUser" column="hidden_check_user" jdbcType="VARCHAR"/>
+        <result property="hiddenCheckTime" column="hidden_check_time" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="deptId" column="dept_id" jdbcType="INTEGER"/>
+        <result property="hiddenType" column="hidden_type" jdbcType="VARCHAR"/>
+        <result property="hiddenBelongType" column="hidden_belong_type" jdbcType="VARCHAR"/>
+        <result property="hiddenLevel" column="hidden_level" jdbcType="VARCHAR"/>
+        <result property="acceptable" column="acceptable" jdbcType="VARCHAR"/>
+        <result property="hiddenEntryBasis" column="hidden_entry_basis" jdbcType="VARCHAR"/>
+        <result property="checkLevel" column="check_level" jdbcType="VARCHAR"/>
+        <result property="hiddenInfo" column="hidden_info" jdbcType="VARCHAR"/>
+        <result property="hiddenRectificationMeasures" column="hidden_rectification_measures" jdbcType="VARCHAR"/>
+        <result property="rectificationUserName" column="rectification_user_name" jdbcType="VARCHAR"/>
+        <result property="rectificationUserId" column="rectification_user_id" jdbcType="INTEGER"/>
+        <result property="reviewUserName" column="review_user_name" jdbcType="VARCHAR"/>
+        <result property="reviewUserId" column="review_user_id" jdbcType="INTEGER"/>
+        <result property="rectificationStartTime" column="rectification_start_time" jdbcType="VARCHAR"/>
+        <result property="rectificationEndTime" column="rectification_end_time" jdbcType="VARCHAR"/>
+        <result property="hiddenImageFileUrl" column="hidden_image_file_url" jdbcType="VARCHAR"/>
+        <result property="hiddenImageFileName" column="hidden_image_file_name" jdbcType="VARCHAR"/>
+        <result property="hiddenImageFileId" column="hidden_image_file_id" jdbcType="INTEGER"/>
+        <result property="registerUserName" column="register_user_name" jdbcType="VARCHAR"/>
+        <result property="registerUserId" column="register_user_id" jdbcType="INTEGER"/>
+        <result property="hiddenState" column="hidden_state" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="hiddenStateInfo" column="hidden_state_info" jdbcType="VARCHAR"/>
+        <result property="completeHiddenFileUrl" column="complete_hidden_file_url" jdbcType="VARCHAR"/>
+        <result property="completeHiddenFileName" column="complete_hidden_file_name" jdbcType="VARCHAR"/>
+        <result property="completeHiddenFileId" column="complete_hidden_file_id" jdbcType="INTEGER"/>
+        <result property="hiddenManagingFunds" column="hidden_managing_funds" jdbcType="VARCHAR"/>
+        <result property="hiddenCompleteInfo" column="hidden_complete_info" jdbcType="VARCHAR"/>
+        <result property="hiddenCompleteTime" column="hidden_complete_time" jdbcType="VARCHAR"/>
+        <result property="hiddenReviewInfo" column="hidden_review_info" jdbcType="VARCHAR"/>
+        <result property="hiddenReviewTime" column="hidden_review_time" jdbcType="VARCHAR"/>
+        <result property="hiddenProgress" column="hidden_progress" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, hidden_check_type, hidden_source, hidden_check_user, hidden_check_time, dept_name, dept_id, hidden_type, hidden_belong_type, hidden_level, acceptable, hidden_entry_basis, check_level, hidden_info, hidden_rectification_measures, rectification_user_name, rectification_user_id, review_user_name, review_user_id, rectification_start_time, rectification_end_time, hidden_image_file_url, hidden_image_file_name, hidden_image_file_id, register_user_name, register_user_id, hidden_state, create_time, update_time, hidden_state_info, complete_hidden_file_url, complete_hidden_file_name, complete_hidden_file_id, hidden_managing_funds, hidden_complete_info, hidden_complete_time, hidden_review_info, hidden_review_time, hidden_progress
+        from prevention_hidden_register
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+        id, hidden_check_type, hidden_source, hidden_check_user, hidden_check_time, dept_name, dept_id, hidden_type, hidden_belong_type, hidden_level, acceptable, hidden_entry_basis, check_level, hidden_info, hidden_rectification_measures, rectification_user_name, rectification_user_id, review_user_name, review_user_id, rectification_start_time, rectification_end_time, hidden_image_file_url, hidden_image_file_name, hidden_image_file_id, register_user_name, register_user_id, hidden_state, create_time, update_time, hidden_state_info, complete_hidden_file_url, complete_hidden_file_name, complete_hidden_file_id, hidden_managing_funds, hidden_complete_info, hidden_complete_time, hidden_review_info, hidden_review_time, hidden_progress
+        from prevention_hidden_register
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="hiddenCheckType != null and hiddenCheckType != ''">
+                and hidden_check_type = #{hiddenCheckType}
+            </if>
+            <if test="hiddenSource != null and hiddenSource != ''">
+                and hidden_source = #{hiddenSource}
+            </if>
+            <if test="hiddenCheckUser != null and hiddenCheckUser != ''">
+                and hidden_check_user = #{hiddenCheckUser}
+            </if>
+            <if test="hiddenCheckTime != null and hiddenCheckTime != ''">
+                and hidden_check_time = #{hiddenCheckTime}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="hiddenType != null and hiddenType != ''">
+                and hidden_type = #{hiddenType}
+            </if>
+            <if test="hiddenBelongType != null and hiddenBelongType != ''">
+                and hidden_belong_type = #{hiddenBelongType}
+            </if>
+            <if test="hiddenLevel != null and hiddenLevel != ''">
+                and hidden_level = #{hiddenLevel}
+            </if>
+            <if test="acceptable != null and acceptable != ''">
+                and acceptable = #{acceptable}
+            </if>
+            <if test="hiddenEntryBasis != null and hiddenEntryBasis != ''">
+                and hidden_entry_basis = #{hiddenEntryBasis}
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                and check_level = #{checkLevel}
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                and hidden_info = #{hiddenInfo}
+            </if>
+            <if test="hiddenRectificationMeasures != null and hiddenRectificationMeasures != ''">
+                and hidden_rectification_measures = #{hiddenRectificationMeasures}
+            </if>
+            <if test="rectificationUserName != null and rectificationUserName != ''">
+                and rectification_user_name = #{rectificationUserName}
+            </if>
+            <if test="rectificationUserId != null">
+                and rectification_user_id = #{rectificationUserId}
+            </if>
+            <if test="reviewUserName != null and reviewUserName != ''">
+                and review_user_name = #{reviewUserName}
+            </if>
+            <if test="reviewUserId != null">
+                and review_user_id = #{reviewUserId}
+            </if>
+            <if test="rectificationStartTime != null and rectificationStartTime != ''">
+                and rectification_start_time = #{rectificationStartTime}
+            </if>
+            <if test="rectificationEndTime != null and rectificationEndTime != ''">
+                and rectification_end_time = #{rectificationEndTime}
+            </if>
+            <if test="hiddenImageFileUrl != null and hiddenImageFileUrl != ''">
+                and hidden_image_file_url = #{hiddenImageFileUrl}
+            </if>
+            <if test="hiddenImageFileName != null and hiddenImageFileName != ''">
+                and hidden_image_file_name = #{hiddenImageFileName}
+            </if>
+            <if test="hiddenImageFileId != null">
+                and hidden_image_file_id = #{hiddenImageFileId}
+            </if>
+            <if test="registerUserName != null and registerUserName != ''">
+                and register_user_name = #{registerUserName}
+            </if>
+            <if test="registerUserId != null">
+                and register_user_id = #{registerUserId}
+            </if>
+            <if test="hiddenState != null">
+                and hidden_state = #{hiddenState}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="hiddenStateInfo != null and hiddenStateInfo != ''">
+                and hidden_state_info = #{hiddenStateInfo}
+            </if>
+            <if test="completeHiddenFileUrl != null and completeHiddenFileUrl != ''">
+                and complete_hidden_file_url = #{completeHiddenFileUrl}
+            </if>
+            <if test="completeHiddenFileName != null and completeHiddenFileName != ''">
+                and complete_hidden_file_name = #{completeHiddenFileName}
+            </if>
+            <if test="completeHiddenFileId != null">
+                and complete_hidden_file_id = #{completeHiddenFileId}
+            </if>
+            <if test="hiddenManagingFunds != null and hiddenManagingFunds != ''">
+                and hidden_managing_funds = #{hiddenManagingFunds}
+            </if>
+            <if test="hiddenCompleteInfo != null and hiddenCompleteInfo != ''">
+                and hidden_complete_info = #{hiddenCompleteInfo}
+            </if>
+            <if test="hiddenCompleteTime != null and hiddenCompleteTime != ''">
+                and hidden_complete_time = #{hiddenCompleteTime}
+            </if>
+            <if test="hiddenReviewInfo != null and hiddenReviewInfo != ''">
+                and hidden_review_info = #{hiddenReviewInfo}
+            </if>
+            <if test="hiddenReviewTime != null and hiddenReviewTime != ''">
+                and hidden_review_time = #{hiddenReviewTime}
+            </if>
+            <if test="hiddenProgress != null and hiddenProgress != ''">
+                and hidden_progress = #{hiddenProgress}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from prevention_hidden_register
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="hiddenCheckType != null and hiddenCheckType != ''">
+                and hidden_check_type = #{hiddenCheckType}
+            </if>
+            <if test="hiddenSource != null and hiddenSource != ''">
+                and hidden_source = #{hiddenSource}
+            </if>
+            <if test="hiddenCheckUser != null and hiddenCheckUser != ''">
+                and hidden_check_user = #{hiddenCheckUser}
+            </if>
+            <if test="hiddenCheckTime != null and hiddenCheckTime != ''">
+                and hidden_check_time = #{hiddenCheckTime}
+            </if>
+            <if test="deptName != null and deptName != ''">
+                and dept_name = #{deptName}
+            </if>
+            <if test="deptId != null">
+                and dept_id = #{deptId}
+            </if>
+            <if test="hiddenType != null and hiddenType != ''">
+                and hidden_type = #{hiddenType}
+            </if>
+            <if test="hiddenBelongType != null and hiddenBelongType != ''">
+                and hidden_belong_type = #{hiddenBelongType}
+            </if>
+            <if test="hiddenLevel != null and hiddenLevel != ''">
+                and hidden_level = #{hiddenLevel}
+            </if>
+            <if test="acceptable != null and acceptable != ''">
+                and acceptable = #{acceptable}
+            </if>
+            <if test="hiddenEntryBasis != null and hiddenEntryBasis != ''">
+                and hidden_entry_basis = #{hiddenEntryBasis}
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                and check_level = #{checkLevel}
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                and hidden_info = #{hiddenInfo}
+            </if>
+            <if test="hiddenRectificationMeasures != null and hiddenRectificationMeasures != ''">
+                and hidden_rectification_measures = #{hiddenRectificationMeasures}
+            </if>
+            <if test="rectificationUserName != null and rectificationUserName != ''">
+                and rectification_user_name = #{rectificationUserName}
+            </if>
+            <if test="rectificationUserId != null">
+                and rectification_user_id = #{rectificationUserId}
+            </if>
+            <if test="reviewUserName != null and reviewUserName != ''">
+                and review_user_name = #{reviewUserName}
+            </if>
+            <if test="reviewUserId != null">
+                and review_user_id = #{reviewUserId}
+            </if>
+            <if test="rectificationStartTime != null and rectificationStartTime != ''">
+                and rectification_start_time = #{rectificationStartTime}
+            </if>
+            <if test="rectificationEndTime != null and rectificationEndTime != ''">
+                and rectification_end_time = #{rectificationEndTime}
+            </if>
+            <if test="hiddenImageFileUrl != null and hiddenImageFileUrl != ''">
+                and hidden_image_file_url = #{hiddenImageFileUrl}
+            </if>
+            <if test="hiddenImageFileName != null and hiddenImageFileName != ''">
+                and hidden_image_file_name = #{hiddenImageFileName}
+            </if>
+            <if test="hiddenImageFileId != null">
+                and hidden_image_file_id = #{hiddenImageFileId}
+            </if>
+            <if test="registerUserName != null and registerUserName != ''">
+                and register_user_name = #{registerUserName}
+            </if>
+            <if test="registerUserId != null">
+                and register_user_id = #{registerUserId}
+            </if>
+            <if test="hiddenState != null">
+                and hidden_state = #{hiddenState}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="hiddenStateInfo != null and hiddenStateInfo != ''">
+                and hidden_state_info = #{hiddenStateInfo}
+            </if>
+            <if test="completeHiddenFileUrl != null and completeHiddenFileUrl != ''">
+                and complete_hidden_file_url = #{completeHiddenFileUrl}
+            </if>
+            <if test="completeHiddenFileName != null and completeHiddenFileName != ''">
+                and complete_hidden_file_name = #{completeHiddenFileName}
+            </if>
+            <if test="completeHiddenFileId != null">
+                and complete_hidden_file_id = #{completeHiddenFileId}
+            </if>
+            <if test="hiddenManagingFunds != null and hiddenManagingFunds != ''">
+                and hidden_managing_funds = #{hiddenManagingFunds}
+            </if>
+            <if test="hiddenCompleteInfo != null and hiddenCompleteInfo != ''">
+                and hidden_complete_info = #{hiddenCompleteInfo}
+            </if>
+            <if test="hiddenCompleteTime != null and hiddenCompleteTime != ''">
+                and hidden_complete_time = #{hiddenCompleteTime}
+            </if>
+            <if test="hiddenReviewInfo != null and hiddenReviewInfo != ''">
+                and hidden_review_info = #{hiddenReviewInfo}
+            </if>
+            <if test="hiddenReviewTime != null and hiddenReviewTime != ''">
+                and hidden_review_time = #{hiddenReviewTime}
+            </if>
+            <if test="hiddenProgress != null and hiddenProgress != ''">
+                and hidden_progress = #{hiddenProgress}
+            </if>
+        </where>
+    </select>
+
+    <select id="countProgress" resultType="java.util.Map">
+        SELECT
+            hidden_progress,
+            COUNT(*) count
+        FROM
+            prevention_hidden_register
+        <where>
+            <if test="deptId != null">
+                dept_id = #{deptId}
+            </if>
+        </where>
+        GROUP BY
+            hidden_progress;
+    </select>
+
+    <select id="countTask" resultType="java.util.Map">
+        SELECT
+            t1.task_state,
+            COUNT(*) count
+        FROM
+            prevention_check_task t1
+            LEFT JOIN prevention_check_task_config t2 ON t1.check_task_config_id = t2.id
+            LEFT JOIN prevention_security_risk t3 ON t2.security_risk_id = t3.id
+            LEFT JOIN prevention_device t4 ON t3.device_id = t4.id
+        <where>
+            <if test="deptId != null">
+                t4.dept_id = #{deptId}
+            </if>
+        </where>
+        GROUP BY
+            t1.task_state;
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_hidden_register(hidden_check_type, hidden_source, hidden_check_user, hidden_check_time, dept_name, dept_id, hidden_type, hidden_belong_type, hidden_level, acceptable, hidden_entry_basis, check_level, hidden_info, hidden_rectification_measures, rectification_user_name, rectification_user_id, review_user_name, review_user_id, rectification_start_time, rectification_end_time, hidden_image_file_url, hidden_image_file_name, hidden_image_file_id, register_user_name, register_user_id, hidden_state,hidden_state_info, complete_hidden_file_url, complete_hidden_file_name, complete_hidden_file_id, hidden_managing_funds, hidden_complete_info, hidden_complete_time, hidden_review_info, hidden_review_time, hidden_progress)
+        values (#{hiddenCheckType}, #{hiddenSource}, #{hiddenCheckUser}, #{hiddenCheckTime}, #{deptName}, #{deptId}, #{hiddenType}, #{hiddenBelongType}, #{hiddenLevel}, #{acceptable}, #{hiddenEntryBasis}, #{checkLevel}, #{hiddenInfo}, #{hiddenRectificationMeasures}, #{rectificationUserName}, #{rectificationUserId}, #{reviewUserName}, #{reviewUserId}, #{rectificationStartTime}, #{rectificationEndTime}, #{hiddenImageFileUrl}, #{hiddenImageFileName}, #{hiddenImageFileId}, #{registerUserName}, #{registerUserId}, #{hiddenState},#{hiddenStateInfo}, #{completeHiddenFileUrl}, #{completeHiddenFileName}, #{completeHiddenFileId}, #{hiddenManagingFunds}, #{hiddenCompleteInfo}, #{hiddenCompleteTime}, #{hiddenReviewInfo}, #{hiddenReviewTime}, #{hiddenProgress})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_hidden_register(hidden_check_type, hidden_source, hidden_check_user, hidden_check_time, dept_name, dept_id, hidden_type, hidden_belong_type, hidden_level, acceptable, hidden_entry_basis, check_level, hidden_info, hidden_rectification_measures, rectification_user_name, rectification_user_id, review_user_name, review_user_id, rectification_start_time, rectification_end_time, hidden_image_file_url, hidden_image_file_name, hidden_image_file_id, register_user_name, register_user_id, hidden_state, hidden_state_info, complete_hidden_file_url, complete_hidden_file_name, complete_hidden_file_id, hidden_managing_funds, hidden_complete_info, hidden_complete_time, hidden_review_info, hidden_review_time, hidden_progress)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.hiddenCheckType}, #{entity.hiddenSource}, #{entity.hiddenCheckUser}, #{entity.hiddenCheckTime}, #{entity.deptName}, #{entity.deptId}, #{entity.hiddenType}, #{entity.hiddenBelongType}, #{entity.hiddenLevel}, #{entity.acceptable}, #{entity.hiddenEntryBasis}, #{entity.checkLevel}, #{entity.hiddenInfo}, #{entity.hiddenRectificationMeasures}, #{entity.rectificationUserName}, #{entity.rectificationUserId}, #{entity.reviewUserName}, #{entity.reviewUserId}, #{entity.rectificationStartTime}, #{entity.rectificationEndTime}, #{entity.hiddenImageFileUrl}, #{entity.hiddenImageFileName}, #{entity.hiddenImageFileId}, #{entity.registerUserName}, #{entity.registerUserId}, #{entity.hiddenState},#{entity.hiddenStateInfo}, #{entity.completeHiddenFileUrl}, #{entity.completeHiddenFileName}, #{entity.completeHiddenFileId}, #{entity.hiddenManagingFunds}, #{entity.hiddenCompleteInfo}, #{entity.hiddenCompleteTime}, #{entity.hiddenReviewInfo}, #{entity.hiddenReviewTime}, #{entity.hiddenProgress})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into prevention_hidden_register(hidden_check_type, hidden_source, hidden_check_user, hidden_check_time, dept_name, dept_id, hidden_type, hidden_belong_type, hidden_level, acceptable, hidden_entry_basis, check_level, hidden_info, hidden_rectification_measures, rectification_user_name, rectification_user_id, review_user_name, review_user_id, rectification_start_time, rectification_end_time, hidden_image_file_url, hidden_image_file_name, hidden_image_file_id, register_user_name, register_user_id, hidden_state, create_time, update_time, hidden_state_info, complete_hidden_file_url, complete_hidden_file_name, complete_hidden_file_id, hidden_managing_funds, hidden_complete_info, hidden_complete_time, hidden_review_info, hidden_review_time, hidden_progress)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.hiddenCheckType}, #{entity.hiddenSource}, #{entity.hiddenCheckUser}, #{entity.hiddenCheckTime}, #{entity.deptName}, #{entity.deptId}, #{entity.hiddenType}, #{entity.hiddenBelongType}, #{entity.hiddenLevel}, #{entity.acceptable}, #{entity.hiddenEntryBasis}, #{entity.checkLevel}, #{entity.hiddenInfo}, #{entity.hiddenRectificationMeasures}, #{entity.rectificationUserName}, #{entity.rectificationUserId}, #{entity.reviewUserName}, #{entity.reviewUserId}, #{entity.rectificationStartTime}, #{entity.rectificationEndTime}, #{entity.hiddenImageFileUrl}, #{entity.hiddenImageFileName}, #{entity.hiddenImageFileId}, #{entity.registerUserName}, #{entity.registerUserId}, #{entity.hiddenState}, #{entity.createTime}, #{entity.updateTime}, #{entity.hiddenStateInfo}, #{entity.completeHiddenFileUrl}, #{entity.completeHiddenFileName}, #{entity.completeHiddenFileId}, #{entity.hiddenManagingFunds}, #{entity.hiddenCompleteInfo}, #{entity.hiddenCompleteTime}, #{entity.hiddenReviewInfo}, #{entity.hiddenReviewTime}, #{entity.hiddenProgress})
+        </foreach>
+        on duplicate key update
+        hidden_check_type = values(hidden_check_type),
+        hidden_source = values(hidden_source),
+        hidden_check_user = values(hidden_check_user),
+        hidden_check_time = values(hidden_check_time),
+        dept_name = values(dept_name),
+        dept_id = values(dept_id),
+        hidden_type = values(hidden_type),
+        hidden_belong_type = values(hidden_belong_type),
+        hidden_level = values(hidden_level),
+        acceptable = values(acceptable),
+        hidden_entry_basis = values(hidden_entry_basis),
+        check_level = values(check_level),
+        hidden_info = values(hidden_info),
+        hidden_rectification_measures = values(hidden_rectification_measures),
+        rectification_user_name = values(rectification_user_name),
+        rectification_user_id = values(rectification_user_id),
+        review_user_name = values(review_user_name),
+        review_user_id = values(review_user_id),
+        rectification_start_time = values(rectification_start_time),
+        rectification_end_time = values(rectification_end_time),
+        hidden_image_file_url = values(hidden_image_file_url),
+        hidden_image_file_name = values(hidden_image_file_name),
+        hidden_image_file_id = values(hidden_image_file_id),
+        register_user_name = values(register_user_name),
+        register_user_id = values(register_user_id),
+        hidden_state = values(hidden_state),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        hidden_state_info = values(hidden_state_info),
+        complete_hidden_file_url = values(complete_hidden_file_url),
+        complete_hidden_file_name = values(complete_hidden_file_name),
+        complete_hidden_file_id = values(complete_hidden_file_id),
+        hidden_managing_funds = values(hidden_managing_funds),
+        hidden_complete_info = values(hidden_complete_info),
+        hidden_complete_time = values(hidden_complete_time),
+        hidden_review_info = values(hidden_review_info),
+        hidden_review_time = values(hidden_review_time),
+        hidden_progress = values(hidden_progress)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update prevention_hidden_register
+        <set>
+            <if test="hiddenCheckType != null and hiddenCheckType != ''">
+                hidden_check_type = #{hiddenCheckType},
+            </if>
+            <if test="hiddenSource != null and hiddenSource != ''">
+                hidden_source = #{hiddenSource},
+            </if>
+            <if test="hiddenCheckUser != null and hiddenCheckUser != ''">
+                hidden_check_user = #{hiddenCheckUser},
+            </if>
+            <if test="hiddenCheckTime != null and hiddenCheckTime != ''">
+                hidden_check_time = #{hiddenCheckTime},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="hiddenType != null and hiddenType != ''">
+                hidden_type = #{hiddenType},
+            </if>
+            <if test="hiddenBelongType != null and hiddenBelongType != ''">
+                hidden_belong_type = #{hiddenBelongType},
+            </if>
+            <if test="hiddenLevel != null and hiddenLevel != ''">
+                hidden_level = #{hiddenLevel},
+            </if>
+            <if test="acceptable != null and acceptable != ''">
+                acceptable = #{acceptable},
+            </if>
+            <if test="hiddenEntryBasis != null and hiddenEntryBasis != ''">
+                hidden_entry_basis = #{hiddenEntryBasis},
+            </if>
+            <if test="checkLevel != null and checkLevel != ''">
+                check_level = #{checkLevel},
+            </if>
+            <if test="hiddenInfo != null and hiddenInfo != ''">
+                hidden_info = #{hiddenInfo},
+            </if>
+            <if test="hiddenRectificationMeasures != null and hiddenRectificationMeasures != ''">
+                hidden_rectification_measures = #{hiddenRectificationMeasures},
+            </if>
+            <if test="rectificationUserName != null and rectificationUserName != ''">
+                rectification_user_name = #{rectificationUserName},
+            </if>
+            <if test="rectificationUserId != null">
+                rectification_user_id = #{rectificationUserId},
+            </if>
+            <if test="reviewUserName != null and reviewUserName != ''">
+                review_user_name = #{reviewUserName},
+            </if>
+            <if test="reviewUserId != null">
+                review_user_id = #{reviewUserId},
+            </if>
+            <if test="rectificationStartTime != null and rectificationStartTime != ''">
+                rectification_start_time = #{rectificationStartTime},
+            </if>
+            <if test="rectificationEndTime != null and rectificationEndTime != ''">
+                rectification_end_time = #{rectificationEndTime},
+            </if>
+            <if test="hiddenImageFileUrl != null and hiddenImageFileUrl != ''">
+                hidden_image_file_url = #{hiddenImageFileUrl},
+            </if>
+            <if test="hiddenImageFileName != null and hiddenImageFileName != ''">
+                hidden_image_file_name = #{hiddenImageFileName},
+            </if>
+            <if test="hiddenImageFileId != null">
+                hidden_image_file_id = #{hiddenImageFileId},
+            </if>
+            <if test="registerUserName != null and registerUserName != ''">
+                register_user_name = #{registerUserName},
+            </if>
+            <if test="registerUserId != null">
+                register_user_id = #{registerUserId},
+            </if>
+            <if test="hiddenState != null">
+                hidden_state = #{hiddenState},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="hiddenStateInfo != null and hiddenStateInfo != ''">
+                hidden_state_info = #{hiddenStateInfo},
+            </if>
+            <if test="completeHiddenFileUrl != null and completeHiddenFileUrl != ''">
+                complete_hidden_file_url = #{completeHiddenFileUrl},
+            </if>
+            <if test="completeHiddenFileName != null and completeHiddenFileName != ''">
+                complete_hidden_file_name = #{completeHiddenFileName},
+            </if>
+            <if test="completeHiddenFileId != null">
+                complete_hidden_file_id = #{completeHiddenFileId},
+            </if>
+            <if test="hiddenManagingFunds != null and hiddenManagingFunds != ''">
+                hidden_managing_funds = #{hiddenManagingFunds},
+            </if>
+            <if test="hiddenCompleteInfo != null and hiddenCompleteInfo != ''">
+                hidden_complete_info = #{hiddenCompleteInfo},
+            </if>
+            <if test="hiddenCompleteTime != null and hiddenCompleteTime != ''">
+                hidden_complete_time = #{hiddenCompleteTime},
+            </if>
+            <if test="hiddenReviewInfo != null and hiddenReviewInfo != ''">
+                hidden_review_info = #{hiddenReviewInfo},
+            </if>
+            <if test="hiddenReviewTime != null and hiddenReviewTime != ''">
+                hidden_review_time = #{hiddenReviewTime},
+            </if>
+            <if test="hiddenProgress != null and hiddenProgress != ''">
+                hidden_progress = #{hiddenProgress},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from prevention_hidden_register where id = #{id}
+    </delete>
+</mapper>
+
