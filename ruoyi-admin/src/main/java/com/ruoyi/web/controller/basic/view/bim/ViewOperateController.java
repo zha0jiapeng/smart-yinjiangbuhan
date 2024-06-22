@@ -49,7 +49,7 @@ public class ViewOperateController extends BaseController {
         return AjaxResult.success();
     }
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    //@Scheduled(cron = "0/5 * * * * ?")
     public void refreshWebSocketThoroughfare() {
         log.info("=======================刷新管道信息开始====================================");
 
