@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.basic.dustdetection;
+package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import lombok.Data;
 
