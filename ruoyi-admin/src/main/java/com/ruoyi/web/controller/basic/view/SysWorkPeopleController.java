@@ -388,6 +388,7 @@ public class SysWorkPeopleController extends BaseController {
                                     o.setName(p.getName());
                                     o.setWorkType(p.getWorkType());
                                     o.setGroupsName(p.getGroupsName());
+                                    o.setSex(p.getSex());
                                     o.setModifyBy("system_sync");
                                     o.setModifyDate(new Date());
                                     updateCount.getAndIncrement();
