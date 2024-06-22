@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.basic.yinjiangbuhan;
+package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import com.ruoyi.web.controller.basic.yinjiangbuhan.enums.IndexType;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Modbus4jReadUtil;
