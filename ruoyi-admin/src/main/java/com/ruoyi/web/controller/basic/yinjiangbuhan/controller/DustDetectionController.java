@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.basic.dustdetection;
+package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.AjaxResult;

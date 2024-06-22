@@ -1,6 +1,8 @@
 ######################################################################
 # Build Tools
 
+.DS_Store
+.gitignore
 .gradle
 /build/
 !gradle/wrapper/gradle-wrapper.jar
