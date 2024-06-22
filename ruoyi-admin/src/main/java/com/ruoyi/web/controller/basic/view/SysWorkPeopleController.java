@@ -30,9 +30,10 @@ import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.system.utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,6 +49,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -354,6 +356,57 @@ public class SysWorkPeopleController extends BaseController {
         List<SysWorkPeople> sysWorkPeopleList = sysWorkPeopleMapper.selectList(queryWrapper);
 
         return AjaxResult.success(sysWorkPeopleList);
+    }
+
+    @PostMapping("/sync")
+    public AjaxResult syncWorkPeople(@RequestBody List<SysWorkPeople> sysWorkPeople) {
+        if (CollectionUtils.isEmpty(sysWorkPeople)) {
+            return AjaxResult.error("同步失败");
+        }
+        AtomicInteger updateCount = new AtomicInteger(0);
+        AtomicInteger insertCount = new AtomicInteger(0);
+        sysWorkPeople.stream().filter(Objects::nonNull)
+                .filter(p -> StringUtils.isNoneBlank(p.getName(), p.getIdCard()))
+                .peek(p -> {
+                    p.setYn(ObjectUtils.defaultIfNull(p.getYn(), YnEnum.Y.getCode()));
+                    p.setPhone(StringUtils.defaultIfBlank(p.getPhone(), ""));
+                    p.setWorkType(StringUtils.defaultIfBlank(p.getWorkType(), "劳务人员"));
+                    p.setCompany(StringUtils.defaultIfBlank(p.getCompany(), "土建4标"));
+                    p.setGroupsName(StringUtils.defaultIfBlank(p.getGroupsName(), "项目部"));
+                    p.setSex(ObjectUtils.defaultIfNull(p.getSex(), 1));
+                }).filter(p -> {
+                    QueryWrapper<SysWorkPeople> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.eq("id_card", p.getIdCard());
+                    queryWrapper.eq("company", p.getCompany());
+                    final List<SysWorkPeople> people = sysWorkPeopleMapper.selectList(queryWrapper);
+                    // by idcard company查询 已存在的更新
+                    if (CollectionUtils.isNotEmpty(people)) {
+                        people.stream().peek(
+                                o -> {
+                                    o.setPhone(p.getPhone());
+                                    o.setYn(p.getYn());
+                                    o.setName(p.getName());
+                                    o.setWorkType(p.getWorkType());
+                                    o.setGroupsName(p.getGroupsName());
+                                    o.setModifyBy("system_sync");
+                                    o.setModifyDate(new Date());
+                                    updateCount.getAndIncrement();
+                                }
+                        ).forEach(sysWorkPeopleMapper::updateById);
+                        return false;
+                    }
+                    return true;
+                }).filter(p -> YnEnum.Y.getCode().equals(p.getYn())) // 过滤已删除的用户 不入库
+                .peek(p -> {
+                    // 创建时间和创建人
+                    p.setCreatedDate(new Date());
+                    p.setCreatedBy("system_sync");
+                    insertCount.getAndIncrement();
+                }).forEach(sysWorkPeopleMapper::insert);
+        final Map<String, Integer> result = new HashMap<>();
+        result.put("insertCount", insertCount.get());
+        result.put("updateCount", updateCount.get());
+        return AjaxResult.success("同步成功", result);
     }
 
 }
