@@ -47,3 +47,6 @@ nbdist/
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+
+docker/
+.DS_Store
