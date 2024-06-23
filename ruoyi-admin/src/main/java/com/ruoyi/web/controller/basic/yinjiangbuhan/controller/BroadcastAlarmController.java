@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
+import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -9,9 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -31,11 +34,17 @@ public class BroadcastAlarmController {
      * 获取广播报警设备
      */
     @GetMapping("device")
-    public JSONObject deviceList(Map<String, Object> body) {
-        try (HttpResponse resp = HttpUtil.createGet("http://192.168.103.100:8080/v1/device")
-                .header("access_token", getToken())
-                .body(JSONUtil.toJsonStr(body), "application/json")
-                .execute()) {
+    public JSONObject deviceList(@RequestParam(required = false) Integer id,
+                                 @RequestParam(required = false) Integer page,
+                                 @RequestParam(required = false) Integer limit,
+                                 @RequestParam(required = false) String keyword){
+        HttpRequest request = HttpUtil.createGet("http://192.168.103.100:8080/v1/device")
+                .header("access_token", getToken());
+        Optional.ofNullable(id).ifPresent(i -> request.form("id", i));
+        Optional.ofNullable(page).ifPresent(p -> request.form("page", p));
+        Optional.ofNullable(limit).ifPresent(l -> request.form("limit", l));
+        Optional.ofNullable(keyword).ifPresent(k -> request.form("keyword", k));
+        try (HttpResponse resp = request.execute()) {
             return JSONUtil.parseObj(resp.body());
         }
     }
