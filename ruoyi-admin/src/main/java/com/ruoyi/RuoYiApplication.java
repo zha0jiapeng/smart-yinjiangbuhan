@@ -27,7 +27,7 @@ public class RuoYiApplication
                 " |  | \\ `'   /|   `-'  /           \n" +
                 " |  |  \\    /  \\      /           \n" +
                 " ''-'   `'-'    `-..-'              ");
-        File file = new File("/home/123456.jpg");
-        File generate = QrCodeUtil.generate("17803005152", 300, 300, file);
+       // File file = new File("/home/123456.jpg");
+       // File generate = QrCodeUtil.generate("17803005152", 300, 300, file);
     }
 }
