@@ -32,7 +32,7 @@ public class BroadcastAlarmController {
      */
     @GetMapping("device")
     public JSONObject deviceList(Map<String, Object> body) {
-        try (HttpResponse resp = HttpUtil.createGet("http://http://192.168.103.100:8080/v1/device")
+        try (HttpResponse resp = HttpUtil.createGet("http://192.168.103.100:8080/v1/device")
                 .header("access_token", getToken())
                 .body(JSONUtil.toJsonStr(body), "application/json")
                 .execute()) {
@@ -46,7 +46,7 @@ public class BroadcastAlarmController {
             Map<String, String> body = new ConcurrentHashMap<>();
             body.put("username", "admin");
             body.put("password", "123456");
-            try (HttpResponse resp = HttpUtil.createPost("http://http://192.168.103.100:8080/v1/login")
+            try (HttpResponse resp = HttpUtil.createPost("http://192.168.103.100:8080/v1/login")
                     .body(JSONUtil.toJsonStr(body), "application/json")
                     .execute()) {
 
