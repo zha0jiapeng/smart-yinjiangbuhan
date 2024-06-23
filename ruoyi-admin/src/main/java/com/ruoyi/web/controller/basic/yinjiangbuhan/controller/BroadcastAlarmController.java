@@ -8,6 +8,7 @@ import com.ruoyi.common.core.redis.RedisCache;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -19,7 +20,8 @@ import java.util.concurrent.TimeUnit;
  * @author hu_p
  * @date 2024/6/22
  */
-@RestController("broadcastalarm")
+@RestController
+@RequestMapping("broadcastalarm")
 public class BroadcastAlarmController {
 
     @Autowired
