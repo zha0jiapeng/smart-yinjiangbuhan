@@ -9,14 +9,13 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.domain.WorkDateStorage;
+import com.ruoyi.system.domain.basic.IotStaffAttendance;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
-import com.ruoyi.system.mapper.SysWorkPeopleMapper;
-import com.ruoyi.system.mapper.WorkDateStorageMapper;
+import com.ruoyi.system.service.IotStaffAttendanceService;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.system.service.WorkDateStorageService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,28 +25,32 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import cn.hutool.core.date.DateUtil;
+import lombok.AllArgsConstructor;
+
 /**
  * @author hu_p
  * @date 2024/6/23
  */
 @RestController
 @RequestMapping("inoutlog")
+@AllArgsConstructor
 public class SysWorkPeopleInoutLogController extends BaseController {
 
-    @Autowired
-    SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
+    private final SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
 
-    @Autowired
-    SysWorkPeopleService sysWorkPeopleService;
+    private final SysWorkPeopleService sysWorkPeopleService;
 
-    @Autowired
-    WorkDateStorageService workDateStorageService;
+    private final WorkDateStorageService workDateStorageService;
+
+    private final IotStaffAttendanceService iotStaffAttendanceService;
 
     @PostMapping("sync")
     public AjaxResult sync(@RequestBody List<SysWorkPeopleInoutLog> logs) {
         if (CollectionUtils.isEmpty(logs)) {
             return AjaxResult.error("数据为空");
         }
+        // 插入日志底表
         logs.stream()
                 .filter(log -> ObjectUtils.allNotNull(log.getInoutId(), log.getIdCard(), log.getMode(), log.getLogTime(), log.getName(), log.getPhone()))
                 .filter(log -> {
@@ -71,32 +74,52 @@ public class SysWorkPeopleInoutLogController extends BaseController {
                     log.setCreatedDate(new Date());
                     log.setYn(YnEnum.Y.getCode());
                 })
-                .forEach(log -> {
-                    // 插入日志底表
-                    sysWorkPeopleInoutLogMapper.insert(log);
-
-                    // 同步考勤表
-                    final WorkDateStorage workDateStorage = new WorkDateStorage();
-                    workDateStorage.setCreatedDate(currentDate());
-                    workDateStorage.setPhone(log.getPhone());
-                    workDateStorage.setName(log.getName());
-                    workDateStorage.setCreatedBy("system");
-                    final WorkDateStorage storage = workDateStorageService.getOne(new QueryWrapper<>(workDateStorage), false);
-                    // 为空 说明当天没有进入记录 只处理 进洞日志
-                    if (null == storage) {
-                        if (1 == log.getMode()) {
-                            workDateStorage.setStartDate(DateUtils.parseDate(log.getLogTime()));
-                            workDateStorage.setYn(YnEnum.Y.getCode());
-                            workDateStorageService.save(workDateStorage);
-                        }
-                    } else if (0 == log.getMode()) {
-                        // 已有记录 只处理出洞日志 todo 跨天的话 可能会有问题
-                        storage.setEndDate(DateUtils.parseDate(log.getLogTime()));
-                        workDateStorageService.updateById(storage);
-                    }
-
-                });
+                .peek(sysWorkPeopleInoutLogMapper::insert).map(log -> {
+                    IotStaffAttendance iotStaffAttendance = new IotStaffAttendance();
+                    iotStaffAttendance.setName(log.getName());
+                    iotStaffAttendance.setId(log.getSn());
+                    iotStaffAttendance.setPhone(log.getPhone());
+                    iotStaffAttendance.setEmployeeId(String.valueOf(log.getSysWorkPeopleId()));
+                    iotStaffAttendance.setWayBase(log.getMode() == 1 ? 1 : 2);
+                    iotStaffAttendance.setDatetime(log.getLogTime());
+                    Date date = DateUtils.parseDate(log.getLogTime());
+                    iotStaffAttendance.setYearCase(String.valueOf(date.getYear()));
+                    iotStaffAttendance.setMonthCase(String.valueOf(date.getMonth()));
+                    iotStaffAttendance.setDayCase(String.valueOf(date.getDay()));
+                    iotStaffAttendance.setHourCase(String.valueOf(date.getHours()));
+                    return iotStaffAttendance;
+                }).forEach(iotStaffAttendanceService::save);
         return AjaxResult.success();
+    }
+
+    /**
+     * 同步考勤表
+     * 暂时不用
+     */
+    private void syncWorkDateStorage(SysWorkPeopleInoutLog log) {
+        final WorkDateStorage workDateStorage = new WorkDateStorage();
+        workDateStorage.setCreatedDate(currentDate());
+        workDateStorage.setPhone(log.getPhone());
+        workDateStorage.setName(log.getName());
+        workDateStorage.setCreatedBy("system");
+        final WorkDateStorage storage = workDateStorageService.getOne(new QueryWrapper<>(workDateStorage), false);
+        // 为空 说明当天没有进入记录 只处理 进洞日志
+        if (null == storage) {
+            if (1 == log.getMode()) {
+                workDateStorage.setStartDate(DateUtils.parseDate(log.getLogTime()));
+                workDateStorage.setYn(YnEnum.Y.getCode());
+                workDateStorageService.save(workDateStorage);
+            }
+        } else if (0 == log.getMode()) {
+            // 已有记录 只处理出洞日志 todo 跨天的话 可能会有问题
+            storage.setEndDate(DateUtils.parseDate(log.getLogTime()));
+            workDateStorageService.updateById(storage);
+        }
+    }
+
+    Date currentDate() {
+        LocalDateTime localDateTime = LocalDateTime.now().withMinute(59).withHour(23).withSecond(0).withNano(0);
+        return DateUtils.toDate(localDateTime);
     }
 
     @GetMapping("list")
@@ -106,9 +129,5 @@ public class SysWorkPeopleInoutLogController extends BaseController {
         return getDataTable(sysWorkPeopleInoutLogMapper.selectList(query));
     }
 
-    Date currentDate() {
-        LocalDateTime localDateTime = LocalDateTime.now().withMinute(59).withHour(23).withSecond(0).withNano(0);
-        return DateUtils.toDate(localDateTime);
-    }
 
 }
