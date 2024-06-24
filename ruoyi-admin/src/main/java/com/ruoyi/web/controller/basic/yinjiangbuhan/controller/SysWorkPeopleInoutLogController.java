@@ -82,11 +82,6 @@ public class SysWorkPeopleInoutLogController extends BaseController {
                     iotStaffAttendance.setEmployeeId(String.valueOf(log.getSysWorkPeopleId()));
                     iotStaffAttendance.setWayBase(log.getMode() == 1 ? 1 : 2);
                     iotStaffAttendance.setDatetime(log.getLogTime());
-                    Date date = DateUtils.parseDate(log.getLogTime());
-                    iotStaffAttendance.setYearCase(String.valueOf(date.getYear()));
-                    iotStaffAttendance.setMonthCase(String.valueOf(date.getMonth()));
-                    iotStaffAttendance.setDayCase(String.valueOf(date.getDay()));
-                    iotStaffAttendance.setHourCase(String.valueOf(date.getHours()));
                     return iotStaffAttendance;
                 }).forEach(iotStaffAttendanceService::save);
         return AjaxResult.success();
