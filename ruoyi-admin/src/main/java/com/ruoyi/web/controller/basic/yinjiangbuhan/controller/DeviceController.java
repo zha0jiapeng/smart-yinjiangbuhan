@@ -74,11 +74,11 @@ public class DeviceController extends BaseController
     }
 
     @GetMapping("/getDeviceArea")
-    public AjaxResult getDeviceArea(String type)
+    public AjaxResult getDeviceArea(String deviceType)
     {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("DISTINCT device_area");
-        queryWrapper.eq("device_type",type);
+        queryWrapper.eq("device_type",deviceType);
         List<Map<String, Object>> maps = deviceService.listMaps(queryWrapper);
 
         List<String> deviceArea = new ArrayList<>();
