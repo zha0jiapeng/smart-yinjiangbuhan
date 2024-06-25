@@ -46,24 +46,36 @@ public class PersonnelTypeCountServiceImpl {
 
         //业主
         List<SysWorkPeople> ownerCount = listMap.get(PersonnelTypeEnum.OWNER.getCode());
-        sum = sum + ownerCount.size();
-        personnelTypeCount.setOwner(Integer.toString(ownerCount.size()));
-
+        if (ownerCount != null) {
+            sum = sum + ownerCount.size();
+            personnelTypeCount.setOwner(Integer.toString(ownerCount.size()));
+        } else {
+            personnelTypeCount.setOwner("0");
+        }
         //监理
         List<SysWorkPeople> supervisorCount = listMap.get(PersonnelTypeEnum.SUPERVISOR.getCode());
-        sum = sum + supervisorCount.size();
-        personnelTypeCount.setSupervisor(Integer.toString(supervisorCount.size()));
-
+        if (supervisorCount != null){
+            sum = sum + supervisorCount.size();
+            personnelTypeCount.setSupervisor(Integer.toString(supervisorCount.size()));
+        }else{
+            personnelTypeCount.setSupervisor("0");
+        }
         //管理
         List<SysWorkPeople> managementCount = listMap.get(PersonnelTypeEnum.MANAGE.getCode());
-        sum = sum + managementCount.size();
-        personnelTypeCount.setManagement(Integer.toString(managementCount.size()));
-
+        if(managementCount!=null) {
+            sum = sum + managementCount.size();
+            personnelTypeCount.setManagement(Integer.toString(managementCount.size()));
+        }else{
+            personnelTypeCount.setManagement("0");
+        }
         //班组
         List<SysWorkPeople> constructionCount = listMap.get(PersonnelTypeEnum.TEAMS.getCode());
-        sum = sum + constructionCount.size();
-        personnelTypeCount.setConstructionPersonnel(Integer.toString(constructionCount.size()));
-
+        if(managementCount!=null) {
+            sum = sum + constructionCount.size();
+            personnelTypeCount.setConstructionPersonnel(Integer.toString(constructionCount.size()));
+        }else{
+            personnelTypeCount.setConstructionPersonnel("0");
+        }
         //访客旧版本处理逻辑
         DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String dayBegin = dateformat.format(DateToUtils.getDayBegin());
