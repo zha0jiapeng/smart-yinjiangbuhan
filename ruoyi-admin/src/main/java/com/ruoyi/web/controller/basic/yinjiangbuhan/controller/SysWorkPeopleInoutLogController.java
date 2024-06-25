@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.hutool.core.date.DateUtil;
 import lombok.AllArgsConstructor;
@@ -50,15 +51,15 @@ public class SysWorkPeopleInoutLogController extends BaseController {
         if (CollectionUtils.isEmpty(logs)) {
             return AjaxResult.error("数据为空");
         }
+        AtomicInteger count = new AtomicInteger(0);
         // 插入日志底表
         logs.stream()
-                .filter(log -> ObjectUtils.allNotNull(log.getInoutId(), log.getIdCard(), log.getMode(), log.getLogTime(), log.getName(), log.getPhone()))
+                .filter(log -> ObjectUtils.allNotNull(log.getInoutId(), log.getSn(), log.getIdCard(), log.getMode(), log.getLogTime()))
                 .filter(log -> {
                     final QueryWrapper<SysWorkPeopleInoutLog> query = new QueryWrapper<>();
                     query.eq("inout_id", log.getInoutId());
                     // 过滤已存在的记录
-                    final Integer count = sysWorkPeopleInoutLogMapper.selectCount(query);
-                    return count == 0;
+                    return sysWorkPeopleInoutLogMapper.selectCount(query) == 0;
                 }).peek(log -> {
                     // 填充人员信息
                     final QueryWrapper<SysWorkPeople> query = new QueryWrapper<>();
@@ -82,9 +83,10 @@ public class SysWorkPeopleInoutLogController extends BaseController {
                     iotStaffAttendance.setEmployeeId(String.valueOf(log.getSysWorkPeopleId()));
                     iotStaffAttendance.setWayBase(log.getMode() == 1 ? 1 : 2);
                     iotStaffAttendance.setDatetime(log.getLogTime());
+                    count.getAndIncrement();
                     return iotStaffAttendance;
                 }).forEach(iotStaffAttendanceService::save);
-        return AjaxResult.success();
+        return AjaxResult.success(count.get());
     }
 
     /**
