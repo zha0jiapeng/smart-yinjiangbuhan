@@ -369,6 +369,8 @@ public class SysWorkPeopleController extends BaseController {
                 .filter(p -> StringUtils.isNoneBlank(p.getName(), p.getIdCard()))
                 .peek(p -> {
                     p.setYn(ObjectUtils.defaultIfNull(p.getYn(), YnEnum.Y.getCode()));
+                    // db comment '业主代建、监理人员、管理人员、班组人员、临时访客'
+                    p.setPersonnelConfigType(ObjectUtils.defaultIfNull(p.getPersonnelConfigType(), 3));
                     p.setPhone(StringUtils.defaultIfBlank(p.getPhone(), ""));
                     p.setWorkType(StringUtils.defaultIfBlank(p.getWorkType(), "劳务人员"));
                     p.setCompany(StringUtils.defaultIfBlank(p.getCompany(), "土建4标"));

@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain.basic;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -11,6 +13,7 @@ import java.io.Serializable;
 @TableName("lot_staff_attendance")
 public class IotStaffAttendance implements Serializable {
 
+    @TableId(value = "pid", type = IdType.AUTO)
     private Integer pid;
 
     private String id;
