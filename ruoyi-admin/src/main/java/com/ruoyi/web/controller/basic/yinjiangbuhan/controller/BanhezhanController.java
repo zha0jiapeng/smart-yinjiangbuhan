@@ -12,10 +12,10 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@RequestMapping("/device")
+@RequestMapping("/banhezhan")
 public class BanhezhanController {
 
-    @RequestMapping("/location")
+    @RequestMapping("/pullData")
     public Map banhezhan(@RequestBody Map<String,Object> request) {
         String url = "http://192.168.1.205:8090/receive/pushIOT";
         log.info("swzk banhezhan push request:{}",JSON.toJSONString(request));
