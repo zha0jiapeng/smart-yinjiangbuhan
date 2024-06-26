@@ -96,7 +96,6 @@ public class TuhuguancheUtil {
                 JSONObject item = (JSONObject) obj;
                 for (Object o : result) {
                     JSONObject item2 = (JSONObject) o;
-                    System.out.println(item.get("imei")+"..."+item2.get("imei"));
                     if(item2.get("imei").equals(item.get("imei"))){
                         item.put("licensePlate",item2.get("licensePlate"));
                         item.put("vehicleDriver",item2.get("vehicleDriver"));
