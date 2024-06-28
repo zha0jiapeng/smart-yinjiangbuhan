@@ -105,7 +105,6 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>com.infiniteautomation</groupId>
             <artifactId>modbus4j</artifactId>
