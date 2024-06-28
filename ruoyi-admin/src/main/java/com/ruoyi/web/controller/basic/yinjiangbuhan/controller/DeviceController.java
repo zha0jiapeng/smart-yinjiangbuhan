@@ -59,6 +59,23 @@ public class DeviceController extends BaseController
         return AjaxResult.success(list);
     }
 
+    @GetMapping("/info")
+    public AjaxResult info(Device device)
+    {
+        LambdaQueryWrapper<Device> lq = new LambdaQueryWrapper<>();
+        lq.eq(Device::getYn,1);
+        lq.eq(Device::getId,device.getId());
+        if(StringUtils.isNotEmpty(device.getDeviceType())) {
+            lq.eq(Device::getDeviceType,device.getDeviceType());
+        }
+        if(StringUtils.isNotEmpty(device.getDeviceArea())) {
+            lq.eq(Device::getDeviceArea,device.getDeviceArea());
+        }
+        Device list = deviceService.getOne(lq,false);
+        return AjaxResult.success(list);
+    }
+
+
     @GetMapping("/getDeviceType")
     public AjaxResult getDeviceType()
     {
