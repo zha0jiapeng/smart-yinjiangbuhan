@@ -164,7 +164,7 @@
         is_del,
         create_time,
         update_time
-        from baishiling.project_construction
+        from project_construction
         where substring(plan_begin, 1, 7) = #{startDate} or substring(plan_finish, 1, 7) = #{startDate}
         or  (substring(plan_begin, 1, 7) &lt;= #{startDate} and substring(plan_finish, 1, 7) >= #{startDate})
     </select>
@@ -193,7 +193,7 @@
                is_del,
                create_time,
                update_time
-        from baishiling.project_construction
+        from project_construction
     </select>
 
     <!--统计总行数-->

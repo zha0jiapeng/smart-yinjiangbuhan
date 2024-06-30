@@ -6,7 +6,6 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SwzkParam;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.enums.IndexType;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Modbus4jReadUtil;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.ModbusTcpMaster;
@@ -18,6 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -30,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/gasDetection")
 public class GasDetectionController {
 
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
     @RequestMapping("/list")
     public List<Map<String,Object>> getGasGasDetection(){
         ModbusMaster master = new ModbusTcpMaster().getSlave("192.168.103.178", 6066);
@@ -92,7 +94,7 @@ public class GasDetectionController {
         Long ts = (Long) oxygen.get(0).get("ts");
         Object value = oxygen.get(0).get("value");
         Map swzkParam = new HashMap();
-        swzkParam.put("SN","");
+        swzkParam.put("SN","youduyouhai1");
         swzkParam.put("dataType","200300025"); //有毒有害气体
         swzkParam.put("WorkAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
         Map<String,Object> map = new HashMap<>();
@@ -132,7 +134,7 @@ public class GasDetectionController {
         valus.add(map);
         swzkParam.put("values",valus);
 
-        SwzkHttpUtils.pushIOT(swzkParam);
+        swzkHttpUtils.pushIOT(swzkParam);
     }
 
 }

@@ -1,9 +1,8 @@
 package com.ruoyi;
-import cn.hutool.extra.qrcode.QrCodeUtil;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import java.io.File;
 
 /**
  * 启动程序
@@ -30,4 +29,5 @@ public class RuoYiApplication
        // File file = new File("/home/123456.jpg");
        // File generate = QrCodeUtil.generate("17803005152", 300, 300, file);
     }
+
 }

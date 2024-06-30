@@ -2,11 +2,9 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
-import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.enums.BusinessType;
-import io.swagger.annotations.Api;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +30,9 @@ public class DustDetectionController {
 
     @Autowired
     RedisCache redisCache;
+
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
 
     @PostMapping("dustdetection")
     public AjaxResult uploadDustDetectionData(@RequestBody DustDetectionData dustDetectionData) {
@@ -50,7 +52,7 @@ public class DustDetectionController {
         if(dustdetection!=null) {
             Map<String, Object> data = new HashMap<>();
             data.put("deviceType", "2001000008");
-            data.put("SN", "");
+            data.put("SN", "yangchen1");
             data.put("dataType", "200300002");
             data.put("workAreaCode", "YJBH-SSZGX_GQ-08");
             data.put("deviceName", "扬尘监测设备名称");
@@ -98,6 +100,7 @@ public class DustDetectionController {
             valuesList.add(valuesObj);
             data.put("values", valuesList);
             log.info("扬尘数据上报到水网智科:{}", JSON.toJSONString(data));
+            swzkHttpUtils.pushIOT(data);
         }
     }
 

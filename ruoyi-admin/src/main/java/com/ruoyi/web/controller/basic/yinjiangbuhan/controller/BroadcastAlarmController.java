@@ -60,7 +60,8 @@ public class BroadcastAlarmController {
                     .execute()) {
 
                 token = JSONUtil.parseObj(resp.body()).getByPath("value.token", String.class);
-                // 实际1小时过期，这里设置1800秒
+                System.out.println("ip:token..."+token);
+                // 实际1小时过期，这里设置1800秒s
                 redisCache.setCacheObject("token", token, 1800, TimeUnit.SECONDS);
             }
         }

@@ -29,7 +29,6 @@ import java.util.List;
 public class IotStaffAttendanceController extends BaseController {
     @Autowired
     private RedisCache redisCache;
-
     @Resource
     private MerchantService merchantService;
 

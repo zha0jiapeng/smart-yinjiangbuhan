@@ -1,14 +1,14 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
-import cn.hutool.Hutool;
 import cn.hutool.core.date.DateUtil;
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.TuhuguancheUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +25,9 @@ public class CarLocationController {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
+
     @RequestMapping("/location")
     public Map carLocation() {
         String carLocationStr = (String) redisTemplate.opsForValue().get("carLocation");
@@ -40,8 +43,9 @@ public class CarLocationController {
         Map deviceLocation = TuhuguancheUtil.getDeviceLocation();
         redisTemplate.opsForValue().set("carLocation", JSON.toJSONString(deviceLocation));
         List<Map<String, Object>> valuesList = new ArrayList<>();
-        List<Map<String,Object>> result = (List<Map<String,Object>>)deviceLocation.get("result");
-        for (Map<String, Object> itemMap : result) {
+        JSONArray objects = (JSONArray)deviceLocation.get("result");
+        for (Object iobj : objects) {
+            JSONObject itemMap = (JSONObject) iobj;
             Map<String, Object> events = new HashMap<>();
             events.put("eventType", 1);
             events.put("eventTs", DateUtil.current());
@@ -99,7 +103,7 @@ public class CarLocationController {
         jsonData.put("deviceName", "车辆网关");
 
         jsonData.put("values", valuesList);
-        SwzkHttpUtils.pushIOT(jsonData);
+        swzkHttpUtils.pushIOT(jsonData);
 
 
     }

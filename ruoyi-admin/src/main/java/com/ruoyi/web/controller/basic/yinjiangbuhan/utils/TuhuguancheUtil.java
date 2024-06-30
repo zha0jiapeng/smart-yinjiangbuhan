@@ -9,9 +9,7 @@ import com.alibaba.fastjson2.JSONObject;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,11 +19,12 @@ public class TuhuguancheUtil {
     private static final String openapi_url = "http://open.tuhugc.com";
     private static final String app_key = "5508166a129cf8e1bfe2943b14e6d1dc";
     private static final String app_secret = "b05cec7978367a830ab693c0a504e103";
-    
 
-    private String getToken() {
+
+    private synchronized static String getToken() {
         RedisTemplate redisTemplate = RedisUtil.redis;
         Object carToken = redisTemplate.opsForValue().get("carToken");
+        System.out.println("redis token :"+carToken);
         if(carToken!=null){
             return carToken.toString();
         }
@@ -46,14 +45,11 @@ public class TuhuguancheUtil {
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> (Object) e.getValue()));
         String body = HttpUtil.createPost(openapi_url+"/v1/token/get")
                 .form(objectMap).execute().body();
-        Map tokenResult = JSON.parseObject(body, Map.class);
-        Object code = tokenResult.get("code");
-        if("0".equals(code)){
-            return null;
-        }
-        JSONObject result = (JSONObject)tokenResult.get("result");
+        JSONObject jsonObject = JSON.parseObject(body);
+        JSONObject result = jsonObject.getJSONObject("result");
         Object accessToken = result.get("accessToken");
-        redisTemplate.opsForValue().set("carToken",accessToken,7200, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("carToken",accessToken,2, TimeUnit.HOURS);
+        System.out.println("redis token :"+carToken);
         return accessToken.toString();
     }
 
@@ -69,18 +65,9 @@ public class TuhuguancheUtil {
         return paramMap;
     }
 
-    public static void main(String[] args) {
-        List<String> cities = Arrays.asList("Milan",
-                "London",
-                "New York",
-                "San Francisco");
-        String citiesCommaSeparated = "'"+String.join("','", cities)+"'";
-        System.out.println("'"+citiesCommaSeparated+"'");
-    }
 
     public static Map getDeviceLocation(){
-        String token = new TuhuguancheUtil().getToken();
-
+        String token = getToken();
         Map<String, String> paramMap2 = getCommonParam();
         paramMap2.put("userId", "13521470746");
         JSONObject jsonObject2 = getParam(token, paramMap2, "/v1/vehicle/list");
