@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 public class TcpClientService {
 
     private static String host = "oa.sntsoft.com";
-    private static int port = 9045;
+    private static int port = 8095;
 
     public static String sendTcpRequest(String message) {
         try {
