@@ -74,7 +74,7 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
         queryWrapper.like(StringUtils.isNotEmpty(admissionEducation.getTrainName()),AdmissionEducation::getTrainName,admissionEducation.getTrainName());
         queryWrapper.like(StringUtils.isNotEmpty(admissionEducation.getTrainTeacherName()),AdmissionEducation::getTrainTeacherName,admissionEducation.getTrainTeacherName());
         queryWrapper.between(StringUtils.isNotEmpty(admissionEducation.getQueryDate()),AdmissionEducation::getQueryDate,admissionEducation.getTrainStartTime(),admissionEducation.getTrainEndTime());
-        List<AdmissionEducation> admissionEducations = admissionEducationMapper.selectAdmissionEducationList(admissionEducation);
+        List<AdmissionEducation> admissionEducations = list(queryWrapper);
         for (AdmissionEducation education : admissionEducations) {
             List<AdmissionEducationUser> list = admissionEducationUserService.list(new LambdaQueryWrapper<AdmissionEducationUser>().eq(AdmissionEducationUser::getAdmissionEducationId, education));
             education.setAdmissionEducationUsers(list);
