@@ -1,7 +1,5 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -13,13 +11,13 @@ import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducation;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AdmissionEducationMapper;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.DeviceMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 /**
@@ -76,7 +74,7 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
         queryWrapper.between(StringUtils.isNotEmpty(admissionEducation.getQueryDate()),AdmissionEducation::getQueryDate,admissionEducation.getTrainStartTime(),admissionEducation.getTrainEndTime());
         List<AdmissionEducation> admissionEducations = list(queryWrapper);
         for (AdmissionEducation education : admissionEducations) {
-            List<AdmissionEducationUser> list = admissionEducationUserService.list(new LambdaQueryWrapper<AdmissionEducationUser>().eq(AdmissionEducationUser::getAdmissionEducationId, education));
+            List<AdmissionEducationUser> list = admissionEducationUserService.list(new LambdaQueryWrapper<AdmissionEducationUser>().eq(AdmissionEducationUser::getAdmissionEducationId, education.getId()));
             education.setAdmissionEducationUsers(list);
             StringBuilder userName = new StringBuilder();
             for (AdmissionEducationUser admissionEducationUser : list) {
@@ -86,7 +84,8 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
             SysDept sysDept = deptService.selectDeptById(education.getDeptId());
             if(sysDept!=null)
                 education.setDeptName(sysDept.getDeptName());
-            education.setUserNames(userName.substring(0,userName.length()-1));
+            if(userName.toString().contains("\\,"))
+                education.setUserNames(userName.substring(0,userName.length()-1));
         }
         return admissionEducations;
     }
