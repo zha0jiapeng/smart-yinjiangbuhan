@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AdmissionEducationMapper">
+    
+    <resultMap type="AdmissionEducation" id="AdmissionEducationResult">
+        <result property="id"    column="id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="trainName"    column="train_name"    />
+        <result property="trainStartTime"    column="train_start_time"    />
+        <result property="trainEndTime"    column="train_end_time"    />
+        <result property="trainDuration"    column="train_duration"    />
+        <result property="trainTeacherName"    column="train_teacher_name"    />
+        <result property="trainContent"    column="train_content"    />
+        <result property="trainAttachment"    column="train_attachment"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAdmissionEducationVo">
+        select id, dept_id, train_name, train_start_time, train_end_time, train_duration, train_teacher_name, train_content, train_attachment, del_flag, create_by, create_time, update_by, update_time, remark from sys_admission_education
+    </sql>
+
+    <select id="selectAdmissionEducationList" parameterType="AdmissionEducation" resultMap="AdmissionEducationResult">
+        <include refid="selectAdmissionEducationVo"/>
+        <where>  
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="trainName != null  and trainName != ''"> and train_name like concat('%', #{trainName}, '%')</if>
+            <if test="trainStartTime != null "> and train_start_time = #{trainStartTime}</if>
+            <if test="trainEndTime != null "> and train_end_time = #{trainEndTime}</if>
+            <if test="trainDuration != null "> and train_duration = #{trainDuration}</if>
+            <if test="trainTeacherName != null  and trainTeacherName != ''"> and train_teacher_name like concat('%', #{trainTeacherName}, '%')</if>
+            <if test="trainContent != null  and trainContent != ''"> and train_content = #{trainContent}</if>
+            <if test="trainAttachment != null  and trainAttachment != ''"> and train_attachment = #{trainAttachment}</if>
+        </where>
+    </select>
+    
+    <select id="selectAdmissionEducationById" parameterType="Long" resultMap="AdmissionEducationResult">
+        <include refid="selectAdmissionEducationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAdmissionEducation" parameterType="AdmissionEducation" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_admission_education
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="trainName != null and trainName != ''">train_name,</if>
+            <if test="trainStartTime != null">train_start_time,</if>
+            <if test="trainEndTime != null">train_end_time,</if>
+            <if test="trainDuration != null">train_duration,</if>
+            <if test="trainTeacherName != null and trainTeacherName != ''">train_teacher_name,</if>
+            <if test="trainContent != null">train_content,</if>
+            <if test="trainAttachment != null">train_attachment,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="trainName != null and trainName != ''">#{trainName},</if>
+            <if test="trainStartTime != null">#{trainStartTime},</if>
+            <if test="trainEndTime != null">#{trainEndTime},</if>
+            <if test="trainDuration != null">#{trainDuration},</if>
+            <if test="trainTeacherName != null and trainTeacherName != ''">#{trainTeacherName},</if>
+            <if test="trainContent != null">#{trainContent},</if>
+            <if test="trainAttachment != null">#{trainAttachment},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAdmissionEducation" parameterType="AdmissionEducation">
+        update sys_admission_education
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="trainName != null and trainName != ''">train_name = #{trainName},</if>
+            <if test="trainStartTime != null">train_start_time = #{trainStartTime},</if>
+            <if test="trainEndTime != null">train_end_time = #{trainEndTime},</if>
+            <if test="trainDuration != null">train_duration = #{trainDuration},</if>
+            <if test="trainTeacherName != null and trainTeacherName != ''">train_teacher_name = #{trainTeacherName},</if>
+            <if test="trainContent != null">train_content = #{trainContent},</if>
+            <if test="trainAttachment != null">train_attachment = #{trainAttachment},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAdmissionEducationById" parameterType="Long">
+        delete from sys_admission_education where id = #{id}
+    </delete>
+
+    <delete id="deleteAdmissionEducationByIds" parameterType="String">
+        delete from sys_admission_education where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
