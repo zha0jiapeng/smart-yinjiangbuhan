@@ -86,7 +86,11 @@ public class TuhuguancheUtil {
                     if(item2.get("imei").equals(item.get("imei"))){
                         item.put("licensePlate",item2.get("licensePlate"));
                         item.put("vehicleDriver",item2.get("vehicleDriver"));
-                        item.put("vehicleType",item2.get("vehicleType"));
+                        if(item2.get("vehicleType").equals("商砼车")){
+                            item.put("vehicleType", "混凝土搅拌运输车");
+                        }else {
+                            item.put("vehicleType", item2.get("vehicleType"));
+                        }
                         break;
                     }
                 }

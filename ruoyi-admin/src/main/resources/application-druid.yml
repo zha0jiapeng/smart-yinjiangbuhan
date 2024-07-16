@@ -8,6 +8,7 @@ spring:
             master:
                 #url: jdbc:mysql://218.17.102.70:38081/baishiling?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 #url: jdbc:mysql://192.168.100.125:38081/baishiling?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+               # url: jdbc:mysql://192.168.30.203:3306/yinjiangbuhan?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 url: jdbc:mysql://192.168.1.202:3306/yinjiangbuhan?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
                 password: sj4xMw65BE9y

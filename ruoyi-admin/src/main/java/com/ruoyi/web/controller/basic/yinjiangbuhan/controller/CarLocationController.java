@@ -47,24 +47,25 @@ public class CarLocationController {
         for (Object iobj : objects) {
             JSONObject itemMap = (JSONObject) iobj;
             Map<String, Object> events = new HashMap<>();
-            events.put("eventType", 1);
-            events.put("eventTs", DateUtil.current());
-            events.put("describe", "");
-            events.put("plateNumber", itemMap.get("licensePlate"));
-            events.put("locateMode", "GPS");
-            events.put("x", itemMap.get("lng"));
-            events.put("y", itemMap.get("lat"));
-            events.put("z", 0);
-            //events.put("startTime", "");
-            //events.put("mileage", 41);
-            events.put("driver", itemMap.get("vehicleDriver"));
-          //  events.put("workTime", "36");
-            events.put("continuousTime", "36");
-            events.put("speed", itemMap.get("speed"));
-           // events.put("locationName", "");
-           // events.put("load_value", "0");
-           // events.put("load_percentage", "0%");
-
+            Map<String, Object> pass = new HashMap<>();
+            pass.put("eventType", 1);
+            pass.put("eventTs", DateUtil.current());
+            pass.put("describe", "");
+            pass.put("plateNumber", itemMap.get("licensePlate"));
+            pass.put("locateMode", "GPS");
+            pass.put("x", itemMap.get("lng"));
+            pass.put("y", itemMap.get("lat"));
+            pass.put("z", 0);
+            //pass.put("startTime", "");
+            //pass.put("mileage", 41);
+            pass.put("driver", itemMap.get("vehicleDriver"));
+          //  pass.put("workTime", "36");
+            pass.put("continuousTime", "36");
+            pass.put("speed", itemMap.get("speed"));
+           // pass.put("locationName", "");
+           // pass.put("load_value", "0");
+           // pass.put("load_percentage", "0%");
+            events.put("pass",pass);
             // 创建 values 中的 properties
             Map<String, Object> properties = new HashMap<>();
             properties.put("hardware_type", "Z03.1");
@@ -81,7 +82,7 @@ public class CarLocationController {
             profile.put("manufacture", "");
             profile.put("owner", "");
             profile.put("makeDate", "2024-05-22");
-            profile.put("validYear", "20");
+            profile.put("validYear", 20);
 
             // 创建 values
             Map<String, Object> values = new HashMap<>();

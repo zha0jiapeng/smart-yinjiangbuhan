@@ -7,6 +7,9 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -26,6 +29,9 @@ public class PeopleLocationController {
 
     @Resource
     private RedisTemplate redisTemplate;
+
+    @Resource
+    private SysWorkPeopleService workPeopleService;
 
     @Resource
     SwzkHttpUtils swzkHttpUtils;
@@ -127,9 +133,9 @@ public class PeopleLocationController {
 
                 // 创建 properties 对象
                 Map<String, Object> propertiesObj = new HashMap<>();
-                propertiesObj.put("ringCode", "");
-                propertiesObj.put("icCode", "");
-                propertiesObj.put("heartRate", "");
+                //propertiesObj.put("ringCode", "");
+                //propertiesObj.put("icCode", "");
+                //propertiesObj.put("heartRate", "");
                 propertiesObj.put("electric", itemMap.get("bat"));
                 propertiesObj.put("time", DateUtil.format(DateUtil.date(((Integer) itemMap.get("time"))), DatePattern.NORM_DATETIME_PATTERN));
                 propertiesObj.put("sos", "0");
@@ -142,7 +148,10 @@ public class PeopleLocationController {
                 propertiesObj.put("humanZ", 0);
                 propertiesObj.put("stationDistance", new BigDecimal(2939).add((BigDecimal) itemMap.get("result_x")));
                 propertiesObj.put("holeDistance", 0);
-                propertiesObj.put("idCardNumber", "");
+                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
+                if(one!=null)
+                    propertiesObj.put("idCardNumber", one.getIdCard());
+
                 propertiesObj.put("name", ((Map<String, Object>) itemMap.get("user_info")).get("user_name"));
                 propertiesObj.put("locateMode", "GPS");
 

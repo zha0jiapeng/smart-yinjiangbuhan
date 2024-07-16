@@ -96,7 +96,8 @@ public class GasDetectionController {
         Map swzkParam = new HashMap();
         swzkParam.put("SN","youduyouhai1");
         swzkParam.put("dataType","200300025"); //有毒有害气体
-        swzkParam.put("WorkAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
+        swzkParam.put("deviceType","2001000060"); //有毒有害气体
+        swzkParam.put("workAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
         Map<String,Object> map = new HashMap<>();
         Map<String,Object> profile = new HashMap<>();
         map.put("reportTs", DateUtil.currentSeconds());
