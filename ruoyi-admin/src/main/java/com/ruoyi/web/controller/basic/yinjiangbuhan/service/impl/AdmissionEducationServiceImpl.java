@@ -100,14 +100,16 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
     public int insertAdmissionEducation(AdmissionEducation admissionEducation)
     {
         admissionEducation.setCreateTime(DateUtils.getNowDate());
+        int insert = admissionEducationMapper.insert(admissionEducation);
         for (AdmissionEducationUser user : admissionEducation.getAdmissionEducationUsers()) {
             AdmissionEducationUser admissionEducationUser = new AdmissionEducationUser();
+            admissionEducationUser.setAdmissionEducationId(admissionEducation.getId());
             admissionEducationUser.setUserId(user.getUserId());
             admissionEducationUser.setCreateTime(DateUtils.getNowDate());
             admissionEducationUser.setUpdateTime(DateUtils.getNowDate());
             admissionEducationUserService.insertAdmissionEducationUser(admissionEducationUser);
         }
-        return admissionEducationMapper.insertAdmissionEducation(admissionEducation);
+        return insert;
     }
 
     /**
