@@ -2,11 +2,10 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
 
 /**
  * 入场三级教育用户对象 sys_admission_education_user
@@ -15,6 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2024-07-16
  */
 @Data
+@TableName("sys_admission_education_user")
 public class AdmissionEducationUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ public class AdmissionEducationUser extends BaseEntity
     private Long userId;
 
     @Excel(name = "培训对象")
-    @TableField
+    @TableField(exist = false)
     private String userName;
 
     /** 成绩 */

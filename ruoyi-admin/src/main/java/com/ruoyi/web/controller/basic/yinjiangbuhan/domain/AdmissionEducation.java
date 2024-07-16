@@ -1,16 +1,15 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.domain;
 
-import java.util.Date;
-import java.util.List;
-
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.Data;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * 入场三级教育对象 sys_admission_education
@@ -19,6 +18,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2024-07-16
  */
 @Data
+@TableName("sys_admission_education")
 public class AdmissionEducation extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
