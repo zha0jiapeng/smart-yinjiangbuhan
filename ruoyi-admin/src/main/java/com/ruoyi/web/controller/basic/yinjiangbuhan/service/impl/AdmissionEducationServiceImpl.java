@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysUser;
@@ -122,10 +123,11 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
     {
         admissionEducation.setUpdateTime(DateUtils.getNowDate());
         for (AdmissionEducationUser user : admissionEducation.getAdmissionEducationUsers()) {
-            AdmissionEducationUser admissionEducationUser = new AdmissionEducationUser();
-            admissionEducationUser.setUserScore(user.getUserScore());
-            admissionEducationUser.setUpdateTime(DateUtils.getNowDate());
-            admissionEducationUserService.updateAdmissionEducationUser(admissionEducationUser);
+            LambdaUpdateWrapper<AdmissionEducationUser> queryWrapper = new LambdaUpdateWrapper<>();
+            queryWrapper.set(AdmissionEducationUser::getUserScore,user.getUserScore());
+            queryWrapper.eq(AdmissionEducationUser::getUserId,user.getUserId());
+            queryWrapper.eq(AdmissionEducationUser::getAdmissionEducationId,admissionEducation.getId());
+            admissionEducationUserService.update(queryWrapper);
         }
         return admissionEducationMapper.updateAdmissionEducation(admissionEducation);
     }
