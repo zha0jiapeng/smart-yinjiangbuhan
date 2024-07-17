@@ -193,7 +193,10 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
             Map<String, Object> exam1 = new HashMap<>();
             exam1.put("name", admissionEducationUser.getUserName());
             exam1.put("grade", admissionEducationUser.getUserScore());
-            exam1.put("idcard", "");
+            SysWorkPeople byId = sysWorkPeopleService.getById(admissionEducationUser.getUserId());
+            if(byId!=null) {
+                exam1.put("idcard", byId.getIdCard());
+            }
             exam1.put("isPass", admissionEducationUser.getUserScore()>=80?1:0);
             examList.add(exam1);
         }
