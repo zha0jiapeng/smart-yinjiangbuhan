@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,8 +8,10 @@ import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducation;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AdmissionEducationMapper;
@@ -17,7 +20,10 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationU
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,7 +39,7 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
     private AdmissionEducationMapper admissionEducationMapper;
 
     @Autowired
-    private ISysUserService userService;
+    private SysWorkPeopleService sysWorkPeopleService;
 
     @Autowired
     private ISysDeptService deptService;
@@ -52,8 +58,12 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
         AdmissionEducation admissionEducation = admissionEducationMapper.selectAdmissionEducationById(id);
         List<AdmissionEducationUser> list = admissionEducationUserService.list(new LambdaQueryWrapper<AdmissionEducationUser>().eq(AdmissionEducationUser::getAdmissionEducationId, id));
         for (AdmissionEducationUser admissionEducationUser : list) {
-            SysUser sysUser = userService.selectUserById(admissionEducationUser.getUserId());
-            if(sysUser!=null) admissionEducationUser.setUserName(sysUser.getNickName());
+            SysWorkPeople workPeople = sysWorkPeopleService.getById(admissionEducationUser.getUserId());
+            if(workPeople!=null) admissionEducationUser.setUserName(workPeople.getName());
+        }
+        SysDept sysDept = deptService.selectDeptById(admissionEducation.getDeptId());
+        if(sysDept!=null) {
+            admissionEducation.setDeptName(sysDept.getDeptName());
         }
         admissionEducation.setAdmissionEducationUsers(list);
         return admissionEducation;
@@ -78,8 +88,8 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
             education.setAdmissionEducationUsers(list);
             StringBuilder userName = new StringBuilder();
             for (AdmissionEducationUser admissionEducationUser : list) {
-                SysUser sysUser = userService.selectUserById(admissionEducationUser.getUserId());
-                userName.append(sysUser.getNickName()).append(",");
+                SysWorkPeople workPeople = sysWorkPeopleService.getById(admissionEducationUser.getUserId());
+                if(workPeople!=null)   userName.append(workPeople.getName()).append(",");
             }
             SysDept sysDept = deptService.selectDeptById(education.getDeptId());
             if(sysDept!=null)
@@ -129,9 +139,77 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
             queryWrapper.eq(AdmissionEducationUser::getAdmissionEducationId,admissionEducation.getId());
             admissionEducationUserService.update(queryWrapper);
         }
+        pushSwzk(admissionEducation);
         return admissionEducationMapper.updateAdmissionEducation(admissionEducation);
     }
 
+    private void pushSwzk(AdmissionEducation admissionEducation) {
+
+        // Root map
+        Map<String, Object> root = new HashMap<>();
+        root.put("deviceType", "2001000100");
+        root.put("SN", "DS20230906001");
+        root.put("dataType", "200300100");
+        root.put("bidCode", "YJBH-SSZGX_BD-SG-205");
+        root.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+        root.put("deviceName", "安全教育培训");
+
+        // List of values
+        List<Map<String, Object>> values = new ArrayList<>();
+
+        // Value map
+        Map<String, Object> value = new HashMap<>();
+        value.put("reportTs", DateUtil.current());
+
+        // Profile map
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("appType", "education");
+        profile.put("modelId", "2078");
+        profile.put("poiCode", "w23090601");
+        profile.put("name", "安全教育培训");
+        value.put("profile", profile);
+
+        // Properties map
+        Map<String, Object> properties = new HashMap<>();
+        value.put("properties", properties);
+
+        // Events map
+        Map<String, Object> events = new HashMap<>();
+        events.put("number", "CD20230907001");
+        events.put("type", "three");
+        events.put("startTime", admissionEducation.getTrainStartTime());
+        events.put("endTime", admissionEducation.getTrainEndTime());
+        events.put("organization", "中铁十八局土建四标引江补汉项目部");
+        events.put("dept", admissionEducation.getDeptName());
+        events.put("title", admissionEducation.getTrainName());
+        events.put("teacher", admissionEducation.getTrainTeacherName());
+        events.put("location", "项目部");
+        events.put("content", admissionEducation.getTrainContent());
+
+        // Exam list
+        List<Map<String, Object>> examList = new ArrayList<>();
+        List<AdmissionEducationUser> admissionEducationUsers = admissionEducation.getAdmissionEducationUsers();
+        for (AdmissionEducationUser admissionEducationUser : admissionEducationUsers) {
+            Map<String, Object> exam1 = new HashMap<>();
+            exam1.put("name", admissionEducationUser.getUserName());
+            exam1.put("grade", admissionEducationUser.getUserScore());
+            exam1.put("idcard", "");
+            exam1.put("isPass", admissionEducationUser.getUserScore()>=80?1:0);
+            examList.add(exam1);
+        }
+
+
+        events.put("exam", examList);
+        value.put("events", events);
+
+        // Services map
+        Map<String, Object> services = new HashMap<>();
+        value.put("services", services);
+
+        values.add(value);
+        root.put("values", values);
+
+    }
     /**
      * 批量删除入场三级教育
      * 
