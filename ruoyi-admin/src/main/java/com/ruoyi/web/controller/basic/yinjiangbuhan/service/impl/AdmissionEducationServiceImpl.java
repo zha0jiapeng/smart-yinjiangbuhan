@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,7 +154,7 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
         // Root map
         Map<String, Object> root = new HashMap<>();
         root.put("deviceType", "2001000100");
-        root.put("SN", "DS20230906001");
+        root.put("SN", "ED04024717001");
         root.put("dataType", "200300100");
         root.put("bidCode", "YJBH-SSZGX_BD-SG-205");
         root.put("workAreaCode", "YJBH-SSZGX_GQ-08");
@@ -180,10 +181,10 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
 
         // Events map
         Map<String, Object> events = new HashMap<>();
-        events.put("number", "CD20230907001");
+        events.put("number", admissionEducation.getId()+"");
         events.put("type", "three");
-        events.put("startTime", admissionEducation.getTrainStartTime());
-        events.put("endTime", admissionEducation.getTrainEndTime());
+        events.put("startTime", DateUtil.formatDateTime(admissionEducation.getTrainStartTime()));
+        events.put("endTime",DateUtil.formatDateTime(admissionEducation.getTrainEndTime()));
         events.put("organization", "中铁十八局土建四标引江补汉项目部");
         events.put("dept", admissionEducation.getDeptName());
         events.put("title", admissionEducation.getTrainName());

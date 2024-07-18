@@ -92,9 +92,6 @@ public class DoorEvent {
 
        valuesMap.put("reportTs", DateUtil.current());
 
-      
-
-
 
        for (int i = 0; i < list.size(); i++) {
            JSONObject jsonObject = list.getJSONObject(i);
@@ -135,19 +132,7 @@ public class DoorEvent {
            // Add the valuesMap to the valuesList
            valuesList.add(valuesMap);
        }
-
-
-       // Add the 'values' list to the main map
        mainMap.put("values", valuesList);
-
-       // Convert the map to JSON (using a library like Jackson or Gson)
-       // Example using Gson:
-       // Gson gson = new Gson();
-       // String jsonString = gson.toJson(mainMap);
-       // System.out.println(jsonString);
-
-       // For the sake of this example, we will just print the map
-       System.out.println(mainMap);
    }
 
     public static String getISO8601TimestampFromDateStr(String timestamp){
