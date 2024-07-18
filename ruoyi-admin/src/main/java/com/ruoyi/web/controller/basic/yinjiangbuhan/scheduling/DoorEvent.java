@@ -45,7 +45,7 @@ public class DoorEvent {
     @Resource
     private RedisTemplate redisTemplate;
 
-   //@Scheduled(cron = "0 */10 * * * ?")
+   @Scheduled(cron = "0 */10 * * * ?")
     public void execute() {
 
        ThreadPool.executorService.submit(() -> {
@@ -75,6 +75,7 @@ public class DoorEvent {
    }
 
    private void pushSwzk(JSONArray list){
+
        // Create the main map
        Map<String, Object> mainMap = new HashMap<>();
 
@@ -95,6 +96,8 @@ public class DoorEvent {
 
        for (int i = 0; i < list.size(); i++) {
            JSONObject jsonObject = list.getJSONObject(i);
+           Object personName = jsonObject.get("personName");
+           if(personName == null) continue;
            // Create the 'profile' map
            Map<String, Object> profileMap = new HashMap<>();
            profileMap.put("appType", "access_control");
@@ -116,13 +119,14 @@ public class DoorEvent {
            // Create the 'events' map
            Map<String, Object> eventsMap = new HashMap<>();
            Map<String, Object> passMap = new HashMap<>();
+           DateTime eventTime = DateUtil.parse(getDateStrFromISO8601Timestamp(jsonObject.get("eventTime").toString()));
            passMap.put("eventType", 1);
-           passMap.put("eventTs", 1590113463000L);
+           passMap.put("eventTs", eventTime.getTime());
            passMap.put("describe", "");
-           passMap.put("idCardNumber", "420281202005224033");
-           passMap.put("name", "张三");
-           passMap.put("passTime", "2020-05-22 10:11:03");
-           passMap.put("passDirection", "01");
+           passMap.put("idCardNumber", jsonObject.get("certNo"));
+           passMap.put("name", jsonObject.get("personName"));
+           passMap.put("passTime", eventTime);
+           passMap.put("passDirection",jsonObject.get("inAndOutType").toString().equals("1") ? "01" : "00");
            eventsMap.put("pass", passMap);
 
            valuesMap.put("events", eventsMap);
