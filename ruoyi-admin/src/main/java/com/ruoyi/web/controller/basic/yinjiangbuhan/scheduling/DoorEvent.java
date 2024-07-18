@@ -16,13 +16,14 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
+import java.util.*;
 
 
 /**
@@ -68,39 +69,85 @@ public class DoorEvent {
 
            JSONObject jsonObject = JSONObject.parseObject(doorcount);
            JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
-           for (int i = 0; i < list.size(); i++) {
-               JSONObject object = (JSONObject) list.get(i);
-               object.put("picUri","https://192.168.1.207"+object.get("picUri"));
-               logger.info("...门禁事件返回值{}",JSON.toJSONString(object));
-               ListOperations<String, String> listOps = redisTemplate.opsForList();
-               listOps.rightPush(dateKey, object.toJSONString());
-//               Map<String, Object> map = new HashMap<>();
-//               map.put("portal_id", "1751847977770553345");
-//               map.put("device_code", object.get("doorIndexCode").toString());//
-//               map.put("device_status", "在线");
-//               String url = "http://192.168.30.151" + object.get("picUri");
-//               map.put("record_Image_file", url);
-//               map.put("id_card", object.get("certNo"));
-//               map.put("in_out_direction", object.get("inAndOutType").toString().equals("1") ? "进" : "出");
-//               map.put("attendance_out_time","");
-//               map.put("attendance_in_time","");
-//               if (object.get("inAndOutType").toString().equals("1")) {
-//                   map.put("attendance_in_time", getDateStrFromISO8601Timestamp(object.get("receiveTime").toString()));
-//               } else {
-//                   map.put("attendance_out_time", getDateStrFromISO8601Timestamp(object.get("receiveTime").toString()));
-//               }
-//               map.put("type", "1");
-//               map.put("push_time", now);
-   //            listt.add(map);
-           }
-//           request.put("values", listt);
-//           logger.info("...推送业主入参{}",JSON.toJSONString(request));
-//           if (listt.size() == 0) return;
-//           String url = "http://10.0.100.23:18080/sdata/rest/dataservice/rest/standard/a01fa438-65cf-4da3-9bad-88a7878d0910";
-//           HttpResponse execute = HttpRequest.put(url).body(JSON.toJSONString(request), "application/json").execute();
-//           String body1 = execute.body();
-//           logger.info("...返回值{}",JSON.toJSONString(body1));
+           pushSwzk(list);
+
        });
+   }
+
+   private void pushSwzk(JSONArray list){
+       // Create the main map
+       Map<String, Object> mainMap = new HashMap<>();
+
+       // Add top-level fields
+       mainMap.put("deviceType", "2001000010");
+       mainMap.put("SN", "DSB301BA001A1YJB001");
+       mainMap.put("dataType", "200300003");
+       mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
+       mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+       mainMap.put("deviceName", "项目部考勤机");
+
+       // Create the 'values' list
+       List<Map<String, Object>> valuesList = new ArrayList<>();
+       Map<String, Object> valuesMap = new HashMap<>();
+
+       valuesMap.put("reportTs", DateUtil.current());
+
+      
+
+
+
+       for (int i = 0; i < list.size(); i++) {
+           JSONObject jsonObject = list.getJSONObject(i);
+           // Create the 'profile' map
+           Map<String, Object> profileMap = new HashMap<>();
+           profileMap.put("appType", "access_control");
+           profileMap.put("modelId", "2053");
+           profileMap.put("poiCode", "w0713001");
+           profileMap.put("name", "人脸门禁");
+           profileMap.put("model", "S3");
+           profileMap.put("manufacture", "海康威视");
+           profileMap.put("owner", "海康威视");
+           profileMap.put("makeDate", "2020-05-22");
+           profileMap.put("validYear", "2050-05-22");
+           profileMap.put("state", "01");
+           profileMap.put("installPosition", "项目部大门");
+           profileMap.put("x", 0);
+           profileMap.put("y", 0);
+           profileMap.put("z", 0);
+           profileMap.put("level", "01");
+           valuesMap.put("profile", profileMap);
+           // Create the 'events' map
+           Map<String, Object> eventsMap = new HashMap<>();
+           Map<String, Object> passMap = new HashMap<>();
+           passMap.put("eventType", 1);
+           passMap.put("eventTs", 1590113463000L);
+           passMap.put("describe", "");
+           passMap.put("idCardNumber", "420281202005224033");
+           passMap.put("name", "张三");
+           passMap.put("passTime", "2020-05-22 10:11:03");
+           passMap.put("passDirection", "01");
+           eventsMap.put("pass", passMap);
+
+           valuesMap.put("events", eventsMap);
+           // Add empty 'properties' and 'services' maps
+           valuesMap.put("properties", new HashMap<String, Object>());
+           valuesMap.put("services", new HashMap<String, Object>());
+           // Add the valuesMap to the valuesList
+           valuesList.add(valuesMap);
+       }
+
+
+       // Add the 'values' list to the main map
+       mainMap.put("values", valuesList);
+
+       // Convert the map to JSON (using a library like Jackson or Gson)
+       // Example using Gson:
+       // Gson gson = new Gson();
+       // String jsonString = gson.toJson(mainMap);
+       // System.out.println(jsonString);
+
+       // For the sake of this example, we will just print the map
+       System.out.println(mainMap);
    }
 
     public static String getISO8601TimestampFromDateStr(String timestamp){
@@ -121,16 +168,6 @@ public class DoorEvent {
         return dt.toString(dtf2);
     }
 
-    public static void main(String[] args) {
-        DateTime date = DateUtil.date();
-        String now = DateUtil.formatDateTime(date);
-        Date date1 = DateUtils.addMinutes(date, 1);
-        String pre = DateUtil.formatDateTime(date1);
-        System.out.println(now);
-        System.out.println(pre);
-        System.out.println(getISO8601TimestampFromDateStr(DateUtil.now()));
-        System.out.println(getDateStrFromISO8601Timestamp("2024-06-17T20:15:01.111+08:00"));
-    }
 }
 
 

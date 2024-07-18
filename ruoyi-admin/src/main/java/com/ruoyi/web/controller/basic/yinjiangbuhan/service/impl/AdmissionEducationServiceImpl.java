@@ -17,9 +17,11 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUse
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AdmissionEducationMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationUserService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +48,9 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
 
     @Autowired
     private IAdmissionEducationUserService admissionEducationUserService;
+
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
     /**
      * 查询入场三级教育
      * 
@@ -212,6 +217,7 @@ public class AdmissionEducationServiceImpl extends ServiceImpl<AdmissionEducatio
         values.add(value);
         root.put("values", values);
 
+        swzkHttpUtils.pushIOT(root);
     }
     /**
      * 批量删除入场三级教育
