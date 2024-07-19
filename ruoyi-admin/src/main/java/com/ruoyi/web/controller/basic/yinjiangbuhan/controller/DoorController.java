@@ -1,6 +1,5 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
@@ -44,7 +43,6 @@ public class DoorController extends BaseController
 //           ArrayList<String> indexcodList = new ArrayList<String>();
 //           indexcodList.add("ec8d96058dcb4dcca04468080c9570aa");
 //           eventsRequest.setDoorIndexCodes(indexcodList); // 所有门禁标识
-        logger.info("...门禁事件入参{}", JSON.toJSONString(eventsRequest));
         String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");

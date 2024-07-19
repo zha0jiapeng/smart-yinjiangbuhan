@@ -8,14 +8,9 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.ThreadPool;
-import org.apache.commons.lang3.time.DateUtils;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +18,7 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -43,17 +39,16 @@ public class DoorEvent {
     private static final Logger logger = LogManager.getLogger(DoorEvent.class);
 
     @Resource
-    private RedisTemplate redisTemplate;
+    SwzkHttpUtils swzkHttpUtils;
 
    @Scheduled(cron = "0 */10 * * * ?")
     public void execute() {
 
-       ThreadPool.executorService.submit(() -> {
+     //  ThreadPool.executorService.submit(() -> {
            DateTime date = DateUtil.date();
            String now = DateUtil.formatDateTime(date);
-           Date date1 = DateUtils.addMinutes(date, -10);
+           Date date1 = DateUtil.offsetMinute(date, -10);
            String pre = DateUtil.formatDateTime(date1);
-           String dateKey = DateUtil.format(date1, "yyyyMMdd");
            logger.info("=========门禁通行事件===========");
            DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
            EventsRequest eventsRequest = new EventsRequest(); //查询门禁事件
@@ -61,9 +56,6 @@ public class DoorEvent {
            eventsRequest.setPageSize(400);
            eventsRequest.setStartTime(getISO8601TimestampFromDateStr(pre));
            eventsRequest.setEndTime(getISO8601TimestampFromDateStr(now));
-//           ArrayList<String> indexcodList = new ArrayList<String>();
-//           indexcodList.add("ec8d96058dcb4dcca04468080c9570aa");
-//           eventsRequest.setDoorIndexCodes(indexcodList); // 所有门禁标识
            logger.info("...门禁事件入参{}",JSON.toJSONString(eventsRequest));
            String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
 
@@ -71,8 +63,9 @@ public class DoorEvent {
            JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
            pushSwzk(list);
 
-       });
+      // });
    }
+
 
    private void pushSwzk(JSONArray list){
 
@@ -137,7 +130,14 @@ public class DoorEvent {
            valuesList.add(valuesMap);
        }
        mainMap.put("values", valuesList);
+       logger.info("门禁推送：{}",JSON.toJSONString(mainMap));
+       swzkHttpUtils.pushIOT(mainMap);
    }
+
+    public static void main(String[] args) {
+        //2024-07-19T12:35:44+08:00
+        System.out.println(DateUtil.parse(getDateStrFromISO8601Timestamp("2024-07-19T12:35:44+08:00")));
+    }
 
     public static String getISO8601TimestampFromDateStr(String timestamp){
         java.time.format.DateTimeFormatter dtf1 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -150,11 +150,10 @@ public class DoorEvent {
     }
 
     public static String getDateStrFromISO8601Timestamp(String ISOdate){
-        DateTimeFormatter dtf1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        org.joda.time.DateTime dt= dtf1.parseDateTime(ISOdate);
-        DateTimeFormatter dtf2= DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(ISOdate, formatter);
 
-        return dt.toString(dtf2);
+        return offsetDateTime.toString();
     }
 
 }
