@@ -30,11 +30,13 @@ public class CarGateController {
 
     @PostMapping("/carAccess")
     public Map<String,Object> banhezhan(Map<String,Object> request) {
+        log.info("carAccess:{}",JSON.toJSONString(request));
+        Object type = request.get("type");
+        if(!"online".equals(type.toString())) return null;
+        redisTemplate.opsForValue().set("carAccess",JSON.toJSONString(request));
         String dateKey = DateUtil.format(new Date(Long.parseLong(request.get("start_time").toString())), "yyyy-MM-dd");
         // Generate a unique hash key for the record, e.g., using the timestamp
         String hashKey = DateUtil.now();
-        redisTemplate.opsForValue().set("carAccess",JSON.toJSONString(request));
-        log.info("carAccess:{}",JSON.toJSONString(request));
         redisTemplate.opsForHash().put(dateKey, hashKey, dateKey);
         return request;
     }
