@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-@RequestMapping("/banhezhan")
+@RequestMapping("/car")
 public class CarGateController {
 
     @Resource
