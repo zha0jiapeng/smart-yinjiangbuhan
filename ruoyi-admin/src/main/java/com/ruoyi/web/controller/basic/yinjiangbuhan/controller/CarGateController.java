@@ -29,7 +29,7 @@ public class CarGateController {
 
 
     @PostMapping("/carAccess")
-    public Map<String,Object> banhezhan(Map<String,Object> request) {
+    public Map<String,Object> carAccess(Map<String,Object> request) {
         log.info("carAccess:{}",JSON.toJSONString(request));
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
