@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.bean;
 
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.hikvision.artemis.sdk.ArtemisHttpUtil;
 import com.hikvision.artemis.sdk.config.ArtemisConfig;
 
@@ -46,5 +47,18 @@ public class DoorFunctionApi {
         String body=JSON.toJSONString(eventsRequest);
         String result =ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
         return result;
+    }
+
+    public JSONObject doorList(Map<String,Object> request){
+        String eventsDataApi = ARTEMIS_PATH +"/api/resource/v2/acsDevice/search";
+        Map<String,String> path = new HashMap<String,String>(2){
+            {
+                put("https://",eventsDataApi);
+            }
+        };
+        String body=JSON.toJSONString(request);
+        String result =ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        return jsonObject;
     }
 }

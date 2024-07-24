@@ -41,30 +41,40 @@ public class DoorEvent {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
-   @Scheduled(cron = "0 */10 * * * ?")
+    @Scheduled(cron = "0 */10 * * * ?")
     public void execute() {
+        DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("pageNo", "1");
+        map.put("pageSize", "400");
+        JSONObject returnJson = doorFunctionApi.doorList(map);
+        logger.info("...门禁列表:{}", returnJson);
+        if(!"0".equals(returnJson.get("code").toString())){
+            return;
+        }
+        JSONObject data = (JSONObject)returnJson.get("data");
+        JSONArray list1 = (JSONArray)data.get("list");
+        logger.info("...门禁列表list:{}", list1);
+        DateTime date = DateUtil.date();
+        String now = DateUtil.formatDateTime(date);
+        Date date1 = DateUtil.offsetMinute(date, -10);
+        String pre = DateUtil.formatDateTime(date1);
+        logger.info("=========门禁通行事件===========");
 
-     //  ThreadPool.executorService.submit(() -> {
-           DateTime date = DateUtil.date();
-           String now = DateUtil.formatDateTime(date);
-           Date date1 = DateUtil.offsetMinute(date, -10);
-           String pre = DateUtil.formatDateTime(date1);
-           logger.info("=========门禁通行事件===========");
-           DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
-           EventsRequest eventsRequest = new EventsRequest(); //查询门禁事件
-           eventsRequest.setPageNo(1); // 显示最后一个人
-           eventsRequest.setPageSize(400);
-           eventsRequest.setStartTime(getISO8601TimestampFromDateStr(pre));
-           eventsRequest.setEndTime(getISO8601TimestampFromDateStr(now));
-           logger.info("...门禁事件入参{}",JSON.toJSONString(eventsRequest));
-           String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
+        EventsRequest eventsRequest = new EventsRequest(); //查询门禁事件
+        eventsRequest.setPageNo(1); // 显示最后一个人
+        eventsRequest.setPageSize(400);
+        eventsRequest.setStartTime(getISO8601TimestampFromDateStr(pre));
+        eventsRequest.setEndTime(getISO8601TimestampFromDateStr(now));
+        logger.info("...门禁事件入参{}", JSON.toJSONString(eventsRequest));
+        String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
 
-           JSONObject jsonObject = JSONObject.parseObject(doorcount);
-           JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
-           pushSwzk(list);
+        JSONObject jsonObject = JSONObject.parseObject(doorcount);
+        JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
+        pushSwzk(list);
 
-      // });
-   }
+        // });
+    }
 
 
    private void pushSwzk(JSONArray list){
@@ -74,7 +84,7 @@ public class DoorEvent {
 
        // Add top-level fields
        mainMap.put("deviceType", "2001000010");
-       mainMap.put("SN", "DSB301BA001A1YJB001");
+       mainMap.put("SN", "DS-K1T673M20231018V031000CHAZ5978013");
        mainMap.put("dataType", "200300003");
        mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
        mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
@@ -83,10 +93,7 @@ public class DoorEvent {
        // Create the 'values' list
        List<Map<String, Object>> valuesList = new ArrayList<>();
        Map<String, Object> valuesMap = new HashMap<>();
-
        valuesMap.put("reportTs", DateUtil.current());
-
-
        for (int i = 0; i < list.size(); i++) {
            JSONObject jsonObject = list.getJSONObject(i);
            Object personName = jsonObject.get("personName");
