@@ -16,7 +16,7 @@ public class TcpClientService {
     public static String sendTcpRequest(String message) {
         try {
             //发送到8888端口
-            Socket socket = new Socket("oa.sntsoft.com", 9045);
+            Socket socket = new Socket("58.48.101.155", 9045);
             OutputStream outputStream = socket.getOutputStream();
             //输出流
             PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream, Charset.forName("GBK")), true);
