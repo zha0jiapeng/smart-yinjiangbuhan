@@ -142,7 +142,7 @@ public class PeopleLocationController {
 
         // 创建主数据结构
         Map<String, Object> data = new HashMap<>();
-        data.put("deviceType", "2001000040");
+        data.put("deviceType", "2001000041");
         data.put("SN", "renyuandingwei2");
         data.put("dataType", "200300015");
         data.put("workAreaCode", "YJBH-SSZGX_GQ-08");
