@@ -30,7 +30,7 @@ public class PeopleController {
                     .head(Staff.class)
                     .sheet()
                     .doReadSync();
-            System.out.println(JSON.toJSONString(staffList));
+            zuzhuang(staffList);
             return null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,7 +41,7 @@ public class PeopleController {
     public void zuzhuang(List<Staff> staffList) {
         // 顶层结构
         Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("deviceType", "2001000070");
+        dataMap.put("deviceType", "2001000101");
         dataMap.put("SN", "DB0727167DB22268E055000000000005");
         dataMap.put("dataType", "200300027");
         dataMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
