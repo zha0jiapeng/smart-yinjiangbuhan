@@ -1,17 +1,12 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
-import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.ruoyi.system.domain.SysWorkPeople;
-import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/peopleLocation")
@@ -111,7 +108,7 @@ public class PeopleLocationController {
             propertiesObj.put("humanX", 0);
             propertiesObj.put("humanY", 0);
             propertiesObj.put("humanZ", 0);
-            propertiesObj.put("stationDistance", new BigDecimal(2939).add((BigDecimal) itemMap.get("result_x")));
+            propertiesObj.put("stationDistance", new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString())));
             propertiesObj.put("holeDistance", 0);
             propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
 //                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
