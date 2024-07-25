@@ -28,12 +28,6 @@ import java.util.stream.Collectors;
 public class PeopleLocationController {
 
     @Resource
-    private RedisTemplate redisTemplate;
-
-    @Resource
-    private SysWorkPeopleService workPeopleService;
-
-    @Resource
     SwzkHttpUtils swzkHttpUtils;
 
     @PostMapping("/inTunnelLocation")
@@ -44,19 +38,11 @@ public class PeopleLocationController {
             parse.put("msg","map_id必传");
             return parse;
         }
-        List<Map<String, Object>> list = (List<Map<String, Object>>) redisTemplate.opsForHash().get("peopleInLocation", request.get("map_id")+"");
-        if(list==null || list.size()==0) {
-            HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
-                    .body(JSON.toJSONString(request), "application/json")
-                    .execute();
-            String body = execute.body();
-            parse = JSONObject.parseObject(body, Map.class);
-        }else{
-            parse.put("msg","success");
-            parse.put("code",200);
-            parse.put("data",list);
-        }
-        return parse;
+        HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
+                .body(JSON.toJSONString(request), "application/json")
+                .execute();
+        String body = execute.body();
+        return JSONObject.parseObject(body, Map.class);
     }
 
 
@@ -68,19 +54,11 @@ public class PeopleLocationController {
             parse.put("msg","map_id必传");
             return parse;
         }
-        List<Map<String, Object>> list = (List<Map<String, Object>>) redisTemplate.opsForHash().get("peopleOutLocation", request.get("map_id")+"");
-        if(list==null || list.size()==0) {
-            HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")
-                    .body(JSON.toJSONString(request), "application/json")
-                    .execute();
-            String body = execute.body();
-            parse = JSONObject.parseObject(body, Map.class);
-        }else{
-            parse.put("msg","success");
-            parse.put("code",200);
-            parse.put("data",list);
-        }
-        return parse;
+        HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")
+                .body(JSON.toJSONString(request), "application/json")
+                .execute();
+        String body = execute.body();
+        return JSONObject.parseObject(body, Map.class);
     }
 
 
@@ -88,22 +66,13 @@ public class PeopleLocationController {
 
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzkIn() {
-        Map<String,List<Map<String,Object>>> peopleLocation = (Map<String, List<Map<String,Object>>>) redisTemplate.opsForHash().entries("peopleInLocation");
-        if(peopleLocation==null || peopleLocation.size()==0){
-            HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
-                    .body(JSON.toJSONString(new Object()), "application/json")
-                    .execute();
-            String body = execute.body();
-            Map parse = JSONObject.parseObject(body, Map.class);
-            List<Map<String,Object>> data = (List<Map<String, Object>>) parse.get("data");
-            if(data==null) return;
-            Map<String, List<Map<String, Object>>> groupedByMapId = data.stream()
-                    .collect(Collectors.groupingBy(map ->map.get("map_id").toString()));
-            Set<Map.Entry<String, List<Map<String, Object>>>> entries = groupedByMapId.entrySet();
-            for (Map.Entry<String, List<Map<String, Object>>> entry : entries) {
-                redisTemplate.opsForHash().put("peopleInLocation",entry.getKey(),entry.getValue());
-            }
-        }
+        String now = DateUtil.now();
+        HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
+                .body(JSON.toJSONString(new Object()), "application/json")
+                .execute();
+        String body = execute.body();
+        Map parse = JSONObject.parseObject(body, Map.class);
+        List<Map<String, Object>> datee = (List<Map<String, Object>>) parse.get("data");
         // 创建主数据结构
         Map<String, Object> data = new HashMap<>();
         data.put("deviceType", "2001000040");
@@ -114,55 +83,50 @@ public class PeopleLocationController {
         data.put("tunnCode", "100001");
         data.put("deviceName", "人员定位基站");
         List<Map<String, Object>> valuesList = new ArrayList<>();
+        for (Map<String, Object> itemMap : datee) {
+            // 创建 values 列表
 
-        Set<Map.Entry<String, List<Map<String, Object>>>> entries = peopleLocation.entrySet();
-        for (Map.Entry<String, List<Map<String, Object>>> entry : entries) {
-            List<Map<String, Object>> value = entry.getValue();
-            for (Map<String, Object> itemMap : value) {
-                // 创建 values 列表
+            Map<String, Object> valuesObj = new HashMap<>();
+            valuesObj.put("reportTs", DateUtil.current());
 
-                Map<String, Object> valuesObj = new HashMap<>();
-                valuesObj.put("reportTs", DateUtil.current());
+            // 创建 profile 对象
+            Map<String, Object> profileObj = new HashMap<>();
+            profileObj.put("appType", "life");
+            profileObj.put("modelId", "200017");
+            profileObj.put("poiCode", "w0907005");
+            profileObj.put("deviceType", "2001000040");
 
-                // 创建 profile 对象
-                Map<String, Object> profileObj = new HashMap<>();
-                profileObj.put("appType", "life");
-                profileObj.put("modelId", "200017");
-                profileObj.put("poiCode", "w0907005");
-                profileObj.put("deviceType", "2001000040");
-
-                // 创建 properties 对象
-                Map<String, Object> propertiesObj = new HashMap<>();
-                //propertiesObj.put("ringCode", "");
-                //propertiesObj.put("icCode", "");
-                //propertiesObj.put("heartRate", "");
-                propertiesObj.put("electric", itemMap.get("bat"));
-                propertiesObj.put("time", DateUtil.format(DateUtil.date(((Integer) itemMap.get("time"))), DatePattern.NORM_DATETIME_PATTERN));
-                propertiesObj.put("sos", "0");
-                propertiesObj.put("type", "01");
-                propertiesObj.put("stationX", 0);
-                propertiesObj.put("stationY", 0);
-                propertiesObj.put("stationZ", 0);
-                propertiesObj.put("humanX", 0);
-                propertiesObj.put("humanY", 0);
-                propertiesObj.put("humanZ", 0);
-                propertiesObj.put("stationDistance", new BigDecimal(2939).add((BigDecimal) itemMap.get("result_x")));
-                propertiesObj.put("holeDistance", 0);
-                propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
+            // 创建 properties 对象
+            Map<String, Object> propertiesObj = new HashMap<>();
+            //propertiesObj.put("ringCode", "");
+            //propertiesObj.put("icCode", "");
+            //propertiesObj.put("heartRate", "");
+            propertiesObj.put("electric", itemMap.get("bat"));
+            propertiesObj.put("time", now);
+            propertiesObj.put("sos", "0");
+            propertiesObj.put("type", "01");
+            propertiesObj.put("stationX", 0);
+            propertiesObj.put("stationY", 0);
+            propertiesObj.put("stationZ", 0);
+            propertiesObj.put("humanX", 0);
+            propertiesObj.put("humanY", 0);
+            propertiesObj.put("humanZ", 0);
+            propertiesObj.put("stationDistance", new BigDecimal(2939).add((BigDecimal) itemMap.get("result_x")));
+            propertiesObj.put("holeDistance", 0);
+            propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
 //                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
 //                if(one!=null)
 //                    propertiesObj.put("idCardNumber", one.getIdCard());
 
-                propertiesObj.put("name", ((Map<String, Object>) itemMap.get("user_info")).get("user_name"));
-                propertiesObj.put("locateMode", "GPS");
+            propertiesObj.put("name", ((Map<String, Object>) itemMap.get("user_info")).get("user_name"));
+            propertiesObj.put("locateMode", "GPS");
 
-                // 将 profile 和 properties 对象放入 values 对象中
-                valuesObj.put("profile", profileObj);
-                valuesObj.put("properties", propertiesObj);
-                // 将 values 对象放入 values 列表中
-                valuesList.add(valuesObj);
+            // 将 profile 和 properties 对象放入 values 对象中
+            valuesObj.put("profile", profileObj);
+            valuesObj.put("properties", propertiesObj);
+            // 将 values 对象放入 values 列表中
+            valuesList.add(valuesObj);
 
-            }
         }
         data.put("values", valuesList);
         swzkHttpUtils.pushIOT(data);
@@ -171,22 +135,14 @@ public class PeopleLocationController {
 
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzkOut() {
-        Map<String,List<Map<String,Object>>> peopleLocation = (Map<String, List<Map<String,Object>>>) redisTemplate.opsForHash().entries("peopleOutLocation");
-        if(peopleLocation==null || peopleLocation.size()==0){
-            HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")
-                    .body(JSON.toJSONString(new Object()), "application/json")
-                    .execute();
-            String body = execute.body();
-            Map parse = JSONObject.parseObject(body, Map.class);
-            List<Map<String,Object>> data = (List<Map<String, Object>>) parse.get("data");
-            if(data==null) return;
-            Map<String, List<Map<String, Object>>> groupedByMapId = data.stream()
-                    .collect(Collectors.groupingBy(map ->map.get("map_id").toString()));
-            Set<Map.Entry<String, List<Map<String, Object>>>> entries = groupedByMapId.entrySet();
-            for (Map.Entry<String, List<Map<String, Object>>> entry : entries) {
-                redisTemplate.opsForHash().put("peopleOutLocation",entry.getKey(),entry.getValue());
-            }
-        }
+        String now = DateUtil.now();
+        HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")
+                .body(JSON.toJSONString(new Object()), "application/json")
+                .execute();
+        String body = execute.body();
+        Map parse = JSONObject.parseObject(body, Map.class);
+        List<Map<String,Object>> datae = (List<Map<String, Object>>) parse.get("data");
+
         // 创建主数据结构
         Map<String, Object> data = new HashMap<>();
         data.put("deviceType", "2001000040");
@@ -197,51 +153,46 @@ public class PeopleLocationController {
         data.put("tunnCode", "100001");
         data.put("deviceName", "洞外人员定位基站");
         List<Map<String, Object>> valuesList = new ArrayList<>();
+        for (Map<String, Object> itemMap : datae) {
+            // 创建 values 列表
 
-        Set<Map.Entry<String, List<Map<String, Object>>>> entries = peopleLocation.entrySet();
-        for (Map.Entry<String, List<Map<String, Object>>> entry : entries) {
-            List<Map<String, Object>> value = entry.getValue();
-            for (Map<String, Object> itemMap : value) {
-                // 创建 values 列表
+            Map<String, Object> valuesObj = new HashMap<>();
+            valuesObj.put("reportTs", DateUtil.current());
 
-                Map<String, Object> valuesObj = new HashMap<>();
-                valuesObj.put("reportTs", DateUtil.current());
+            // 创建 profile 对象
+            Map<String, Object> profileObj = new HashMap<>();
+            profileObj.put("appType", "life");
+            profileObj.put("modelId", "200017");
+            profileObj.put("poiCode", "w0907005");
+            profileObj.put("deviceType", "2001000040");
 
-                // 创建 profile 对象
-                Map<String, Object> profileObj = new HashMap<>();
-                profileObj.put("appType", "life");
-                profileObj.put("modelId", "200017");
-                profileObj.put("poiCode", "w0907005");
-                profileObj.put("deviceType", "2001000040");
+            // 创建 properties 对象
+            Map<String, Object> propertiesObj = new HashMap<>();
+//                propertiesObj.put("ringCode", "");
+//                propertiesObj.put("icCode", "");
+//                propertiesObj.put("heartRate", "");
+            propertiesObj.put("electric", itemMap.get("bat"));
+            propertiesObj.put("time", now);
+            propertiesObj.put("sos", "0");
+            propertiesObj.put("type", "01");
+            propertiesObj.put("stationX", 0);
+            propertiesObj.put("stationY", 0);
+            propertiesObj.put("stationZ", 0);
+            propertiesObj.put("humanX", 0);
+            propertiesObj.put("humanY", 0);
+            propertiesObj.put("humanZ", 0);
+            propertiesObj.put("stationDistance", 100);
+            propertiesObj.put("holeDistance", 0);
+            propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
+            propertiesObj.put("name", ((Map<String, Object>) itemMap.get("user_info")).get("user_name"));
+            propertiesObj.put("locateMode", "GPS");
 
-                // 创建 properties 对象
-                Map<String, Object> propertiesObj = new HashMap<>();
-                propertiesObj.put("ringCode", "");
-                propertiesObj.put("icCode", "");
-                propertiesObj.put("heartRate", "");
-                propertiesObj.put("electric", itemMap.get("bat"));
-                propertiesObj.put("time", DateUtil.format(DateUtil.date(((Integer) itemMap.get("time"))), DatePattern.NORM_DATETIME_PATTERN));
-                propertiesObj.put("sos", "0");
-                propertiesObj.put("type", "01");
-                propertiesObj.put("stationX", 0);
-                propertiesObj.put("stationY", 0);
-                propertiesObj.put("stationZ", 0);
-                propertiesObj.put("humanX", 0);
-                propertiesObj.put("humanY", 0);
-                propertiesObj.put("humanZ", 0);
-                propertiesObj.put("stationDistance", 100);
-                propertiesObj.put("holeDistance", 0);
-                propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
-                propertiesObj.put("name", ((Map<String, Object>) itemMap.get("user_info")).get("user_name"));
-                propertiesObj.put("locateMode", "GPS");
+            // 将 profile 和 properties 对象放入 values 对象中
+            valuesObj.put("profile", profileObj);
+            valuesObj.put("properties", propertiesObj);
+            // 将 values 对象放入 values 列表中
+            valuesList.add(valuesObj);
 
-                // 将 profile 和 properties 对象放入 values 对象中
-                valuesObj.put("profile", profileObj);
-                valuesObj.put("properties", propertiesObj);
-                // 将 values 对象放入 values 列表中
-                valuesList.add(valuesObj);
-
-            }
         }
         data.put("values", valuesList);
         swzkHttpUtils.pushIOT(data);
