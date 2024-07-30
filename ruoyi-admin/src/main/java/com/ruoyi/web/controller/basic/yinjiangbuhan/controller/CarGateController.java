@@ -2,8 +2,13 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.enums.YnEnum;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.system.domain.basic.CarAccess;
+import com.ruoyi.system.service.CarAccessService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +28,8 @@ public class CarGateController {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
+    @Autowired
+    private CarAccessService carAccessService;
 
 
     @PostMapping("/carAccess")
@@ -30,11 +37,21 @@ public class CarGateController {
         log.info("carAccess:{}",JSON.toJSONString(request));
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
-        redisTemplate.opsForValue().set("carAccess",JSON.toJSONString(request));
-        String dateKey = DateUtil.format(new Date(Long.parseLong(request.get("start_time").toString())), "yyyy-MM-dd");
-        // Generate a unique hash key for the record, e.g., using the timestamp
-        String hashKey = DateUtil.now();
-        redisTemplate.opsForHash().put(dateKey, hashKey, dateKey);
+
+        CarAccess carAccess = new CarAccess();
+        carAccess.setCarCode(request.get("plate_num").toString());
+        if("in".equals(request.get("vdc_type"))){
+            carAccess.setCarInDate(new Date());
+        }else{
+            carAccess.setCarOutDate(new Date());
+        }
+        carAccess.setCreatedBy(SecurityUtils.getLoginUser().getUsername());
+        carAccess.setCreatedDate(new Date());
+        carAccess.setModifyBy(SecurityUtils.getLoginUser().getUsername());
+        carAccess.setModifyDate(new Date());
+        carAccess.setYn(YnEnum.Y.getCode());
+        carAccessService.insert(carAccess);
+        pushCarAccess(request);
         return request;
     }
 
@@ -42,7 +59,7 @@ public class CarGateController {
         // Root map.
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("deviceType", "2001000011");
-        rootMap.put("SN", "DSC1010000000YJB002");
+        rootMap.put("SN", "DSC101DKDZ001");
         rootMap.put("dataType", "200300004");
         rootMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
         rootMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
