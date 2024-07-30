@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.SysEventsMapper">
+    
+    <resultMap type="SysEvents" id="SysEventsResult">
+        <result property="id"    column="id"    />
+        <result property="cameraName"    column="camera_name"    />
+        <result property="cameraNum"    column="camera_num"    />
+        <result property="cameraIp"    column="camera_ip"    />
+        <result property="cameraState"    column="camera_state"    />
+        <result property="monitorTime"    column="monitor_time"    />
+        <result property="alertType"    column="alert_type"    />
+        <result property="bidCode"    column="bid_code"    />
+        <result property="workAreaCode"    column="work_area_code"    />
+        <result property="createdBy"    column="created_by"    />
+        <result property="createdDate"    column="created_date"    />
+        <result property="modifyBy"    column="modify_by"    />
+        <result property="modifyDate"    column="modify_date"    />
+        <result property="yn"    column="yn"    />
+    </resultMap>
+
+    <sql id="selectSysEventsVo">
+        select id, camera_name, camera_num, camera_ip, camera_state, monitor_time, alert_type, bid_code, work_area_code, created_by, created_date, modify_by, modify_date, yn from sys_events
+    </sql>
+
+    <select id="selectSysEventsList" parameterType="SysEvents" resultMap="SysEventsResult">
+        <include refid="selectSysEventsVo"/>
+        <where>  
+            <if test="cameraName != null  and cameraName != ''"> and camera_name like concat('%', #{cameraName}, '%')</if>
+            <if test="cameraNum != null  and cameraNum != ''"> and camera_num = #{cameraNum}</if>
+            <if test="cameraIp != null  and cameraIp != ''"> and camera_ip = #{cameraIp}</if>
+            <if test="cameraState != null  and cameraState != ''"> and camera_state = #{cameraState}</if>
+            <if test="monitorTime != null  and monitorTime != ''"> and monitor_time = #{monitorTime}</if>
+            <if test="alertType != null  and alertType != ''"> and alert_type like concat('%', #{alertType}, '%')</if>
+            <if test="bidCode != null  and bidCode != ''"> and bid_code = #{bidCode}</if>
+            <if test="workAreaCode != null  and workAreaCode != ''"> and work_area_code = #{workAreaCode}</if>
+            <if test="createdBy != null  and createdBy != ''"> and created_by = #{createdBy}</if>
+            <if test="createdDate != null "> and created_date = #{createdDate}</if>
+            <if test="modifyBy != null  and modifyBy != ''"> and modify_by = #{modifyBy}</if>
+            <if test="modifyDate != null "> and modify_date = #{modifyDate}</if>
+            <if test="yn != null "> and yn = #{yn}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysEventsById" parameterType="Long" resultMap="SysEventsResult">
+        <include refid="selectSysEventsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysEvents" parameterType="SysEvents" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_events
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cameraName != null">camera_name,</if>
+            <if test="cameraNum != null">camera_num,</if>
+            <if test="cameraIp != null">camera_ip,</if>
+            <if test="cameraState != null">camera_state,</if>
+            <if test="monitorTime != null">monitor_time,</if>
+            <if test="alertType != null">alert_type,</if>
+            <if test="bidCode != null">bid_code,</if>
+            <if test="workAreaCode != null">work_area_code,</if>
+            <if test="createdBy != null">created_by,</if>
+            <if test="createdDate != null">created_date,</if>
+            <if test="modifyBy != null">modify_by,</if>
+            <if test="modifyDate != null">modify_date,</if>
+            <if test="yn != null">yn,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cameraName != null">#{cameraName},</if>
+            <if test="cameraNum != null">#{cameraNum},</if>
+            <if test="cameraIp != null">#{cameraIp},</if>
+            <if test="cameraState != null">#{cameraState},</if>
+            <if test="monitorTime != null">#{monitorTime},</if>
+            <if test="alertType != null">#{alertType},</if>
+            <if test="bidCode != null">#{bidCode},</if>
+            <if test="workAreaCode != null">#{workAreaCode},</if>
+            <if test="createdBy != null">#{createdBy},</if>
+            <if test="createdDate != null">#{createdDate},</if>
+            <if test="modifyBy != null">#{modifyBy},</if>
+            <if test="modifyDate != null">#{modifyDate},</if>
+            <if test="yn != null">#{yn},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysEvents" parameterType="SysEvents">
+        update sys_events
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cameraName != null">camera_name = #{cameraName},</if>
+            <if test="cameraNum != null">camera_num = #{cameraNum},</if>
+            <if test="cameraIp != null">camera_ip = #{cameraIp},</if>
+            <if test="cameraState != null">camera_state = #{cameraState},</if>
+            <if test="monitorTime != null">monitor_time = #{monitorTime},</if>
+            <if test="alertType != null">alert_type = #{alertType},</if>
+            <if test="bidCode != null">bid_code = #{bidCode},</if>
+            <if test="workAreaCode != null">work_area_code = #{workAreaCode},</if>
+            <if test="createdBy != null">created_by = #{createdBy},</if>
+            <if test="createdDate != null">created_date = #{createdDate},</if>
+            <if test="modifyBy != null">modify_by = #{modifyBy},</if>
+            <if test="modifyDate != null">modify_date = #{modifyDate},</if>
+            <if test="yn != null">yn = #{yn},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysEventsById" parameterType="Long">
+        delete from sys_events where id = #{id}
+    </delete>
+
+    <delete id="deleteSysEventsByIds" parameterType="String">
+        delete from sys_events where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
