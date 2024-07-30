@@ -100,7 +100,7 @@ public class HikEventController extends BaseController {
 
             sysEvents.setCameraState(1L);
             sysEvents.setMonitorTime(time);
-            sysEvents.setMonitorTime("未佩戴安全帽");
+            sysEvents.setAlertType("未佩戴安全帽");
             sysEvents.setBidCode("YJBH-SSZGX_BD-SG-205");
             sysEvents.setWorkAreaCode("YJBH-SSZGX_GQ-08");
 

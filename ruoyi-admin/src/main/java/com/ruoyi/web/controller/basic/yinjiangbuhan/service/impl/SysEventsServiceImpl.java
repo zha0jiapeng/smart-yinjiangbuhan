@@ -57,7 +57,7 @@ public class SysEventsServiceImpl extends ServiceImpl<SysEventsMapper, SysEvents
     @Override
     public int insertSysEvents(SysEvents sysEventsUser)
     {
-        sysEventsUser.setCreateTime(DateUtils.getNowDate());
+        sysEventsUser.setCreatedDate(DateUtils.getNowDate());
         return sysEventsUserMapper.insertSysEvents(sysEventsUser);
     }
 
@@ -70,7 +70,7 @@ public class SysEventsServiceImpl extends ServiceImpl<SysEventsMapper, SysEvents
     @Override
     public int updateSysEvents(SysEvents sysEventsUser)
     {
-        sysEventsUser.setUpdateTime(DateUtils.getNowDate());
+        sysEventsUser.setModifyDate(DateUtils.getNowDate());
         return sysEventsUserMapper.updateSysEvents(sysEventsUser);
     }
 
