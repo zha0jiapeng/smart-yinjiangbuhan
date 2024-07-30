@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2024-07-16
  */
 @RestController
-@RequestMapping("/education")
+@RequestMapping("/sysEvent")
 public class SysEventController extends BaseController
 {
     @Autowired

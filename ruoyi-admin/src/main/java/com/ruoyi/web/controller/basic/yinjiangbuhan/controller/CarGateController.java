@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -29,7 +26,7 @@ public class CarGateController {
 
 
     @PostMapping("/carAccess")
-    public Map<String,Object> carAccess(Map<String,Object> request) {
+    public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) {
         log.info("carAccess:{}",JSON.toJSONString(request));
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
