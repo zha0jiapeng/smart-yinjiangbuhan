@@ -9,9 +9,12 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysEvents;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.hik.Event;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.scheduling.DoorEvent;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysEventsService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,9 @@ import java.util.Map;
 public class HikEventController extends BaseController {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
+
+    @Autowired
+    private ISysEventsService sysEventsService;
 
 
     @PostMapping("/push")
@@ -55,19 +61,22 @@ public class HikEventController extends BaseController {
         com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(data);
         String prettyData = JSON.toJSONString(jsonObject, SerializerFeature.PrettyFormat,
                 SerializerFeature.WriteMapNullValue);
-        System.out.println(simpleDateFormat.format(date) + "收到数据:" + System.lineSeparator() + prettyData);
+//        System.out.println(simpleDateFormat.format(date) + "收到数据:" + System.lineSeparator() + prettyData);
         com.alibaba.fastjson.JSONObject prettyDataJSON = JSON.parseObject(prettyData);
         com.alibaba.fastjson.JSONObject params = JSON.parseObject(prettyDataJSON.get("params").toString());
         //数据报告时间
         String time = params.get("sendTime").toString();
         com.alibaba.fastjson.JSONArray events = JSON.parseArray(params.get("events").toString());
         for (Object object : events) {
+            SysEvents sysEvents = new SysEvents();
             com.alibaba.fastjson.JSONObject event = (com.alibaba.fastjson.JSONObject) object;
             //设备名称
             String srcName = event.get("srcName").toString();
             if (!srcName.equals("土建4标-洞内-钢筋台车【AI球机】")) {
                 continue;
             }
+            //摄像头名称
+            sysEvents.setCameraName(srcName);
             com.alibaba.fastjson.JSONObject eventData = JSON.parseObject(event.get("data").toString());
             //图片路径
             // 提取 "safetyHelmetDetection" 数组
@@ -80,10 +89,23 @@ public class HikEventController extends BaseController {
             }
             //报警信息所属的摄像头编号
             String channelID = "33";
+            //摄像头编号
+            sysEvents.setCameraNum(channelID);
             //报警信息所属的摄像头名称
             String channelName = "土建4标-洞内-钢筋台车【AI球机】";
+
             //报警信息所属的摄像头ip(eventData)
             String ipAddress = "土建4标-洞内-钢筋台车【AI球机】";
+            sysEvents.setCameraIp(ipAddress);
+
+            sysEvents.setCameraState(1L);
+            sysEvents.setMonitorTime(time);
+            sysEvents.setMonitorTime("未佩戴安全帽");
+            sysEvents.setBidCode("YJBH-SSZGX_BD-SG-205");
+            sysEvents.setWorkAreaCode("YJBH-SSZGX_GQ-08");
+
+            sysEventsService.insertSysEvents(sysEvents);
+
             //只要了未带安全帽，且srcName是土建4标-洞内-钢筋台车【AI球机】
             com.alibaba.fastjson.JSONObject jsonObject1 = new com.alibaba.fastjson.JSONObject();
             jsonObject1.put("deviceType", "2001000065");////设备类型，见1.1章节
