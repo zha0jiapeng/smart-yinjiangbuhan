@@ -55,6 +55,14 @@ public class SysEvents extends BaseEntity
     @Excel(name = "工区编码")
     private String workAreaCode;
 
+    /** 图片路径 */
+    @Excel(name = "图片路径")
+    private String imageUrl;
+
+    /** 原始数据 */
+    @Excel(name = "原始数据")
+    private String rawData;
+
     /** 创建人 */
     @Excel(name = "创建人")
     private String createdBy;

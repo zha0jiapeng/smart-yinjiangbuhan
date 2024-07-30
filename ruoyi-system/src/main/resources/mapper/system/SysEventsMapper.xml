@@ -14,6 +14,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="alertType"    column="alert_type"    />
         <result property="bidCode"    column="bid_code"    />
         <result property="workAreaCode"    column="work_area_code"    />
+        <result property="imageUrl"    column="image_url"    />
+        <result property="rawData"    column="raw_data"    />
         <result property="createdBy"    column="created_by"    />
         <result property="createdDate"    column="created_date"    />
         <result property="modifyBy"    column="modify_by"    />
@@ -22,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysEventsVo">
-        select id, camera_name, camera_num, camera_ip, camera_state, monitor_time, alert_type, bid_code, work_area_code, created_by, created_date, modify_by, modify_date, yn from sys_events
+        select id, camera_name, camera_num, camera_ip, camera_state, monitor_time, alert_type, bid_code, work_area_code, image_url, raw_data, created_by, created_date, modify_by, modify_date, yn from sys_events
     </sql>
 
     <select id="selectSysEventsList" parameterType="SysEvents" resultMap="SysEventsResult">
@@ -36,6 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alertType != null  and alertType != ''"> and alert_type like concat('%', #{alertType}, '%')</if>
             <if test="bidCode != null  and bidCode != ''"> and bid_code = #{bidCode}</if>
             <if test="workAreaCode != null  and workAreaCode != ''"> and work_area_code = #{workAreaCode}</if>
+            <if test="imageUrl != null  and imageUrl != ''"> and image_url = #{imageUrl}</if>
+            <if test="rawData != null  and rawData != ''"> and raw_data = #{rawData}</if>
             <if test="createdBy != null  and createdBy != ''"> and created_by = #{createdBy}</if>
             <if test="createdDate != null "> and created_date = #{createdDate}</if>
             <if test="modifyBy != null  and modifyBy != ''"> and modify_by = #{modifyBy}</if>
@@ -60,6 +64,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alertType != null">alert_type,</if>
             <if test="bidCode != null">bid_code,</if>
             <if test="workAreaCode != null">work_area_code,</if>
+            <if test="imageUrl != null">image_url,</if>
+            <if test="rawData != null">raw_data,</if>
             <if test="createdBy != null">created_by,</if>
             <if test="createdDate != null">created_date,</if>
             <if test="modifyBy != null">modify_by,</if>
@@ -75,6 +81,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alertType != null">#{alertType},</if>
             <if test="bidCode != null">#{bidCode},</if>
             <if test="workAreaCode != null">#{workAreaCode},</if>
+            <if test="imageUrl != null">#{imageUrl},</if>
+            <if test="rawData != null">#{rawData},</if>
             <if test="createdBy != null">#{createdBy},</if>
             <if test="createdDate != null">#{createdDate},</if>
             <if test="modifyBy != null">#{modifyBy},</if>
@@ -94,6 +102,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="alertType != null">alert_type = #{alertType},</if>
             <if test="bidCode != null">bid_code = #{bidCode},</if>
             <if test="workAreaCode != null">work_area_code = #{workAreaCode},</if>
+            <if test="imageUrl != null">image_url = #{imageUrl},</if>
+            <if test="rawData != null">raw_data = #{rawData},</if>
             <if test="createdBy != null">created_by = #{createdBy},</if>
             <if test="createdDate != null">created_date = #{createdDate},</if>
             <if test="modifyBy != null">modify_by = #{modifyBy},</if>

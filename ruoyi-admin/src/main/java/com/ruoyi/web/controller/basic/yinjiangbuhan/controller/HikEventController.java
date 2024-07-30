@@ -94,8 +94,8 @@ public class HikEventController extends BaseController {
             //报警信息所属的摄像头名称
             String channelName = "土建4标-洞内-钢筋台车【AI球机】";
 
-            //报警信息所属的摄像头ip(eventData)
-            String ipAddress = "土建4标-洞内-钢筋台车【AI球机】";
+            //报警信息所属的摄像头ip(eventData.get("ipAddress"))
+            String ipAddress = "192.168.1.80";
             sysEvents.setCameraIp(ipAddress);
 
             sysEvents.setCameraState(1L);
@@ -103,6 +103,8 @@ public class HikEventController extends BaseController {
             sysEvents.setAlertType("未佩戴安全帽");
             sysEvents.setBidCode("YJBH-SSZGX_BD-SG-205");
             sysEvents.setWorkAreaCode("YJBH-SSZGX_GQ-08");
+            sysEvents.setImageUrl(imageUrl);
+            sysEvents.setRawData(prettyData);
 
             sysEventsService.insertSysEvents(sysEvents);
 
