@@ -43,7 +43,7 @@ public class HikEventController extends BaseController {
     @PostMapping("/push")
     public void push() {
         Event event = new Event();
-        event.setEventDest("http://192.168.1.153:8097/ai/events");
+        event.setEventDest("http://192.168.1.153:8097/ai/events/receiveData");
         int eventTypes[] = {1417219};
         event.setEventTypes(eventTypes);
         EventApi eventApi = new EventApi();
