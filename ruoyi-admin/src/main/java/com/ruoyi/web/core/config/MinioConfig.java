@@ -1,4 +1,4 @@
-package com.ruoyi.common.config;
+package com.ruoyi.web.core.config;
 
 import io.minio.MinioClient;
 import lombok.Data;
