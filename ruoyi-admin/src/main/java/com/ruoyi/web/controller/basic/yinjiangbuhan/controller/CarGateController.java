@@ -2,9 +2,11 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.ruoyi.common.enums.YnEnum;
+import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import io.minio.ObjectWriteResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,12 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -29,7 +29,7 @@ import java.util.Map;
 public class CarGateController {
 
     @Resource
-    RedisTemplate redisTemplate;
+    MinioUtils minioUtils;
 
     @Resource
     SwzkHttpUtils swzkHttpUtils;
@@ -107,21 +107,11 @@ public class CarGateController {
         String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
                 .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
         log.info("base64:{}",picture);
-        // Decode the Base64 string to a byte array
-        byte[] imageBytes = Base64.getDecoder().decode(picture);
-        String imageName = request.get("start_time")+".jpg";
-        // Define the path where the image will be saved
-        String imagePath = "src/main/resources/static/carAccessImg/" + DateUtil.format(DateUtil.date(), "yyyyMMdd");
-
-        Files.createDirectories(Paths.get(imagePath));
-        // Write the byte array to a file
-        try (FileOutputStream fos = new FileOutputStream(imagePath+imageName)) {
-            fos.write(imageBytes);
-        } catch (IOException e) {
-            System.err.println("Error saving the image: " + e.getMessage());
-        }
-
-        pass.put("passPic", "http://192.168.1.154:8097/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+imageName);
+        InputStream inputStream = minioUtils.base64ToInputStream(picture);
+        String filename = UUID.randomUUID().toString() + ".png";
+        minioUtils.uploadFile("car-assess", filename, inputStream);
+        String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-assess", filename);
+        pass.put("passPic", presignedObjectUrl);
         events.put("pass", pass);
         valuesItem.put("events", events);
 
