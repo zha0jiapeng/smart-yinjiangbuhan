@@ -104,7 +104,7 @@ public class CarGateController {
         pass.put("passTime", DateUtil.now());
         pass.put("passDirection", "in".equals(request.get("vdc_type")) ? "02" : "01");
         // Decode the Base64 string to a byte array
-        byte[] imageBytes = Base64.getDecoder().decode(request.get("pictrue").toString());
+        byte[] imageBytes = Base64.getDecoder().decode(request.get("picture").toString());
 
         // Define the path where the image will be saved
         String imagePath = "/home/user/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+request.get("start_time")+".jpg";
