@@ -1,7 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
-import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.enums.YnEnum;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
@@ -39,7 +38,7 @@ public class CarGateController {
 
     @PostMapping("/carAccess")
     public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) {
-        log.info("carAccess:{}",JSON.toJSONString(request));
+       // log.info("carAccess:{}",JSON.toJSONString(request));
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
 
@@ -105,9 +104,10 @@ public class CarGateController {
         pass.put("passDirection", "in".equals(request.get("vdc_type")) ? "02" : "01");
         String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
                 .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
+        log.info("base64:{}",picture);
         // Decode the Base64 string to a byte array
         byte[] imageBytes = Base64.getDecoder().decode(picture);
-        String imageName = DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+request.get("start_time")+".jpg"
+        String imageName = DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+request.get("start_time")+".jpg";
         // Define the path where the image will be saved
         String imagePath = "/home/user/carAccessImg/"+imageName;
 
