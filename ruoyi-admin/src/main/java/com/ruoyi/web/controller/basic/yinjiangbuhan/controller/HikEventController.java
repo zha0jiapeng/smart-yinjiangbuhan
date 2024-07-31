@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -65,7 +66,7 @@ public class HikEventController extends BaseController {
         com.alibaba.fastjson.JSONObject prettyDataJSON = JSON.parseObject(prettyData);
         com.alibaba.fastjson.JSONObject params = JSON.parseObject(prettyDataJSON.get("params").toString());
         //数据报告时间
-        String time = params.get("sendTime").toString();
+        String time = DateUtil.parse(DoorEvent.getDateStrFromISO8601Timestamp(params.get("sendTime").toString())).toString();
         com.alibaba.fastjson.JSONArray events = JSON.parseArray(params.get("events").toString());
         for (Object object : events) {
             SysEvents sysEvents = new SysEvents();
