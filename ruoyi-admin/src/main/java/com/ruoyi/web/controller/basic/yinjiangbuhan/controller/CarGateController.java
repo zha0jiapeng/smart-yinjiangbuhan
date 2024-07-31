@@ -111,7 +111,7 @@ public class CarGateController {
         byte[] imageBytes = Base64.getDecoder().decode(picture);
         String imageName = request.get("start_time")+".jpg";
         // Define the path where the image will be saved
-        String imagePath = "/home/user/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/";
+        String imagePath = "src/main/resources/static/carAccessImg/" + DateUtil.format(DateUtil.date(), "yyyyMMdd");
 
         Files.createDirectories(Paths.get(imagePath));
         // Write the byte array to a file
@@ -121,7 +121,7 @@ public class CarGateController {
             System.err.println("Error saving the image: " + e.getMessage());
         }
 
-        pass.put("passPic", "http://192.168.1.154:8097/image/"+imageName);
+        pass.put("passPic", "http://192.168.1.154:8097/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+imageName);
         events.put("pass", pass);
         valuesItem.put("events", events);
 
