@@ -6,22 +6,20 @@ import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
-import io.minio.ObjectWriteResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -109,7 +107,7 @@ public class CarGateController {
         log.info("base64:{}",picture);
         InputStream inputStream = minioUtils.base64ToInputStream(picture);
         String filename = UUID.randomUUID().toString() + ".png";
-        minioUtils.uploadFile("car-assess", filename, inputStream);
+        minioUtils.uploadFile("car-access", filename, inputStream);
         String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-assess", filename);
         pass.put("passPic", presignedObjectUrl);
         events.put("pass", pass);
