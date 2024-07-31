@@ -59,7 +59,7 @@ public class CarGateController {
         // Root map.
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("deviceType", "2001000011");
-        rootMap.put("SN", "DSC101DKDZ001");
+        rootMap.put("SN", "in".equals(request.get("vdc_type"))?"DSC101DKDZ001":"DSC101DKDZ002");
         rootMap.put("dataType", "200300004");
         rootMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
         rootMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
