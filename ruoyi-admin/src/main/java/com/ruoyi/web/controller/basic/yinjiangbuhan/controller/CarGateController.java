@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,7 +59,7 @@ public class CarGateController {
         return request;
     }
 
-    private void pushCarAccess(Map<String, Object> request) {
+    private void pushCarAccess(Map<String, Object> request) throws IOException {
         // Root map.
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("deviceType", "2001000011");
@@ -107,12 +109,13 @@ public class CarGateController {
         log.info("base64:{}",picture);
         // Decode the Base64 string to a byte array
         byte[] imageBytes = Base64.getDecoder().decode(picture);
-        String imageName = DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+request.get("start_time")+".jpg";
+        String imageName = request.get("start_time")+".jpg";
         // Define the path where the image will be saved
-        String imagePath = "/home/user/carAccessImg/"+imageName;
+        String imagePath = "/home/user/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/";
+        Files.createDirectories(Paths.get(imagePath));
 
         // Write the byte array to a file
-        try (FileOutputStream fos = new FileOutputStream(imagePath)) {
+        try (FileOutputStream fos = new FileOutputStream(imagePath+imageName)) {
             fos.write(imageBytes);
         } catch (IOException e) {
             System.err.println("Error saving the image: " + e.getMessage());
