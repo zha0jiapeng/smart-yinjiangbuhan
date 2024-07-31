@@ -3,14 +3,16 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.enums.YnEnum;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -45,9 +47,7 @@ public class CarGateController {
         }else{
             carAccess.setCarOutDate(new Date());
         }
-        carAccess.setCreatedBy(SecurityUtils.getLoginUser().getUsername());
         carAccess.setCreatedDate(new Date());
-        carAccess.setModifyBy(SecurityUtils.getLoginUser().getUsername());
         carAccess.setModifyDate(new Date());
         carAccess.setYn(YnEnum.Y.getCode());
         carAccessService.insert(carAccess);
