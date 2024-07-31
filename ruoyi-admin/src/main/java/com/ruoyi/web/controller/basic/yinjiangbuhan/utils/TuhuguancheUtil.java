@@ -48,7 +48,7 @@ public class TuhuguancheUtil {
         JSONObject jsonObject = JSON.parseObject(body);
         JSONObject result = jsonObject.getJSONObject("result");
         Object accessToken = result.get("accessToken");
-        redisTemplate.opsForValue().set("carToken",accessToken,2, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set("carToken",accessToken,1, TimeUnit.HOURS);
         System.out.println("redis token :"+carToken);
         return accessToken.toString();
     }
