@@ -39,7 +39,7 @@ public class CarGateController {
 
 
     @PostMapping("/carAccess")
-    public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) {
+    public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) throws IOException {
        // log.info("carAccess:{}",JSON.toJSONString(request));
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
@@ -112,8 +112,8 @@ public class CarGateController {
         String imageName = request.get("start_time")+".jpg";
         // Define the path where the image will be saved
         String imagePath = "/home/user/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/";
-        Files.createDirectories(Paths.get(imagePath));
 
+        Files.createDirectories(Paths.get(imagePath));
         // Write the byte array to a file
         try (FileOutputStream fos = new FileOutputStream(imagePath+imageName)) {
             fos.write(imageBytes);
