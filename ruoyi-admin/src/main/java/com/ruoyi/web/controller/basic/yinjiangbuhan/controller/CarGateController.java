@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -98,9 +101,21 @@ public class CarGateController {
         pass.put("eventTs", DateUtil.current());
         pass.put("describe", "");
         pass.put("plateNumber", request.get("plate_num"));
-        String formattedDate = DateUtil.format(new Date(Long.parseLong(request.get("start_time").toString())), "yyyy-MM-dd HH:mm:ss");
-        pass.put("passTime", formattedDate);
+        pass.put("passTime", DateUtil.now());
         pass.put("passDirection", "in".equals(request.get("vdc_type")) ? "02" : "01");
+        // Decode the Base64 string to a byte array
+        byte[] imageBytes = Base64.getDecoder().decode(request.get("pictrue").toString());
+
+        // Define the path where the image will be saved
+        String imagePath = "/home/user/carAccessImg/"+DateUtil.format(DateUtil.date(), "yyyyMMdd")+"/"+request.get("start_time")+".jpg";
+
+        // Write the byte array to a file
+        try (FileOutputStream fos = new FileOutputStream(imagePath)) {
+            fos.write(imageBytes);
+        } catch (IOException e) {
+            System.err.println("Error saving the image: " + e.getMessage());
+        }
+
         pass.put("passPic", "");
         events.put("pass", pass);
         valuesItem.put("events", events);
@@ -116,6 +131,5 @@ public class CarGateController {
         swzkHttpUtils.pushIOT(rootMap);
 
     }
-
 
 }
