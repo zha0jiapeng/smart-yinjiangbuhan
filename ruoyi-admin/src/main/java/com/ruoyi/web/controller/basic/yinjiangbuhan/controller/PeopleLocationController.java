@@ -95,7 +95,7 @@ public class PeopleLocationController {
 
             // 创建 properties 对象
             Map<String, Object> propertiesObj = new HashMap<>();
-            //propertiesObj.put("ringCode", "");
+            propertiesObj.put("ringCode",itemMap.get("tid") );
             //propertiesObj.put("icCode", "");
             //propertiesObj.put("heartRate", "");
             propertiesObj.put("electric", itemMap.get("bat"));
@@ -105,9 +105,9 @@ public class PeopleLocationController {
             propertiesObj.put("stationX", 0);
             propertiesObj.put("stationY", 0);
             propertiesObj.put("stationZ", 0);
-            propertiesObj.put("humanX", 0);
-            propertiesObj.put("humanY", 0);
-            propertiesObj.put("humanZ", 0);
+            propertiesObj.put("humanX", itemMap.get("result_x"));
+            propertiesObj.put("humanY", itemMap.get("result_y"));
+            propertiesObj.put("humanZ", itemMap.get("result_z"));
             propertiesObj.put("stationDistance", new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString())));
             propertiesObj.put("holeDistance", 0);
             propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));

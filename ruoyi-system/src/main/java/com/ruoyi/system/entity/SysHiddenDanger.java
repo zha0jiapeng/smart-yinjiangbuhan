@@ -142,7 +142,7 @@ public class SysHiddenDanger extends Model<SysHiddenDanger> {
     @ApiModelProperty(value = "审核时间")
     private Date examineVerifyDate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(value = "限期整改时间")
     private Date withinDate;
 
