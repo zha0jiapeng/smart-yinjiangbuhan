@@ -26,7 +26,7 @@ public class HolePeopleAccessController {
     SwzkHttpUtils swzkHttpUtils;
 
     @RequestMapping("/push")
-    public Map<String, Object> push(@RequestBody Map<String, String> map) {
+    public Map<String, Object> push(@RequestBody Map<String, Object> map) {
         log.info("收到请求,map:{}", map);
         pushSwzk(map);
         Map<String, Object> result = new HashMap<>();
@@ -34,7 +34,7 @@ public class HolePeopleAccessController {
         return result;
     }
 
-    private void pushSwzk(Map<String, String> map) {
+    private void pushSwzk(Map<String, Object> map) {
 
         // Create the main map
         Map<String, Object> mainMap = new HashMap<>();
@@ -78,7 +78,7 @@ public class HolePeopleAccessController {
         passMap.put("idCardNumber", map.get("idNum"));
         passMap.put("name", map.get("name"));
         passMap.put("passTime", map.get("time"));
-        passMap.put("passDirection", map.get("devicename").toString().contains("出") ? "01" : "02");
+        passMap.put("passDirection", Integer.parseInt(map.get("inout").toString()) == 1 ? "02" : "01");
         eventsMap.put("pass", passMap);
 
         valuesMap.put("events", eventsMap);
