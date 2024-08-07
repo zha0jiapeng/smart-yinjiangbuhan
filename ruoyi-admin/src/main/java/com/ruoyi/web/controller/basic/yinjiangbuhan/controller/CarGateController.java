@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import com.ruoyi.web.core.config.MinioConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,8 @@ public class CarGateController {
     @Resource
     MinioUtils minioUtils;
 
+    @Resource
+    MinioConfig minioConfig;
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
@@ -104,11 +107,11 @@ public class CarGateController {
         pass.put("passDirection", "in".equals(request.get("vdc_type")) ? "02" : "01");
         String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
                 .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
-        log.info("base64:{}",picture);
         InputStream inputStream = minioUtils.base64ToInputStream(picture);
         String filename = UUID.randomUUID().toString() + ".png";
-        minioUtils.uploadFile("car-access", filename, inputStream);
-        String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-assess", filename);
+        minioUtils.uploadFile(minioConfig.getBucketName(), filename, inputStream);
+        //String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-access", filename);
+        String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getBucketName()+"/"+filename;
         pass.put("passPic", presignedObjectUrl);
         events.put("pass", pass);
         valuesItem.put("events", events);
