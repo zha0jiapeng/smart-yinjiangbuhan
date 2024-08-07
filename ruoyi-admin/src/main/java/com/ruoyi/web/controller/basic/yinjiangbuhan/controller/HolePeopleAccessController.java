@@ -30,17 +30,17 @@ public class HolePeopleAccessController {
     SwzkHttpUtils swzkHttpUtils;
 
     @RequestMapping("/push")
-    public Map<String,Object> push(@RequestBody Map<String,String> map){
-        log.info("收到请求,map:{}",map);
+    public Map<String, Object> push(@RequestBody Map<String, String> map) {
+        log.info("收到请求,map:{}", map);
         pushSwzk(map);
 
 
-        Map<String,Object> result =new HashMap<>();
-        result.put("result",0);
+        Map<String, Object> result = new HashMap<>();
+        result.put("result", 0);
         return result;
     }
 
-    private void pushSwzk(Map<String,String> map){
+    private void pushSwzk(Map<String, String> map) {
 
         // Create the main map
         Map<String, Object> mainMap = new HashMap<>();
@@ -79,12 +79,12 @@ public class HolePeopleAccessController {
         Map<String, Object> eventsMap = new HashMap<>();
         Map<String, Object> passMap = new HashMap<>();
         passMap.put("eventType", 1);
-        passMap.put("eventTs",  map.get("time"));
+        passMap.put("eventTs", map.get("time"));
         passMap.put("describe", "");
         passMap.put("idCardNumber", map.get("idNum"));
         passMap.put("name", map.get("name"));
         passMap.put("passTime", map.get("time"));
-        passMap.put("passDirection",map.get("devicename").toString().contains("出") ? "01" : "02");
+        passMap.put("passDirection", map.get("devicename").toString().contains("出") ? "01" : "02");
         eventsMap.put("pass", passMap);
 
         valuesMap.put("events", eventsMap);
@@ -97,22 +97,4 @@ public class HolePeopleAccessController {
         log.info("门禁推送：{}", JSON.toJSONString(mainMap));
         swzkHttpUtils.pushIOT(mainMap);
     }
-
-    public static String getISO8601TimestampFromDateStr(String timestamp){
-        java.time.format.DateTimeFormatter dtf1 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime ldt = LocalDateTime.parse(timestamp,dtf1);
-        ZoneOffset offset = ZoneOffset.of("+08:00");
-        OffsetDateTime date = OffsetDateTime.of(ldt ,offset);
-        java.time.format.DateTimeFormatter dtf2 = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-
-        return date.format(dtf2 );
-    }
-
-    public static String getDateStrFromISO8601Timestamp(String ISOdate){
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(ISOdate, formatter);
-
-        return offsetDateTime.toString();
-
-
-    }
+}
