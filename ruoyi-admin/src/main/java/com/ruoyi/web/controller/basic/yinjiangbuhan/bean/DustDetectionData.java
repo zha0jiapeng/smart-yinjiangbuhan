@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
+package com.ruoyi.web.controller.basic.yinjiangbuhan.bean;
 
 import lombok.Data;
 

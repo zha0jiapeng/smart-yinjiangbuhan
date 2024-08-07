@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DustDetectionData;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,14 +82,14 @@ public class DustDetectionController {
 
             // 创建 properties 对象
             Map<String, Object> propertiesObj = new HashMap<>();
-            propertiesObj.put("monitorTime", dustdetection.datatime);
-            propertiesObj.put("pm2_5", dustdetection.pm25);
-            propertiesObj.put("pm10", dustdetection.pm10);
-            propertiesObj.put("windSpeed", dustdetection.ws);
-            propertiesObj.put("windDirection",dustdetection.wd);
-            propertiesObj.put("noiseDb", dustdetection.noise);
-            propertiesObj.put("temperature", dustdetection.tem);
-            propertiesObj.put("humidity", dustdetection.hum);
+            propertiesObj.put("monitorTime", dustdetection.getDatatime());
+            propertiesObj.put("pm2_5", dustdetection.getPm25());
+            propertiesObj.put("pm10", dustdetection.getPm10());
+            propertiesObj.put("windSpeed", dustdetection.getWs());
+            propertiesObj.put("windDirection", dustdetection.getWd());
+            propertiesObj.put("noiseDb", dustdetection.getNoise());
+            propertiesObj.put("temperature", dustdetection.getTem());
+            propertiesObj.put("humidity", dustdetection.getHum());
 
             // 将 profile 和 properties 对象放入 values 对象中
             valuesObj.put("profile", profileObj);
