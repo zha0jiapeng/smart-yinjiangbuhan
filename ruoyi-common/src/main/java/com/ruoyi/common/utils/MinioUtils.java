@@ -29,6 +29,7 @@ public class MinioUtils {
 
     private final MinioClient minioClient;
 
+
     /******************************  Operate Bucket Start  ******************************/
 
     /**
@@ -425,9 +426,12 @@ public class MinioUtils {
         GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
-                .method(Method.GET).build();
+                .method(Method.GET)
+                .build();
         return minioClient.getPresignedObjectUrl(args);
     }
+
+
 
     /**
      * 将URLDecoder编码转成UTF8

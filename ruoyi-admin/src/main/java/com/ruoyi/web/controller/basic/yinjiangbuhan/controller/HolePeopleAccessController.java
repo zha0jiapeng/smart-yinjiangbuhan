@@ -1,10 +1,9 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
-import cn.hutool.core.date.DateTime;
+
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +29,6 @@ public class HolePeopleAccessController {
     public Map<String, Object> push(@RequestBody Map<String, String> map) {
         log.info("收到请求,map:{}", map);
         pushSwzk(map);
-
-
         Map<String, Object> result = new HashMap<>();
         result.put("result", 0);
         return result;

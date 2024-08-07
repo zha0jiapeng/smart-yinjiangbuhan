@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpRequest;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
@@ -31,12 +32,21 @@ public class PeopleController {
                     .sheet()
                     .doReadSync();
             zuzhuang(staffList);
+            holeXiafa(staffList);
             return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    private void holeXiafa(List<Staff> staffList) {
+        String loginUrl = "http://192.168.103.167:8091/deviceLogin";
+        Map<String,Object> map = new HashMap<>();
+        map.put("password","123456");
+        HttpRequest.post(loginUrl).body(JSON.toJSONString(map));
+    }
+
 
     public void zuzhuang(List<Staff> staffList) {
         // 顶层结构
