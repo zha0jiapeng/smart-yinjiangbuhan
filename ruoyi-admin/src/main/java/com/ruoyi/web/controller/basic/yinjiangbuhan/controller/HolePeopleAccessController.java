@@ -13,7 +13,7 @@ import java.util.Map;
 @RequestMapping("/holePeopleAccess")
 public class HolePeopleAccessController {
     @RequestMapping("/push")
-    public Map<String,Object> push(@RequestBody Map<String,String> map){
+    public Map<String,Object> push(@RequestBody Map<String,Object> map){
         log.info("收到请求,map:{}",map);
         Map<String,Object> result =new HashMap<>();
         result.put("result",0);
