@@ -76,6 +76,7 @@ public class DoorEvent {
        for (Map.Entry<String, List<Map<String, Object>>> stringListEntry : groupedByDevIndexCode.entrySet()) {
            String devIndexCode = stringListEntry.getKey();
            List<Map<String, Object>> value = stringListEntry.getValue();
+           logger.info("devIndexCode:{} list:{}",devIndexCode,JSON.toJSONString(value));
            // 创建根Map
            Map<String, Object> rootMap = new HashMap<>();
            rootMap.put("pageNo", 1);
@@ -103,7 +104,7 @@ public class DoorEvent {
            rootMap.put("expressions", expressionsList);
            DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
 
-           JSONObject JSONObject = doorFunctionApi.search(expressionMap);
+           JSONObject JSONObject = doorFunctionApi.search(rootMap);
            JSONArray objects = (JSONArray) ((JSONObject) JSONObject.get("data")).get("list");
            JSONObject door =(JSONObject) objects.get(0);
            // Create the main map
