@@ -49,7 +49,7 @@ public class DoorFunctionApi {
         return result;
     }
 
-    public JSONObject doorList(Map<String,Object> request){
+    public JSONObject search(Map<String,Object> request){
         String eventsDataApi = ARTEMIS_PATH +"/api/resource/v2/acsDevice/search";
         Map<String,String> path = new HashMap<String,String>(2){
             {

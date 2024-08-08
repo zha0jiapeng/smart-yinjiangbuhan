@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -44,17 +45,6 @@ public class DoorEvent {
     @Scheduled(cron = "0 */10 * * * ?")
     public void execute() {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
-        Map<String,Object> map = new HashMap<String, Object>();
-        map.put("pageNo", "1");
-        map.put("pageSize", "400");
-        JSONObject returnJson = doorFunctionApi.doorList(map);
-        logger.info("...门禁列表:{}", returnJson);
-        if(!"0".equals(returnJson.get("code").toString())){
-            return;
-        }
-        JSONObject data = (JSONObject)returnJson.get("data");
-        JSONArray list1 = (JSONArray)data.get("list");
-        logger.info("...门禁列表list:{}", list1);
         DateTime date = DateUtil.date();
         String now = DateUtil.formatDateTime(date);
         Date date1 = DateUtil.offsetMinute(date, -10);
@@ -68,82 +58,133 @@ public class DoorEvent {
         eventsRequest.setEndTime(getISO8601TimestampFromDateStr(now));
         logger.info("...门禁事件入参{}", JSON.toJSONString(eventsRequest));
         String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
-
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
-        pushSwzk(list);
+        List<Map<String, Object>> lists = jsonArrayToList(list);
+        pushSwzk(lists);
 
-        // });
+
     }
 
 
-   private void pushSwzk(JSONArray list){
+   private void pushSwzk(List<Map<String, Object>> list){
 
-       // Create the main map
-       Map<String, Object> mainMap = new HashMap<>();
+       // 根据devIndexCode字段分组
+       Map<String, List<Map<String, Object>>> groupedByDevIndexCode = list.stream()
+               .collect(Collectors.groupingBy(map -> (String) map.get("devIndexCode")));
 
-       // Add top-level fields
-       mainMap.put("deviceType", "2001000010");
-       mainMap.put("SN", "DS-K1T673M20231018V031000CHAZ5978013");
-       mainMap.put("dataType", "200300003");
-       mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
-       mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
-       mainMap.put("deviceName", "项目部考勤机");
+       for (Map.Entry<String, List<Map<String, Object>>> stringListEntry : groupedByDevIndexCode.entrySet()) {
+           String devIndexCode = stringListEntry.getKey();
+           List<Map<String, Object>> value = stringListEntry.getValue();
+           // 创建根Map
+           Map<String, Object> rootMap = new HashMap<>();
+           rootMap.put("pageNo", 1);
+           rootMap.put("pageSize", 1);
 
-       // Create the 'values' list
-       List<Map<String, Object>> valuesList = new ArrayList<>();
-       Map<String, Object> valuesMap = new HashMap<>();
-       valuesMap.put("reportTs", DateUtil.current());
-       for (int i = 0; i < list.size(); i++) {
-           JSONObject jsonObject = list.getJSONObject(i);
-           Object personName = jsonObject.get("personName");
-           if(personName == null) continue;
-           // Create the 'profile' map
-           Map<String, Object> profileMap = new HashMap<>();
-           profileMap.put("appType", "access_control");
-           profileMap.put("modelId", "2053");
-           profileMap.put("poiCode", "w0713001");
-           profileMap.put("name", "人脸门禁");
-           profileMap.put("model", "S3");
-           profileMap.put("manufacture", "海康威视");
-           profileMap.put("owner", "海康威视");
-           profileMap.put("makeDate", "2020-05-22");
-           profileMap.put("validYear", "2050-05-22");
-           profileMap.put("state", "01");
-           profileMap.put("installPosition", "项目部大门");
-           profileMap.put("x", 0);
-           profileMap.put("y", 0);
-           profileMap.put("z", 0);
-           profileMap.put("level", "01");
-           valuesMap.put("profile", profileMap);
-           // Create the 'events' map
-           Map<String, Object> eventsMap = new HashMap<>();
-           Map<String, Object> passMap = new HashMap<>();
-           DateTime eventTime = DateUtil.parse(getDateStrFromISO8601Timestamp(jsonObject.get("eventTime").toString()));
-           passMap.put("eventType", 1);
-           passMap.put("eventTs", eventTime.getTime());
-           passMap.put("describe", "");
-           passMap.put("idCardNumber", jsonObject.get("certNo"));
-           passMap.put("name", jsonObject.get("personName"));
-           passMap.put("passTime", eventTime);
-           passMap.put("passDirection",jsonObject.get("inAndOutType").toString().equals("1") ? "01" : "00");
-           eventsMap.put("pass", passMap);
+           // 创建expressions列表
+           List<Map<String, Object>> expressionsList = new ArrayList<>();
 
-           valuesMap.put("events", eventsMap);
-           // Add empty 'properties' and 'services' maps
-           valuesMap.put("properties", new HashMap<String, Object>());
-           valuesMap.put("services", new HashMap<String, Object>());
-           // Add the valuesMap to the valuesList
-           valuesList.add(valuesMap);
+           // 创建expression Map
+           Map<String, Object> expressionMap = new HashMap<>();
+           expressionMap.put("key", "indexCode");
+           expressionMap.put("operator", 0);
+
+           // 创建values列表
+           List<String> valuesList2 = new ArrayList<>();
+           valuesList2.add(devIndexCode);
+
+           // 将values列表添加到expression Map中
+           expressionMap.put("values", valuesList2);
+
+           // 将expression Map添加到expressions列表中
+           expressionsList.add(expressionMap);
+
+           // 将expressions列表添加到根Map中
+           rootMap.put("expressions", expressionsList);
+           DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
+
+           JSONObject JSONObject = doorFunctionApi.search(expressionMap);
+           JSONArray objects = (JSONArray) ((JSONObject) JSONObject.get("data")).get("list");
+           JSONObject door =(JSONObject) objects.get(0);
+           // Create the main map
+           Map<String, Object> mainMap = new HashMap<>();
+
+           // Add top-level fields
+           mainMap.put("deviceType", "2001000010");
+           mainMap.put("SN", door.get("devSerialNum"));
+           mainMap.put("dataType", "200300003");
+           mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
+           mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+           mainMap.put("deviceName",door.get("devName"));
+
+           // Create the 'values' list
+           List<Map<String, Object>> valuesList = new ArrayList<>();
+           Map<String, Object> valuesMap = new HashMap<>();
+           valuesMap.put("reportTs", DateUtil.current());
+           for (Map<String, Object> jsonObject : value) {
+               Object personName = jsonObject.get("personName");
+               if(personName == null) continue;
+               // Create the 'profile' map
+               Map<String, Object> profileMap = new HashMap<>();
+               profileMap.put("appType", "access_control");
+               profileMap.put("modelId", "2053");
+               profileMap.put("poiCode", "w0713001");
+               profileMap.put("name", "人脸门禁");
+               profileMap.put("model", "S3");
+               profileMap.put("manufacture", "海康威视");
+               profileMap.put("owner", "海康威视");
+               profileMap.put("makeDate", "2020-05-22");
+               profileMap.put("validYear", "2050-05-22");
+               profileMap.put("state", "01");
+               profileMap.put("installPosition", "项目部大门");
+               profileMap.put("x", 0);
+               profileMap.put("y", 0);
+               profileMap.put("z", 0);
+               profileMap.put("level", "01");
+               valuesMap.put("profile", profileMap);
+               // Create the 'events' map
+               Map<String, Object> eventsMap = new HashMap<>();
+               Map<String, Object> passMap = new HashMap<>();
+               DateTime eventTime = DateUtil.parse(getDateStrFromISO8601Timestamp(jsonObject.get("eventTime").toString()));
+               passMap.put("eventType", 1);
+               passMap.put("eventTs", eventTime.getTime());
+               passMap.put("describe", "");
+               passMap.put("idCardNumber", jsonObject.get("certNo"));
+               passMap.put("name", jsonObject.get("personName"));
+               passMap.put("passTime", eventTime);
+               passMap.put("passDirection",jsonObject.get("inAndOutType").toString().equals("1") ? "01" : "00");
+               eventsMap.put("pass", passMap);
+
+               valuesMap.put("events", eventsMap);
+               // Add empty 'properties' and 'services' maps
+               valuesMap.put("properties", new HashMap<String, Object>());
+               valuesMap.put("services", new HashMap<String, Object>());
+               // Add the valuesMap to the valuesList
+               valuesList.add(valuesMap);
+           }
+           mainMap.put("values", valuesList);
+           logger.info("门禁推送：{}",JSON.toJSONString(mainMap));
+           swzkHttpUtils.pushIOT(mainMap);
+
        }
-       mainMap.put("values", valuesList);
-       logger.info("门禁推送：{}",JSON.toJSONString(mainMap));
-       swzkHttpUtils.pushIOT(mainMap);
+
+
+
+
+
+
    }
 
-    public static void main(String[] args) {
-        //2024-07-19T12:35:44+08:00
-        System.out.println(DateUtil.parse(getDateStrFromISO8601Timestamp("2024-07-19T12:35:44+08:00")));
+    private static List<Map<String, Object>> jsonArrayToList(JSONArray jsonArray) {
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Map<String, Object> map = jsonObject.toJavaObject(Map.class);
+            list.add(map);
+        }
+
+        return list;
     }
 
     public static String getISO8601TimestampFromDateStr(String timestamp){
