@@ -76,4 +76,7 @@ public class Staff {
 
     @ExcelProperty("人员照片base64")
     private String photoBase64;
+
+    @ExcelProperty("bim人员类型")
+    private String bimStaffType;
 }

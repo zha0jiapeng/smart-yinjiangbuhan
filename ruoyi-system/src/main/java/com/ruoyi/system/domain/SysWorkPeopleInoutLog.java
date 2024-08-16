@@ -5,8 +5,6 @@ import com.ruoyi.system.domain.basic.BaseDomain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.Date;
-
 /**
  * 人员出入记录
  * @author hu_p
@@ -27,6 +25,7 @@ public class SysWorkPeopleInoutLog extends BaseDomain {
     private String logTime;
     private String idCard;
     private String phone;
+    private String photoBase64;
     private String name;
 
 }

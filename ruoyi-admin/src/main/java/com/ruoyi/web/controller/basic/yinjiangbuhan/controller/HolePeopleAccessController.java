@@ -3,7 +3,12 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
-
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
+import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,11 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -24,15 +25,42 @@ public class HolePeopleAccessController {
 
     @Resource
     SwzkHttpUtils swzkHttpUtils;
+    @Resource
+    SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
+    @Resource
+    SysWorkPeopleService workPeopleService;
 
     @RequestMapping("/push")
     public Map<String, Object> push(@RequestBody Map<String, Object> map) {
         log.info("收到请求,map:{}", map);
+        if(StringUtils.isEmpty( map.get("name").toString())) return null;
         pushSwzk(map);
+        saveLog(map);
         Map<String, Object> result = new HashMap<>();
         result.put("result", 0);
         return result;
     }
+
+    private void saveLog(Map<String, Object> map) {
+        SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
+        SysWorkPeople workPeople = workPeopleService.getOne(
+                new LambdaQueryWrapper<SysWorkPeople>()
+                        .eq(SysWorkPeople::getIdCard, map.get("idNum")));
+        if(workPeople!=null ) {
+            sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
+        }
+        sysWorkPeopleInoutLog.setSn(map.get("SN").toString());
+        sysWorkPeopleInoutLog.setIdCard(map.get("idNum").toString());
+        sysWorkPeopleInoutLog.setMode(Integer.parseInt(map.get("inout").toString()));
+        sysWorkPeopleInoutLog.setLogTime(DateUtil.now());
+        sysWorkPeopleInoutLog.setName(map.get("name").toString());
+        sysWorkPeopleInoutLog.setPhone(map.get("telephone").toString());
+        sysWorkPeopleInoutLog.setPhotoBase64(map.get("face_base64").toString());
+        sysWorkPeopleInoutLog.setCreatedDate(new Date());
+        sysWorkPeopleInoutLog.setModifyDate(new Date());
+        sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);
+    }
+
 
     private void pushSwzk(Map<String, Object> map) {
 

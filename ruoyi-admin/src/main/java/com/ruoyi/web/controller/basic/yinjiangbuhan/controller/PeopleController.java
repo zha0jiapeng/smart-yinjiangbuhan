@@ -1,11 +1,13 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.http.HttpRequest;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,16 +15,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/people")
+@Slf4j
 public class PeopleController {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
+
+    @Resource
+    private SysWorkPeopleService workPeopleService;
+
     @RequestMapping("/import")
     public Map<String,Object> excelImport(@RequestParam("file") MultipartFile file ){
         try {
@@ -31,8 +35,9 @@ public class PeopleController {
                     .head(Staff.class)
                     .sheet()
                     .doReadSync();
-            zuzhuang(staffList);
-            holeXiafa(staffList);
+            savePeople(staffList);
+            pushSwzk(staffList);
+
             return null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,15 +45,43 @@ public class PeopleController {
         }
     }
 
-    private void holeXiafa(List<Staff> staffList) {
-        String loginUrl = "http://192.168.103.167:8091/deviceLogin";
-        Map<String,Object> map = new HashMap<>();
-        map.put("password","123456");
-        HttpRequest.post(loginUrl).body(JSON.toJSONString(map));
+    private void savePeople(List<Staff> staffList) {
+        List<SysWorkPeople> list = new ArrayList<>();
+        for (Staff staff : staffList) {
+            SysWorkPeople workPeople = workPeopleService.getOne(
+                    new LambdaQueryWrapper<SysWorkPeople>()
+                            .eq(SysWorkPeople::getIdCard, staff.getIdCardNo())
+                    , false);
+                workPeople.setModifyDate(new Date());
+            if(workPeople == null) {
+                workPeople = new SysWorkPeople();
+                workPeople.setCreatedDate(new Date());
+            }
+            log.info("staff.getStaffName:{},{}",staff.getStaffName(),staff.getBimStaffType());
+            workPeople.setName(staff.getStaffName());
+            workPeople.setSex(staff.getSex().equals("男")?1:0);
+            workPeople.setPhone(staff.getPhone());
+            workPeople.setIdCard(staff.getIdCardNo());
+            workPeople.setWorkType(staff.getStaffType());
+            workPeople.setCompany(staff.getOrgId());
+            workPeople.setGroupsName("项目部");
+
+            switch (staff.getBimStaffType()){
+                case "建设单位" : workPeople.setPersonnelConfigType(1);
+                case "设计单位" : workPeople.setPersonnelConfigType(2);
+                case "监理单位" : workPeople.setPersonnelConfigType(3);
+                case "施工单位" : workPeople.setPersonnelConfigType(4);
+                default:
+            }
+            //workPeople.setDepartureDate(staff.getComeOut);
+            workPeople.setYn(1);
+            list.add(workPeople);
+        }
+        workPeopleService.saveOrUpdateBatch(list);
     }
 
 
-    public void zuzhuang(List<Staff> staffList) {
+    public void pushSwzk(List<Staff> staffList) {
         // 顶层结构
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("deviceType", "2001000101");
