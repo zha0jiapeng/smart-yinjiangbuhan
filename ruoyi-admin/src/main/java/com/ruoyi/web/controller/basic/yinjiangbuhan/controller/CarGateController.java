@@ -45,6 +45,14 @@ public class CarGateController {
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
 
+        String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
+                .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
+        InputStream inputStream = minioUtils.base64ToInputStream(picture);
+        String filename = UUID.randomUUID().toString() + ".png";
+        minioUtils.uploadFile(minioConfig.getCarAccessBucketName(), filename, inputStream);
+        //String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-access", filename);
+        String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getCarAccessBucketName()+"/"+filename;
+
         CarAccess carAccess = new CarAccess();
         carAccess.setCarCode(request.get("plate_num").toString());
         if("in".equals(request.get("vdc_type"))){
@@ -52,15 +60,18 @@ public class CarGateController {
         }else{
             carAccess.setCarOutDate(new Date());
         }
+        carAccess.setPhotoBase64(picture);
+        carAccess.setPhotoUrl(presignedObjectUrl);
+        carAccess.setSn("in".equals(request.get("vdc_type"))?"DSC101DKDZ001":"DSC101DKDZ002");
         carAccess.setCreatedDate(new Date());
         carAccess.setModifyDate(new Date());
         carAccess.setYn(YnEnum.Y.getCode());
         carAccessService.insert(carAccess);
-        pushCarAccess(request);
+        pushCarAccess(request,presignedObjectUrl);
         return request;
     }
 
-    private void pushCarAccess(Map<String, Object> request) throws IOException {
+    private void pushCarAccess(Map<String, Object> request,String presignedObjectUrl) throws IOException {
         // Root map.
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("deviceType", "2001000011");
@@ -105,13 +116,7 @@ public class CarGateController {
         pass.put("plateNumber", request.get("plate_num"));
         pass.put("passTime", DateUtil.now());
         pass.put("passDirection", "in".equals(request.get("vdc_type")) ? "02" : "01");
-        String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
-                .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
-        InputStream inputStream = minioUtils.base64ToInputStream(picture);
-        String filename = UUID.randomUUID().toString() + ".png";
-        minioUtils.uploadFile(minioConfig.getBucketName(), filename, inputStream);
-        //String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-access", filename);
-        String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getBucketName()+"/"+filename;
+
         pass.put("passPic", presignedObjectUrl);
         events.put("pass", pass);
         valuesItem.put("events", events);

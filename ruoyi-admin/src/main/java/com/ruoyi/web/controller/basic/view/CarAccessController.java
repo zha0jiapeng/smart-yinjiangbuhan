@@ -45,8 +45,8 @@ public class CarAccessController {
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
-        QueryWrapper<CarAccess> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("createdDate");
+        QueryWrapper<CarAccess> queryWrapper = new QueryWrapper<>(carAccess);
+        queryWrapper.orderByDesc("created_date");
         queryWrapper.eq("yn", YnEnum.Y.getCode());
         Page<CarAccess> page = new Page<>(pageNo, pageSize);
         IPage<CarAccess> pageList = carAccessLogService.page(page, queryWrapper);

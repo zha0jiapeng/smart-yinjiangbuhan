@@ -171,4 +171,5 @@ minio:
   endpoint: http://192.168.1.204:9000
   accessKey: minio_root
   secretKey: minio_123456
-  bucketName: car-access
+  carAccessBucketName: car-access
+  peopleAccessBucketName: people-access

@@ -33,4 +33,10 @@ public class CarAccess extends BaseDomain{
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @Excel(name = "车辆出场时间")
     private Date carOutDate;
+
+    private String photoBase64;
+
+    private String photoUrl;
+
+    private String sn;
 }

@@ -26,6 +26,7 @@ public class SysWorkPeopleInoutLog extends BaseDomain {
     private String idCard;
     private String phone;
     private String photoBase64;
+    private String photoUrl;
     private String name;
 
 }

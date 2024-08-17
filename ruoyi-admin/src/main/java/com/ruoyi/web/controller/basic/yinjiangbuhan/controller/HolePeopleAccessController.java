@@ -4,18 +4,21 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import com.ruoyi.web.core.config.MinioConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
 import java.util.*;
 
 @RestController
@@ -30,14 +33,24 @@ public class HolePeopleAccessController {
     @Resource
     SysWorkPeopleService workPeopleService;
 
+    @Resource
+    MinioUtils minioUtils;
+
+    @Resource
+    MinioConfig minioConfig;
+
     @RequestMapping("/push")
     public Map<String, Object> push(@RequestBody Map<String, Object> map) {
-        log.info("收到请求,map:{}", map);
-        if(StringUtils.isEmpty( map.get("name").toString())) return null;
+        Map<String, Object> result = new HashMap<>();
+        if(StringUtils.isEmpty(map.get("name").toString())) {
+            result.put("result", 0);
+            result.put("message", "ok");
+            return result;
+        }
         pushSwzk(map);
         saveLog(map);
-        Map<String, Object> result = new HashMap<>();
         result.put("result", 0);
+        result.put("message", "ok");
         return result;
     }
 
@@ -52,10 +65,17 @@ public class HolePeopleAccessController {
         sysWorkPeopleInoutLog.setSn(map.get("SN").toString());
         sysWorkPeopleInoutLog.setIdCard(map.get("idNum").toString());
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(map.get("inout").toString()));
-        sysWorkPeopleInoutLog.setLogTime(DateUtil.now());
+        sysWorkPeopleInoutLog.setLogTime(map.get("time").toString());
         sysWorkPeopleInoutLog.setName(map.get("name").toString());
         sysWorkPeopleInoutLog.setPhone(map.get("telephone").toString());
         sysWorkPeopleInoutLog.setPhotoBase64(map.get("face_base64").toString());
+        InputStream inputStream = minioUtils.base64ToInputStream(map.get("face_base64").toString());
+        String filename = UUID.randomUUID().toString() + ".png";
+        minioUtils.uploadFile(minioConfig.getPeopleAccessBucketName(), filename, inputStream);
+        String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getPeopleAccessBucketName()+"/"+filename;
+
+        sysWorkPeopleInoutLog.setPhotoUrl(presignedObjectUrl);
+
         sysWorkPeopleInoutLog.setCreatedDate(new Date());
         sysWorkPeopleInoutLog.setModifyDate(new Date());
         sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);

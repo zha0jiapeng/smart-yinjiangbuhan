@@ -6,6 +6,11 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
+import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
@@ -42,12 +47,18 @@ public class DoorEvent {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
-    @Scheduled(cron = "0 */10 * * * ?")
+    @Resource
+    SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
+
+    @Resource
+    SysWorkPeopleService workPeopleService;
+
+    @Scheduled(cron = "0 */1 * * * ?")
     public void execute() {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
         DateTime date = DateUtil.date();
         String now = DateUtil.formatDateTime(date);
-        Date date1 = DateUtil.offsetMinute(date, -10);
+        Date date1 = DateUtil.offsetMinute(date, -1);
         String pre = DateUtil.formatDateTime(date1);
         logger.info("=========门禁通行事件===========");
 
@@ -153,7 +164,7 @@ public class DoorEvent {
                passMap.put("idCardNumber", jsonObject.get("certNo"));
                passMap.put("name", jsonObject.get("personName"));
                passMap.put("passTime", eventTime);
-               passMap.put("passDirection",jsonObject.get("inAndOutType").toString().equals("1") ? "01" : "00");
+               passMap.put("passDirection",jsonObject.get("inAndOutType").toString().equals("1") ? "02" : "01");
                eventsMap.put("pass", passMap);
 
                valuesMap.put("events", eventsMap);
@@ -162,6 +173,26 @@ public class DoorEvent {
                valuesMap.put("services", new HashMap<String, Object>());
                // Add the valuesMap to the valuesList
                valuesList.add(valuesMap);
+
+               SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
+               SysWorkPeople workPeople = workPeopleService.getOne(
+                       new LambdaQueryWrapper<SysWorkPeople>()
+                               .eq(SysWorkPeople::getIdCard, jsonObject.get("idNum")));
+               if(workPeople!=null ) {
+                   sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
+               }
+               sysWorkPeopleInoutLog.setSn(door.get("devSerialNum").toString());
+               sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());
+               sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inout").toString()));
+               sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
+               sysWorkPeopleInoutLog.setName(jsonObject.get("name").toString());
+               //sysWorkPeopleInoutLog.setPhone(jsonObject.get("telephone").toString());
+               sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207"+jsonObject.get("picUrl").toString());
+               sysWorkPeopleInoutLog.setCreatedDate(new Date());
+               sysWorkPeopleInoutLog.setModifyDate(new Date());
+               sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);
+
+
            }
            mainMap.put("values", valuesList);
            logger.info("门禁推送：{}",JSON.toJSONString(mainMap));

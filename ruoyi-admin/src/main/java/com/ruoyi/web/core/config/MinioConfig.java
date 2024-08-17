@@ -31,8 +31,11 @@ public class MinioConfig {
     /**
      * 默认存储桶
      */
-    @Value("${minio.bucketName}")
-    private String bucketName;
+    @Value("${minio.carAccessBucketName}")
+    private String carAccessBucketName;
+
+    @Value("${minio.peopleAccessBucketName}")
+    private String peopleAccessBucketName;
 
     @Bean
     public MinioClient minioClient() {
