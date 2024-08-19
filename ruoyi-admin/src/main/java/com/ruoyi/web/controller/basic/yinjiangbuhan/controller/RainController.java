@@ -136,6 +136,15 @@ public class RainController extends BaseController {
         return toAjax(rainService.deleteRainByIds(ids));
     }
 
+
+    @GetMapping("/getLatestRain")
+    public AjaxResult getLatestRain(){
+        QueryWrapper<Rain> rainQueryWrapper = new QueryWrapper<>();
+        rainQueryWrapper.orderByDesc("id").last("limit 1");
+        Rain latestRain = rainMapper.selectOne(rainQueryWrapper);
+        return success(latestRain);
+    }
+
     @GetMapping("/getRain")
     @Scheduled(fixedRate = 60000)
     public void getRain() throws IOException {
