@@ -249,7 +249,7 @@ public class RainController extends BaseController {
         object.put("dataType", "80000");//固定值
         object.put("bidCode", "YJBH-SSZGX_BD-SG-205");//标段编码
         object.put("workAreaCode", "YJBH-SSZGX_GQ-08");//工区编码
-        object.put("deviceName", rain.getDeviceName());   //设备名称
+        object.put("deviceName", "雨量计");   //设备名称
         com.alibaba.fastjson.JSONArray values = new com.alibaba.fastjson.JSONArray();
         com.alibaba.fastjson.JSONObject valuesJSON = new com.alibaba.fastjson.JSONObject();
         valuesJSON.put("reportTs", rain.getTimeStamp());//数据报告时间
@@ -304,7 +304,7 @@ public class RainController extends BaseController {
 
 
         com.alibaba.fastjson.JSONObject valuesJSONproperties = new com.alibaba.fastjson.JSONObject();
-        valuesJSONproperties.put("name", rain.getDeviceName());// 设备名称
+        valuesJSONproperties.put("name", "雨量计");// 设备名称
         valuesJSONproperties.put("status", 1);
         valuesJSONproperties.put("report", 1);
         //设备型号
