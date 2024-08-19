@@ -53,12 +53,12 @@ public class DoorEvent {
     @Resource
     SysWorkPeopleService workPeopleService;
 
-    @Scheduled(cron = "0 */1 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void execute() {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
         DateTime date = DateUtil.date();
         String now = DateUtil.formatDateTime(date);
-        Date date1 = DateUtil.offsetMinute(date, -1);
+        Date date1 = DateUtil.offsetMinute(date, -5);
         String pre = DateUtil.formatDateTime(date1);
         logger.info("=========门禁通行事件===========");
 
@@ -177,17 +177,17 @@ public class DoorEvent {
                SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
                SysWorkPeople workPeople = workPeopleService.getOne(
                        new LambdaQueryWrapper<SysWorkPeople>()
-                               .eq(SysWorkPeople::getIdCard, jsonObject.get("idNum")));
+                               .eq(SysWorkPeople::getIdCard, jsonObject.get("certNo")));
                if(workPeople!=null ) {
                    sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
                }
                sysWorkPeopleInoutLog.setSn(door.get("devSerialNum").toString());
                sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());
-               sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inout").toString()));
+               sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inAndOutType").toString()));
                sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
-               sysWorkPeopleInoutLog.setName(jsonObject.get("name").toString());
+               sysWorkPeopleInoutLog.setName(jsonObject.get("personName").toString());
                //sysWorkPeopleInoutLog.setPhone(jsonObject.get("telephone").toString());
-               sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207"+jsonObject.get("picUrl").toString());
+               sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207"+jsonObject.get("picUri").toString());
                sysWorkPeopleInoutLog.setCreatedDate(new Date());
                sysWorkPeopleInoutLog.setModifyDate(new Date());
                sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);

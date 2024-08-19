@@ -4,9 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
@@ -67,7 +67,11 @@ public class EnergyManagementController {
                 refreshToken();
                 return AjaxResult.error("token is expired");
             }
-            return AjaxResult.success(JSON.parseArray(data));
+            Map<String,Object> map = new HashMap<>();
+            JSONObject jsonObject = requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetUseEnergy?PrivAddr=%252Findex.html");
+            map.put("useEnergy",jsonObject);
+            map.put("data",JSON.parseArray(data));
+            return AjaxResult.success(map);
         }
     }
 
@@ -175,7 +179,7 @@ public class EnergyManagementController {
      */
     @GetMapping("getIndexCurveTotal")
     public AjaxResult getIndexCurveTotal(@RequestParam String dataType) {
-        return requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetIndexCurveTotal?dateType=" + dataType + "&PrivAddr=%252Findex.html");
+        return AjaxResult.success(requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetIndexCurveTotal?dateType=" + dataType + "&PrivAddr=%252Findex.html"));
     }
 
     /**
@@ -184,19 +188,20 @@ public class EnergyManagementController {
      */
     @GetMapping("getUseEnergy")
     public AjaxResult getUseEnergy() {
-        return requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetUseEnergy?PrivAddr=%252Findex.html");
+        return AjaxResult.success(requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetUseEnergy?PrivAddr=%252Findex.html"));
     }
 
-    private AjaxResult requestUrl(String url) {
+    private JSONObject requestUrl(String url) {
         HttpRequest request = HttpUtil.createGet(url)
                 .bearerAuth(getToken());
         try (HttpResponse resp = request.execute()) {
             final String data = JSON.parseObject(JSON.parse(resp.body()).toString()).getString("Data");
             if (Objects.isNull(data)) {
                 refreshToken();
-                return AjaxResult.error("token is expired");
+                requestUrl(url);
+                //return AjaxResult.error("token is expired");
             }
-            return AjaxResult.success(JSON.parseObject(data));
+            return JSON.parseObject(data);
         }
     }
 
