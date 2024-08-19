@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Rain;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.RainMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IRainService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -25,9 +26,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -58,6 +62,9 @@ public class RainController extends BaseController {
 
     @Autowired(required = false)
     private RainMapper rainMapper;
+
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
 
     /**
      * 查询雨量计列表
@@ -130,6 +137,7 @@ public class RainController extends BaseController {
     }
 
     @GetMapping("/getRain")
+    @Scheduled(fixedRate = 60000)
     public void getRain() throws IOException {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("loginName", "h240627ztsb");
@@ -150,7 +158,9 @@ public class RainController extends BaseController {
         // 获取响应结果
         String result5 = response1.body();
 
-        JSONObject objectResult5 = JSON.parseObject(result5);
+        String objectResult = JSON.parseObject(result5).get("data").toString();
+        JSONObject objectResult5 = (JSONObject) JSONArray.parse(objectResult).get(0);
+
         Rain rain = new Rain();
         rain.setDeviceAddr(objectResult5.get("deviceAddr").toString());
         rain.setDeviceName(objectResult5.get("deviceName").toString());
@@ -209,8 +219,8 @@ public class RainController extends BaseController {
         // 获取明天的 08:00 时间点
         LocalDateTime tomorrowEightAM = todayEightAM.plusDays(1);
         // 构建查询条件
-        rainListQueryWrapper.ge("createTime", todayEightAM) // createTime >= 今天的 08:00
-                .le("createTime", tomorrowEightAM); // createTime <= 明天的 08:00
+        rainListQueryWrapper.ge("create_time", todayEightAM) // createTime >= 今天的 08:00
+                .le("create_time", tomorrowEightAM); // createTime <= 明天的 08:00
         // 执行查询
         List<Rain> results = rainMapper.selectList(rainListQueryWrapper);
         double curRain = 0.0;
@@ -222,13 +232,15 @@ public class RainController extends BaseController {
         }
         rain.setCurRain(String.valueOf(curRain));
 
+        rainService.insertRain(rain);
+
         com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
-        object.put("deviceType", "2001000065");////设备类型，见1.1章节     不清楚
-        object.put("SN", "DS-2DF8C440WZW-HK20240621CCCHFG2651348");//设备SN号,必填     不清楚
+        object.put("deviceType", "2001000008");////设备类型，见1.1章节
+        object.put("SN", "40331531");//设备SN号,必填
         object.put("dataType", "80000");//固定值
-        object.put("bidCode", "YJBH-SSZGX_BD-SG-205");//标段编码       不清楚
-        object.put("workAreaCode", "YJBH-SSZGX_GQ-08");//工区编码      不清楚
-//        object.put("deviceName", srcName);   //设备名称
+        object.put("bidCode", "YJBH-SSZGX_BD-SG-205");//标段编码
+        object.put("workAreaCode", "YJBH-SSZGX_GQ-08");//工区编码
+        object.put("deviceName", rain.getDeviceName());   //设备名称
         com.alibaba.fastjson.JSONArray values = new com.alibaba.fastjson.JSONArray();
         com.alibaba.fastjson.JSONObject valuesJSON = new com.alibaba.fastjson.JSONObject();
         valuesJSON.put("reportTs", rain.getTimeStamp());//数据报告时间
@@ -269,13 +281,72 @@ public class RainController extends BaseController {
             count = NumberUtil.add(count, Double.parseDouble(latestRainList.get(i).getRain1()));
         }
         valuesJSONEventsMonitorData.put("rain60", count);
+        //信号强度   没有
         valuesJSONEventsMonitorData.put("signal", count);
+        //电池电量   没有
         valuesJSONEventsMonitorData.put("battery", count);
+
+        com.alibaba.fastjson.JSONObject valuesJSONprofile = new com.alibaba.fastjson.JSONObject();
+        valuesJSONprofile.put("appType", "waterMonitor");//固定值，不用改
+        valuesJSONprofile.put("modelId", "200012");//固定值，不用改
+        valuesJSONprofile.put("poiCode", "w1315001");//固定值，不用改
+        valuesJSONprofile.put("deviceType", "2001000032");//固定值，不用改
+        valuesJSON.put("profile", valuesJSONprofile);
+
+
+        com.alibaba.fastjson.JSONObject valuesJSONproperties = new com.alibaba.fastjson.JSONObject();
+        valuesJSONproperties.put("name", rain.getDeviceName());// 设备名称
+        valuesJSONproperties.put("status", 1);
+        valuesJSONproperties.put("report", 1);
+        //设备型号
+        valuesJSONproperties.put("model", "RS-RADZJ-E-Y-4G");
+        //设备制造商
+        valuesJSONproperties.put("manufacture", "建大仁科");
+        //设备制造商
+        valuesJSONproperties.put("makeDate", "建大仁科");
+        //有效年限
+        valuesJSONproperties.put("validYear", "一年");
+
+        //设备使用状态
+        valuesJSONproperties.put("state", "1");
+
+        //设备安装位置
+        valuesJSONproperties.put("installPosition", "8号洞出渣场");
+
+        //腾讯坐标x，经度，eg：113.073201
+        valuesJSONproperties.put("x", "");
+
+        //腾讯坐标y,纬度， eg：22.792789
+        valuesJSONproperties.put("y", "");
+
+        //大地坐标Z
+        valuesJSONproperties.put("z", "");
+        valuesJSON.put("properties", valuesJSONproperties);
+
+        com.alibaba.fastjson.JSONObject valuesJSONservices = new com.alibaba.fastjson.JSONObject();
+        valuesJSON.put("services", valuesJSONservices);
 
         valuesJSON.put("events", valuesJSONEventsMonitorData);
         values.add(valuesJSON);
         object.put("values", values);
+        Map<String, Object> map = jsonObjectToMap(object);
+        swzkHttpUtils.pushIOT(map);
+    }
 
 
+    public static Map<String, Object> jsonObjectToMap(com.alibaba.fastjson.JSONObject jsonObject) {
+        Map<String, Object> map = new HashMap<>();
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof com.alibaba.fastjson.JSONObject) {
+                map.put(key, jsonObjectToMap((com.alibaba.fastjson.JSONObject) value));
+            } else if (value instanceof com.alibaba.fastjson.JSONArray) {
+                map.put(key, value); // 简单处理数组类型，如有需要可进一步处理
+            } else {
+                map.put(key, value);
+            }
+        }
+        return map;
     }
 }
