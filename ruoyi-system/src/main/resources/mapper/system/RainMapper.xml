@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.RainMapper">
+
+    <resultMap type="Rain" id="RainResult">
+        <result property="id"    column="id"    />
+        <result property="deviceStatus"    column="device_status"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceAddr"    column="device_addr"    />
+        <result property="lat"    column="lat"    />
+        <result property="lng"    column="lng"    />
+        <result property="relayStatus"    column="relay_status"    />
+        <result property="systemCode"    column="system_code"    />
+        <result property="timeStamp"    column="time_stamp"    />
+        <result property="dataItem"    column="data_item"    />
+        <result property="curRain"    column="cur_rain"    />
+        <result property="totalRain"    column="total_rain"    />
+        <result property="rain1"    column="rain1"    />
+        <result property="rawData"    column="raw_data"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="oldRain1"    column="old_rain1"    />
+    </resultMap>
+
+    <sql id="selectRainVo">
+        select id, device_status, device_name, device_addr, lat, lng, relay_status, system_code, time_stamp, data_item, cur_rain, total_rain, rain1, raw_data, del_flag, create_by, create_time, update_by, update_time, remark, old_rain1 from rain
+    </sql>
+
+    <select id="selectRainList" parameterType="Rain" resultMap="RainResult">
+        <include refid="selectRainVo"/>
+        <where>
+            <if test="deviceStatus != null  and deviceStatus != ''"> and device_status = #{deviceStatus}</if>
+            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+            <if test="deviceAddr != null  and deviceAddr != ''"> and device_addr = #{deviceAddr}</if>
+            <if test="lat != null  and lat != ''"> and lat = #{lat}</if>
+            <if test="lng != null  and lng != ''"> and lng = #{lng}</if>
+            <if test="relayStatus != null  and relayStatus != ''"> and relay_status = #{relayStatus}</if>
+            <if test="systemCode != null  and systemCode != ''"> and system_code = #{systemCode}</if>
+            <if test="timeStamp != null  and timeStamp != ''"> and time_stamp = #{timeStamp}</if>
+            <if test="dataItem != null  and dataItem != ''"> and data_item = #{dataItem}</if>
+            <if test="curRain != null  and curRain != ''"> and cur_rain = #{curRain}</if>
+            <if test="totalRain != null  and totalRain != ''"> and total_rain = #{totalRain}</if>
+            <if test="rain1 != null  and rain1 != ''"> and rain1 = #{rain1}</if>
+            <if test="rawData != null  and rawData != ''"> and raw_data = #{rawData}</if>
+            <if test="oldRain1 != null  and oldRain1 != ''"> and old_rain1 = #{oldRain1}</if>
+        </where>
+    </select>
+
+    <select id="selectRainById" parameterType="Long" resultMap="RainResult">
+        <include refid="selectRainVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRain" parameterType="Rain">
+        insert into rain
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="deviceStatus != null">device_status,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceAddr != null">device_addr,</if>
+            <if test="lat != null">lat,</if>
+            <if test="lng != null">lng,</if>
+            <if test="relayStatus != null">relay_status,</if>
+            <if test="systemCode != null">system_code,</if>
+            <if test="timeStamp != null">time_stamp,</if>
+            <if test="dataItem != null">data_item,</if>
+            <if test="curRain != null">cur_rain,</if>
+            <if test="totalRain != null">total_rain,</if>
+            <if test="rain1 != null">rain1,</if>
+            <if test="rawData != null">raw_data,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="oldRain1 != null">old_rain1,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="deviceStatus != null">#{deviceStatus},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceAddr != null">#{deviceAddr},</if>
+            <if test="lat != null">#{lat},</if>
+            <if test="lng != null">#{lng},</if>
+            <if test="relayStatus != null">#{relayStatus},</if>
+            <if test="systemCode != null">#{systemCode},</if>
+            <if test="timeStamp != null">#{timeStamp},</if>
+            <if test="dataItem != null">#{dataItem},</if>
+            <if test="curRain != null">#{curRain},</if>
+            <if test="totalRain != null">#{totalRain},</if>
+            <if test="rain1 != null">#{rain1},</if>
+            <if test="rawData != null">#{rawData},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="oldRain1 != null">#{oldRain1},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRain" parameterType="Rain">
+        update rain
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceAddr != null">device_addr = #{deviceAddr},</if>
+            <if test="lat != null">lat = #{lat},</if>
+            <if test="lng != null">lng = #{lng},</if>
+            <if test="relayStatus != null">relay_status = #{relayStatus},</if>
+            <if test="systemCode != null">system_code = #{systemCode},</if>
+            <if test="timeStamp != null">time_stamp = #{timeStamp},</if>
+            <if test="dataItem != null">data_item = #{dataItem},</if>
+            <if test="curRain != null">cur_rain = #{curRain},</if>
+            <if test="totalRain != null">total_rain = #{totalRain},</if>
+            <if test="rain1 != null">rain1 = #{rain1},</if>
+            <if test="rawData != null">raw_data = #{rawData},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="oldRain1 != null">old_rain1 = #{oldRain1},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRainById" parameterType="Long">
+        delete from rain where id = #{id}
+    </delete>
+
+    <delete id="deleteRainByIds" parameterType="String">
+        delete from rain where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
