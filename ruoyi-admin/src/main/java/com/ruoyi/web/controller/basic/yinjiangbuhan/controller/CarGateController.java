@@ -60,7 +60,7 @@ public class CarGateController {
         }else{
             carAccess.setCarOutDate(new Date());
         }
-        carAccess.setPhotoBase64(picture);
+        //carAccess.setPhotoBase64(picture);
         carAccess.setPhotoUrl(presignedObjectUrl);
         carAccess.setSn("in".equals(request.get("vdc_type"))?"DSC101DKDZ001":"DSC101DKDZ002");
         carAccess.setCreatedDate(new Date());

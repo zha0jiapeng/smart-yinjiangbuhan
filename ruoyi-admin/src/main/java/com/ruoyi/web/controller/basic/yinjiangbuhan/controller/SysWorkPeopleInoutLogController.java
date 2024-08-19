@@ -14,16 +14,14 @@ import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.IotStaffAttendanceService;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.system.service.WorkDateStorageService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.StringUtil;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -120,6 +118,7 @@ public class SysWorkPeopleInoutLogController extends BaseController {
     public TableDataInfo list(SysWorkPeopleInoutLog log) {
         startPage();
         final QueryWrapper<SysWorkPeopleInoutLog> query = new QueryWrapper<>(log);
+        query.in(StringUtil.areNotEmpty(log.getSns()),"sn", new ArrayList<>(Arrays.asList(log.getSns().split("\\,"))));
         query.orderByDesc("log_time");
         return getDataTable(sysWorkPeopleInoutLogMapper.selectList(query));
     }

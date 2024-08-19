@@ -2,13 +2,13 @@ package com.ruoyi.web.controller.basic.view;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.enums.YnEnum;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
@@ -33,7 +33,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("car/access")
-public class CarAccessController {
+public class CarAccessController extends BaseController {
     /**
      * 服务对象
      */
@@ -41,16 +41,14 @@ public class CarAccessController {
     private CarAccessService carAccessLogService;
 
     @GetMapping
-    public Result<?> queryPageList(CarAccess carAccess,
-                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                                   HttpServletRequest req) {
+    public TableDataInfo queryPageList(CarAccess carAccess,
+                                       HttpServletRequest req) {
+        startPage();
         QueryWrapper<CarAccess> queryWrapper = new QueryWrapper<>(carAccess);
         queryWrapper.orderByDesc("created_date");
         queryWrapper.eq("yn", YnEnum.Y.getCode());
-        Page<CarAccess> page = new Page<>(pageNo, pageSize);
-        IPage<CarAccess> pageList = carAccessLogService.page(page, queryWrapper);
-        return Result.OK(pageList);
+        List<CarAccess> list = carAccessLogService.list(queryWrapper);
+        return getDataTable(list);
     }
 
     @PostMapping

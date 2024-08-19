@@ -68,7 +68,7 @@ public class HolePeopleAccessController {
         sysWorkPeopleInoutLog.setLogTime(map.get("time").toString());
         sysWorkPeopleInoutLog.setName(map.get("name").toString());
         sysWorkPeopleInoutLog.setPhone(map.get("telephone").toString());
-        sysWorkPeopleInoutLog.setPhotoBase64(map.get("face_base64").toString());
+        //sysWorkPeopleInoutLog.setPhotoBase64(map.get("face_base64").toString());
         InputStream inputStream = minioUtils.base64ToInputStream(map.get("face_base64").toString());
         String filename = UUID.randomUUID().toString() + ".png";
         minioUtils.uploadFile(minioConfig.getPeopleAccessBucketName(), filename, inputStream);

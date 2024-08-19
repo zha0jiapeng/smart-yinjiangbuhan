@@ -73,9 +73,13 @@ public class Device extends BaseEntity
     @Excel(name = "逻辑删除标识 0删除 1正常")
     private Long yn;
 
+    private Integer isOnline;
+
     @Excel(name = "设备sn")
     private String sn;
 
     @Excel(name = "摄像头类型")
     private Integer cameraType;
+
+    private Integer distance;
 }

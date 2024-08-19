@@ -41,4 +41,6 @@ public class IotTsp extends BaseDomain implements Serializable {
 
     private String voc;
 
+    private String weather;
+
 }

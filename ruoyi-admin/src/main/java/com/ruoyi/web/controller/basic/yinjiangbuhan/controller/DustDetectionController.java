@@ -4,6 +4,8 @@ import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.system.domain.basic.IotTsp;
+import com.ruoyi.system.service.IotTspService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DustDetectionData;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +35,53 @@ public class DustDetectionController {
     RedisCache redisCache;
 
     @Resource
+    private IotTspService iotTspService;
+
+    @Resource
     SwzkHttpUtils swzkHttpUtils;
 
     @PostMapping("dustdetection")
     public AjaxResult uploadDustDetectionData(@RequestBody DustDetectionData dustDetectionData) {
         redisCache.setCacheObject("dustdetection", dustDetectionData);
+        IotTsp iotTsp = new IotTsp();
+        iotTsp.setDevId(dustDetectionData.getDeviceId());
+        iotTsp.setTemperature(dustDetectionData.getTem().toString());
+        iotTsp.setPmTwoFive(dustDetectionData.getPm25().toString());
+        iotTsp.setPmTen(dustDetectionData.getPm10().toString());
+        iotTsp.setTsp(dustDetectionData.getTsp().toString());
+        iotTsp.setHumidity(dustDetectionData.getHum().toString());
+
+        Integer wd = dustDetectionData.getWd();
+        iotTsp.setWindDirection(getWindDirection(wd));
+
+        iotTsp.setNoise(dustDetectionData.getNoise().toString());
+        iotTsp.setPressure(dustDetectionData.getAtm().toString());
+        iotTsp.setWindSpeed(dustDetectionData.getWs().toString());
+        iotTsp.setCreatedDate(DateUtil.parse(dustDetectionData.getDatatime()));
+        iotTspService.save(iotTsp);
         return AjaxResult.success();
+    }
+
+    public String getWindDirection(int degree) {
+        if ((degree >= 337.5 && degree <= 360) || (degree >= 0 && degree < 22.5)) {
+            return "北风";
+        } else if (degree >= 22.5 && degree < 67.5) {
+            return "东北风";
+        } else if (degree >= 67.5 && degree < 112.5) {
+            return "东风";
+        } else if (degree >= 112.5 && degree < 157.5) {
+            return "东南风";
+        } else if (degree >= 157.5 && degree < 202.5) {
+            return "南风";
+        } else if (degree >= 202.5 && degree < 247.5) {
+            return "西南风";
+        } else if (degree >= 247.5 && degree < 292.5) {
+            return "西风";
+        } else if (degree >= 292.5 && degree < 337.5) {
+            return "西北风";
+        } else {
+            return "无效的度数";
+        }
     }
 
     @GetMapping("dustdetection")
@@ -46,6 +89,8 @@ public class DustDetectionController {
         final DustDetectionData data = redisCache.getCacheObject("dustdetection");
         return AjaxResult.success(data);
     }
+
+
 
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzk() {

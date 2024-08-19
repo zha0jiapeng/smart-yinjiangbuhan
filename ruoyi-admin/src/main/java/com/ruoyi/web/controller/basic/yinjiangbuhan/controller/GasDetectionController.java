@@ -14,6 +14,7 @@ import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,8 +52,9 @@ public class GasDetectionController {
     }
     @Autowired
     RedisCache redisCache;
-    @RequestMapping("/listByThingsBoard")
-    public Map getGasGasDetection2(){
+
+    @RequestMapping("/listByThingsBoard/{deviceId}")
+    public Map getGasGasDetection2(@PathVariable String deviceId){
         Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
         if(thingsboardToken==null) {
             String url = "192.168.1.201:8080/api/auth/login";
@@ -64,7 +66,8 @@ public class GasDetectionController {
             Object token = jsonObject.get("token");
             redisCache.setCacheObject("thingsboard_token",token,2, TimeUnit.HOURS);
         }
-        String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/915b16e0-3069-11ef-b890-e5136757558e/values/timeseries";
+        //915b16e0-3069-11ef-b890-e5136757558e
+        String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+deviceId+"/values/timeseries";
         HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
         String body = execute.body();
         return JSON.parseObject(body,Map.class);
@@ -88,6 +91,10 @@ public class GasDetectionController {
         String body = execute.body();
 
 
+        push(body);
+    }
+
+    private void push(String body) {
         Map map1 = JSON.parseObject(body, Map.class);
         List<Object> valus = new ArrayList<>();
         List<Map<String,Object>> oxygen = (List<Map<String, Object>>) map1.get("oxygen");
