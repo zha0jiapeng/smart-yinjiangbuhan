@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.scheduling.DoorEvent;
@@ -33,7 +32,7 @@ public class DoorController extends BaseController
      * 查询设备列表
      */
     @GetMapping("/list")
-    public AjaxResult list(String code,String startTime,String endTime,Integer pageNo, Integer pageSize)
+    public JSONObject list(String code,String startTime,String endTime,Integer pageNo, Integer pageSize)
     {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
         EventsRequest eventsRequest = new EventsRequest(); //查询门禁事件
@@ -55,7 +54,7 @@ public class DoorController extends BaseController
             object.put("picUri","https://192.168.1.207"+object.get("picUri"));
         }
 
-        return AjaxResult.success(jsonObject);
+        return jsonObject;
     }
 
 
