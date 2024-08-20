@@ -232,8 +232,6 @@ public class RainController extends BaseController {
         }
         rain.setCurRain(String.valueOf(curRain));
 
-        rainService.insertRain(rain);
-
         com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
         object.put("deviceType", "2001000008");////设备类型，见1.1章节
         object.put("SN", "40331531");//设备SN号,必填
@@ -256,6 +254,7 @@ public class RainController extends BaseController {
         String formattedDateTime = dateTime.format(formatter);
         valuesJSONEventsMonitorData.put("monitorTime", formattedDateTime);
         valuesJSONEventsMonitorData.put("waterLevel", rain.getOldRain1());
+        rain.setWaterLevel(rain.getOldRain1());
         valuesJSONEventsMonitorData.put("curRain", rain.getCurRain());
         valuesJSONEventsMonitorData.put("totalRain", rain.getTotalRain());
         valuesJSONEventsMonitorData.put("rain1", rain.getRain1());
@@ -269,22 +268,27 @@ public class RainController extends BaseController {
             count = NumberUtil.add(count, Double.parseDouble(latestRainList.get(i).getRain1()));
         }
         valuesJSONEventsMonitorData.put("rain5", count);
-
+        rain.setRain5(String.valueOf(count));
         dataSize = Math.min(latestRainList.size(), 10);
         for (int i = 0; i < dataSize; i++) {
             count = NumberUtil.add(count, Double.parseDouble(latestRainList.get(i).getRain1()));
         }
         valuesJSONEventsMonitorData.put("rain10", count);
-
+        rain.setRain10(String.valueOf(count));
         dataSize = Math.min(latestRainList.size(), 60);
         for (int i = 0; i < dataSize; i++) {
             count = NumberUtil.add(count, Double.parseDouble(latestRainList.get(i).getRain1()));
         }
         valuesJSONEventsMonitorData.put("rain60", count);
+        rain.setRain60(String.valueOf(count));
+
+        rainService.insertRain(rain);
+
+
         //信号强度   没有
-        valuesJSONEventsMonitorData.put("signal", count);
+        valuesJSONEventsMonitorData.put("signal", "0");
         //电池电量   没有
-        valuesJSONEventsMonitorData.put("battery", count);
+        valuesJSONEventsMonitorData.put("battery", "0");
 
         com.alibaba.fastjson.JSONObject valuesJSONprofile = new com.alibaba.fastjson.JSONObject();
         valuesJSONprofile.put("appType", "waterMonitor");//固定值，不用改

@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * 雨量计对象 rain
  *
  * @author ruoyi
- * @date 2024-08-19
+ * @date 2024-08-20
  */
 @Data
 @NoArgsConstructor
@@ -108,6 +108,30 @@ public class Rain implements Serializable {
      */
     @ApiModelProperty(value = "1分钟时段降雨量")
     private String rain1;
+
+    /**
+     * 5分钟时段降雨量
+     */
+    @ApiModelProperty(value = "5分钟时段降雨量")
+    private String rain5;
+
+    /**
+     * 10分钟时段降雨量
+     */
+    @ApiModelProperty(value = "10分钟时段降雨量")
+    private String rain10;
+
+    /**
+     * 60分钟时段降雨量
+     */
+    @ApiModelProperty(value = "60分钟时段降雨量")
+    private String rain60;
+
+    /**
+     * 监测时间点得水位
+     */
+    @ApiModelProperty(value = "监测时间点得水位")
+    private String waterLevel;
 
     /**
      * 原始数据
