@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.scheduling.DoorEvent;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +52,6 @@ public class DoorController extends BaseController
             JSONObject object = (JSONObject) o;
             object.put("picUri","https://192.168.1.207"+object.get("picUri"));
         }
-
         return jsonObject;
     }
 

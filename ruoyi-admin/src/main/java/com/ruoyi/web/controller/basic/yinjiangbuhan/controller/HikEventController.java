@@ -6,17 +6,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventApi;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysEvents;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.hik.Event;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.scheduling.DoorEvent;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysEventsService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
