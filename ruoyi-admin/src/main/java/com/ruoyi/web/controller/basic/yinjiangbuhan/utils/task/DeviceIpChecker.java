@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.utils.task;
 
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysDeviceLog;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysDeviceLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +14,9 @@ public class DeviceIpChecker {
 
     @Autowired
     private IDeviceService deviceService;
+
+    @Autowired
+    private ISysDeviceLogService sysDeviceLogService;
 
     /**
      * 检查设备ip是否存在
@@ -32,9 +37,33 @@ public class DeviceIpChecker {
         }
         // 未在线
         if (!reachable) {
+            //更新设备表的配置
             device.setIsOnline(0);
             deviceService.updateDevice(device);
+            //存储到设备日志表中
+            SysDeviceLog sysDeviceLog = convertDeviceToLog(device);
+            sysDeviceLogService.insertSysDeviceLog(sysDeviceLog);
         }
+    }
 
+    public SysDeviceLog convertDeviceToLog(Device device) {
+        SysDeviceLog log = new SysDeviceLog();
+        log.setSysDeviceId(device.getId());
+        log.setDeviceName(device.getDeviceName());
+        log.setDeviceIp(device.getDeviceIp());
+        log.setDeviceType(device.getDeviceType());
+        log.setDevicePort(device.getDevicePort());
+        log.setDeviceArea(device.getDeviceArea());
+        log.setProjectName(device.getProjectName());
+        log.setConfigJson(device.getConfigJson());
+        log.setIsOnline(Long.valueOf(device.getIsOnline()));
+        log.setSn(device.getSn());
+        log.setCameraType(Long.valueOf(device.getCameraType()));
+        log.setSysDeviceCreatedBy(device.getCreatedBy());
+        log.setSysDeviceCreatedData(device.getCreatedDate());
+        log.setSysDeviceModifyBy(device.getModifyBy());
+        log.setModifyDate(device.getModifyDate());
+        log.setSysDeviceYn(device.getYn());
+        return log;
     }
 }
