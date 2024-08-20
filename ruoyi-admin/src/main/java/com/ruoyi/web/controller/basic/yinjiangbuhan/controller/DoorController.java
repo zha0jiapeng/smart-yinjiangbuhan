@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * 设备Controller
@@ -48,8 +49,13 @@ public class DoorController extends BaseController
         String doorCount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
         JSONObject jsonObject = JSONObject.parseObject(doorCount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
-        for (Object o : list) {
+        Iterator<Object> iterator = list.iterator();
+        while (iterator.hasNext()){
+            Object o = iterator.next();
             JSONObject object = (JSONObject) o;
+            if(object.get("personName") == null){
+                iterator.remove();
+            }
             object.put("picUri","https://192.168.1.207"+object.get("picUri"));
         }
         return jsonObject;
