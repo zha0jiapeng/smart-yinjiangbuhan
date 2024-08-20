@@ -222,12 +222,12 @@
         <module>ruoyi-assessment</module>
         <module>ruoyi-framework</module>
         <module>ruoyi-system</module>
-        <!-- <module>ruoyi-quartz</module>-->
+        <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <!--        <module>r-pan-api</module>-->
         <module>ruoyi-activiti</module>
-        <!--       <module>ruoyi-workflow</module>-->
+               <module>ruoyi-workflow</module>
 
            </modules>
            <packaging>pom</packaging>
