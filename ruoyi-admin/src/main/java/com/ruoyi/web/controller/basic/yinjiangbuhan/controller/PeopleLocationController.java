@@ -6,6 +6,9 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +29,10 @@ public class PeopleLocationController {
 
     @Resource
     SwzkHttpUtils swzkHttpUtils;
+
+    @Resource
+    SysWorkPeopleService sysWorkPeopleService;
+
 
     @PostMapping("/inTunnelLocation")
     public Map<String,Object> peopleLocation(@RequestBody Map request){
@@ -81,8 +88,10 @@ public class PeopleLocationController {
         data.put("deviceName", "人员定位基站");
         List<Map<String, Object>> valuesList = new ArrayList<>();
         for (Map<String, Object> itemMap : datee) {
-            // 创建 values 列表
 
+            SysWorkPeople one = sysWorkPeopleService.getOne(new LambdaUpdateWrapper<SysWorkPeople>().eq(SysWorkPeople::getIdCard, ((Map<String, Object>) itemMap.get("user_info")).get("number")));
+
+            // 创建 values 列表
             Map<String, Object> valuesObj = new HashMap<>();
             valuesObj.put("reportTs", DateUtil.current());
 
@@ -101,7 +110,17 @@ public class PeopleLocationController {
             propertiesObj.put("electric", itemMap.get("bat"));
             propertiesObj.put("time", now);
             propertiesObj.put("sos", "0");
-            propertiesObj.put("type", "01");
+
+
+            if(one!=null){
+                switch (one.getWorkType()){
+                    case "劳务人员": propertiesObj.put("type", "04");
+                    case "管理人员": propertiesObj.put("type", "03");
+                    default: propertiesObj.put("type", "04");
+                }
+            }else {
+                propertiesObj.put("type", "04");
+            }
             propertiesObj.put("stationX", 0);
             propertiesObj.put("stationY", 0);
             propertiesObj.put("stationZ", 0);

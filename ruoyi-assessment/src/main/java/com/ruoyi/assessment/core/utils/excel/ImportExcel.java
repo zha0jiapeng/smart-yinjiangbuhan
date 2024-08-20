@@ -6,7 +6,6 @@ package com.ruoyi.assessment.core.utils.excel;
 import com.ruoyi.assessment.core.utils.Reflections;
 import com.ruoyi.assessment.core.utils.excel.annotation.ExcelField;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 

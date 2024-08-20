@@ -222,34 +222,34 @@
         <module>ruoyi-assessment</module>
         <module>ruoyi-framework</module>
         <module>ruoyi-system</module>
-        <module>ruoyi-quartz</module>
+        <!-- <module>ruoyi-quartz</module>-->
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-<!--        <module>r-pan-api</module>-->
+        <!--        <module>r-pan-api</module>-->
         <module>ruoyi-activiti</module>
-        <module>ruoyi-workflow</module>
+        <!--       <module>ruoyi-workflow</module>-->
 
-    </modules>
-    <packaging>pom</packaging>
+           </modules>
+           <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
+           <dependencies>
+               <dependency>
+                   <groupId>org.projectlombok</groupId>
+                   <artifactId>lombok</artifactId>
+               </dependency>
 
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
+               <dependency>
+                   <groupId>cn.hutool</groupId>
+                   <artifactId>hutool-all</artifactId>
+               </dependency>
 
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis.plus.version}</version>
-        </dependency>
+               <dependency>
+                   <groupId>com.baomidou</groupId>
+                   <artifactId>mybatis-plus-boot-starter</artifactId>
+                   <version>${mybatis.plus.version}</version>
+               </dependency>
 
-        <!-- 代码自动生成器依赖-->
+               <!-- 代码自动生成器依赖-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
