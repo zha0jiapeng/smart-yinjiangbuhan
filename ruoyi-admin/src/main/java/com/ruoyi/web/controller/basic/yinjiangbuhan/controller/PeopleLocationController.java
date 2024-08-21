@@ -68,7 +68,7 @@ public class PeopleLocationController {
 
 
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzkIn() {
         String now = DateUtil.now();
         HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
@@ -149,7 +149,7 @@ public class PeopleLocationController {
     }
 
 
-    @Scheduled(cron = "0 */5 * * * *")
+    //@Scheduled(cron = "0 */5 * * * *")
     private void pushSwzkOut() {
         String now = DateUtil.now();
         HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")

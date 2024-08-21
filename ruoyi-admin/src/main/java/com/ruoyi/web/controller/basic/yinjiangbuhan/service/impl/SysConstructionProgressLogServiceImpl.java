@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 施工日志Service业务层处理
@@ -95,5 +96,10 @@ public class SysConstructionProgressLogServiceImpl extends ServiceImpl<SysConstr
     public int deleteSysConstructionProgressLogById(Long id)
     {
         return sysConstructionProgressLogMapper.deleteById(id);
+    }
+
+    @Override
+    public Map<String, Object> getSum() {
+        return sysConstructionProgressLogMapper.getSum();
     }
 }

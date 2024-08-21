@@ -30,11 +30,11 @@ public class SysConstructionProgress extends BaseEntity
     @Excel(name = "支隧洞总长度")
     private Long sideHoleLength;
 
-    /** 总工期（月） */
-    @Excel(name = "总工期", readConverterExp = "月=")
+    /** 总工期（天） */
+    @Excel(name = "总工期")
     private Long totalDuration;
 
-    /** 已施工（月） */
+    /** 已施工（天） */
     @TableField(exist = false)
     private Long constructedDuration;
 

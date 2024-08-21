@@ -42,6 +42,7 @@ public class CarGateController {
     @PostMapping("/carAccess")
     public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) throws IOException {
        // log.info("carAccess:{}",JSON.toJSONString(request));
+        Map<String,Object> responst = new HashMap<>();
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
 
@@ -68,7 +69,9 @@ public class CarGateController {
         carAccess.setYn(YnEnum.Y.getCode());
         carAccessService.insert(carAccess);
         pushCarAccess(request,presignedObjectUrl);
-        return request;
+        responst.put("error_num",0);
+        responst.put("error_str","无");
+        return responst;
     }
 
     private void pushCarAccess(Map<String, Object> request,String presignedObjectUrl) throws IOException {

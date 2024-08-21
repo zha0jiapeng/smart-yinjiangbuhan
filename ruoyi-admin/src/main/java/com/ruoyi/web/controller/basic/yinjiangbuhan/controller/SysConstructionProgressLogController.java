@@ -27,7 +27,7 @@ import java.util.Map;
  * @date 2024-08-20
  */
 @RestController
-@RequestMapping("/system/construction/progress/log")
+@RequestMapping("/construction/progress/log")
 public class SysConstructionProgressLogController extends BaseController
 {
     @Autowired
@@ -42,16 +42,26 @@ public class SysConstructionProgressLogController extends BaseController
                     .sheet()
                     .doReadSync();
             for (SysConstructionProgressLog log : sysConstructionProgressLogs) {
-                BigDecimal drillBlasting = convertKNotation(log.getDrillBlastingStart()).subtract(convertKNotation(log.getDrillBlastingEnd())).setScale(2, RoundingMode.HALF_UP);
-                log.setDrillBlasting(drillBlasting.abs());
-                BigDecimal sideTopArch = convertKNotation(log.getSideTopArchStart()).subtract(convertKNotation(log.getSideTopArchEnd())).setScale(2, RoundingMode.HALF_UP);
-                log.setSideTopArch(sideTopArch.abs());
-                BigDecimal liningCasting = convertKNotation(log.getLiningCastingStart()).subtract(convertKNotation(log.getLiningCastingEnd())).setScale(2, RoundingMode.HALF_UP);
-                log.setLiningCasting(liningCasting.abs());
-                BigDecimal tmb5 = convertKNotation(log.getTmb5Start()).subtract(convertKNotation(log.getTmb5End())).setScale(2, RoundingMode.HALF_UP);
-                log.setTmb5(tmb5.abs());
-                BigDecimal tmb6 = convertKNotation(log.getTmb6Start()).subtract(convertKNotation(log.getTmb6End())).setScale(2, RoundingMode.HALF_UP);
-                log.setTmb6(tmb6.abs());
+                if(log.getDrillBlastingStart()!=null && log.getDrillBlastingEnd()!=null) {
+                    BigDecimal drillBlasting = convertKNotation(log.getDrillBlastingStart()).subtract(convertKNotation(log.getDrillBlastingEnd())).setScale(2, RoundingMode.HALF_UP);
+                    log.setDrillBlasting(drillBlasting.abs());
+                }
+                if(log.getSideTopArchStart()!=null && log.getSideTopArchEnd()!=null) {
+                    BigDecimal sideTopArch = convertKNotation(log.getSideTopArchStart()).subtract(convertKNotation(log.getSideTopArchEnd())).setScale(2, RoundingMode.HALF_UP);
+                    log.setSideTopArch(sideTopArch.abs());
+                }
+                if(log.getLiningCastingStart()!=null && log.getLiningCastingEnd()!=null) {
+                    BigDecimal liningCasting = convertKNotation(log.getLiningCastingStart()).subtract(convertKNotation(log.getLiningCastingEnd())).setScale(2, RoundingMode.HALF_UP);
+                    log.setLiningCasting(liningCasting.abs());
+                }
+                if(log.getTmb5Start()!=null && log.getTmb5End()!=null) {
+                    BigDecimal tmb5 = convertKNotation(log.getTmb5Start()).subtract(convertKNotation(log.getTmb5End())).setScale(2, RoundingMode.HALF_UP);
+                    log.setTmb5(tmb5.abs());
+                }
+                if(log.getTmb6Start()!=null && log.getTmb6End()!=null) {
+                    BigDecimal tmb6 = convertKNotation(log.getTmb6Start()).subtract(convertKNotation(log.getTmb6End())).setScale(2, RoundingMode.HALF_UP);
+                    log.setTmb6(tmb6.abs());
+                }
             }
             sysConstructionProgressLogService.saveBatch(sysConstructionProgressLogs);
             return null;
@@ -70,6 +80,18 @@ public class SysConstructionProgressLogController extends BaseController
 
         // Combine the parts into the final result
         return new BigDecimal(kilometers * 1000 + meters); // 80 * 1000 + 110.0 -> 80110.0
+    }
+
+    @GetMapping("/getCurve")
+    public TableDataInfo getCurve()
+    {
+        return null;
+    }
+
+    @GetMapping("/getConstructionProgressLog")
+    public TableDataInfo getConstructionProgressLog()
+    {
+        return null;
     }
 
 

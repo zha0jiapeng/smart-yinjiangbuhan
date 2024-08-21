@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgressLog;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 施工日志Service接口
@@ -60,4 +61,6 @@ public interface ISysConstructionProgressLogService extends IService<SysConstruc
      * @return 结果
      */
     public int deleteSysConstructionProgressLogById(Long id);
+
+    Map<String, Object> getSum();
 }
