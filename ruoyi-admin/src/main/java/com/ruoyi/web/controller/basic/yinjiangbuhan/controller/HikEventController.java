@@ -112,16 +112,16 @@ public class HikEventController extends BaseController {
             //添加报警信息
             Order order = new Order();
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
-            order.setDeviceId(28L);
+            order.setDeviceId(88L);
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
-            order.setAlarmPoint(28L);
+            order.setAlarmPoint(88L);
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
             order.setAlarmTypeId(1L);
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
             order.setAlarmType("未佩戴安全帽");
 
             order.setAlarmCapture(imageUrl);
-            order.setAlarmContent(channelName + "：" + order.getAlarmType());
+            order.setAlarmContent("区域：衬砌面；报警设备名称：衬砌台车AI球机；" + "报警内容：" + order.getAlarmType() + "；");
             order.setRemark("");
             ruleService.executeSignRule(order);
 
