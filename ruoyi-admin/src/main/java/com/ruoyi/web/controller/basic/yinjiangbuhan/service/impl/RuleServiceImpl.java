@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AlarmType;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
@@ -48,7 +49,16 @@ public class RuleServiceImpl implements RuleService {
             kieSession.insert(alarmType);
             kieSession.fireAllRules();
             kieSession.dispose();
-            alarmService.insertAlarm(alarm);
+
+            // 查询最新的一条数据
+            QueryWrapper<Alarm> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("device_id", alarm.getDeviceId())
+                    .orderByDesc("id")
+                    .last("LIMIT 1");
+            Alarm latestAlarm = alarmService.getOne(queryWrapper);
+            if (latestAlarm == null || latestAlarm.getAlarmStatus() == 2) {
+                alarmService.insertAlarm(alarm);
+            }
         }else {
             System.out.println("未找到设备信息");
         }
