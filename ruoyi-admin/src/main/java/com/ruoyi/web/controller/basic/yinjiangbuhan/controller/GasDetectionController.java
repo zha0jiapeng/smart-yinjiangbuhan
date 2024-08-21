@@ -78,7 +78,7 @@ public class GasDetectionController {
         return JSON.parseObject(body,Map.class);
     }
 
-    @Scheduled(cron = "0 */10 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzk() {
         Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
         if(thingsboardToken==null) {
