@@ -23,13 +23,12 @@ import javax.annotation.Resource;
 
 /**
  * 设备Service业务层处理
- * 
+ *
  * @author mashir0
  * @date 2024-06-23
  */
 @Service
-public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implements IDeviceService
-{
+public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implements IDeviceService {
     @Resource
     DeviceMapper deviceMapper;
 
@@ -40,14 +39,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
      * 监听设备是否在线
      */
     @PostConstruct
-    public void isDeviceOnline()
-    {
+    public void isDeviceOnline() {
         ScheduledTaskService service = new ScheduledTaskService();
         LambdaQueryWrapper<Device> lq = new LambdaQueryWrapper<>();
-        lq.eq(Device::getYn,1);
+        lq.eq(Device::getYn, 1);
         List<Device> list = deviceMapper.selectList(lq);
         for (Device v : list) {
-            if (StringUtils.isNotEmpty(v.getDeviceIp())) {
+            String deviceIp = v.getDeviceIp();
+            if (deviceIp != null && StringUtils.isNotEmpty(deviceIp) && !deviceIp.contains(",")) {
                 service.addTask(v.getId().toString(), () -> deviceIpChecker.ping(v), 5, TimeUnit.SECONDS);
             }
         }
@@ -56,6 +55,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Override
     public int updateDevice(Device device) {
         device.setUpdateTime(DateUtils.getNowDate());
+        System.out.println(device.toString());
         return deviceMapper.updateById(device);
     }
 }
