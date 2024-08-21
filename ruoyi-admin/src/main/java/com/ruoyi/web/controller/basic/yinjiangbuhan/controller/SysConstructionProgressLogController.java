@@ -18,9 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 施工日志Controller
@@ -96,9 +94,28 @@ public class SysConstructionProgressLogController extends BaseController
     }
 
     @GetMapping("/getTotal")
-    public List<Map<String, Object>>  getTotal(Integer type,@RequestParam(required = false) String text)
+    public AjaxResult getTotal(Integer type,@RequestParam(required = false) String text)
     {
-        return sysConstructionProgressLogService.getSum(type,text);
+        List<String> expectedHoleTypes = Arrays.asList("支洞", "主隧洞");
+        List<Map<String, Object>> sum = sysConstructionProgressLogService.getSum(type, text);
+
+        Map<String, Map<String, Object>> resultMap = new HashMap<>();
+
+        for (Map<String, Object> entry : sum) {
+            String holeType = (String) entry.get("hole_type");
+            resultMap.put(holeType, entry);
+        }
+        for (String expectedType : expectedHoleTypes) {
+            if (!resultMap.containsKey(expectedType)) {
+                // 如果缺失，创建默认值的Map并添加到结果中
+                Map<String, Object> defaultEntry = new HashMap<>();
+                defaultEntry.put("hole_type", expectedType);
+                defaultEntry.put("total_excavation", 0.0);  // 默认值，视具体需求而定
+                defaultEntry.put("total_lining", 0.0);      // 默认值，视具体需求而定
+                sum.add(defaultEntry);
+            }
+        }
+        return AjaxResult.success(sum);
     }
 
     /**
