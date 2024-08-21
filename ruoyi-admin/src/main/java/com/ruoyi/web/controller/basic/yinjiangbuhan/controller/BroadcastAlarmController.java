@@ -38,7 +38,7 @@ public class BroadcastAlarmController {
                                  @RequestParam(required = false) Integer page,
                                  @RequestParam(required = false) Integer limit,
                                  @RequestParam(required = false) String keyword){
-        HttpRequest request = HttpUtil.createGet("http://192.168.103.100:8080/v1/device")
+        HttpRequest request = HttpUtil.createGet("http://192.168.1.201:8090/v1/device")
                 .header("access_token", getToken());
         Optional.ofNullable(id).ifPresent(i -> request.form("id", i));
         Optional.ofNullable(page).ifPresent(p -> request.form("page", p));
@@ -48,6 +48,7 @@ public class BroadcastAlarmController {
             return JSONUtil.parseObj(resp.body());
         }
     }
+
 
     String getToken() {
         String token = redisCache.getCacheObject("token");

@@ -227,7 +227,7 @@
         <module>ruoyi-common</module>
         <!--        <module>r-pan-api</module>-->
         <module>ruoyi-activiti</module>
-               <module>ruoyi-workflow</module>
+        <module>ruoyi-workflow</module>
 
            </modules>
            <packaging>pom</packaging>
