@@ -47,7 +47,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         for (Device v : list) {
             String deviceIp = v.getDeviceIp();
             if (deviceIp != null && StringUtils.isNotEmpty(deviceIp) && !deviceIp.contains(",")) {
-                service.addTask(v.getId().toString(), () -> deviceIpChecker.ping(v), 5, TimeUnit.SECONDS);
+                service.addTask(v.getId().toString(), () -> deviceIpChecker.ping(v), 60, TimeUnit.SECONDS);
             }
         }
     }
