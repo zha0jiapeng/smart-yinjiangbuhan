@@ -62,7 +62,7 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 " +
             "GROUP BY hole_type, YEAR(log_date) " +
-            "ORDER BY hole_type, year")
+            "ORDER BY hole_type, item")
     List<Map<String, Object>> getTotalCurve();
 
     @Select("SELECT " +
@@ -73,7 +73,7 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 AND YEAR(log_date) = #{year} " +
             "GROUP BY hole_type, MONTH(log_date) " +
-            "ORDER BY hole_type, month")
+            "ORDER BY hole_type, item")
     List<Map<String, Object>> getYearCurve(String year);
     @Select("SELECT " +
             "hole_type, " +
@@ -83,6 +83,6 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 AND DATE_FORMAT(log_date, '%Y-%m') = #{month} " +
             "GROUP BY hole_type, log_date " +
-            "ORDER BY hole_type, day")
+            "ORDER BY hole_type, item")
     List<Map<String, Object>> getMonthCurve(String month);
 }
