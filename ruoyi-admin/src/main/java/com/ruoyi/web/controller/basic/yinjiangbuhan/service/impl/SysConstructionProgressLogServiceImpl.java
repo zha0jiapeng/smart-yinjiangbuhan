@@ -99,7 +99,14 @@ public class SysConstructionProgressLogServiceImpl extends ServiceImpl<SysConstr
     }
 
     @Override
-    public Map<String, Object> getSum() {
-        return sysConstructionProgressLogMapper.getSum();
+    public List<Map<String, Object>>getSum(int type,String text) {
+        switch (type){
+            case 1: return sysConstructionProgressLogMapper.getSum();
+            case 2: return sysConstructionProgressLogMapper.getYearSum(text);
+            case 3: return sysConstructionProgressLogMapper.getMonthSum(text);
+            case 4: return sysConstructionProgressLogMapper.getDaySum(text);
+            default: return null;
+        }
+
     }
 }

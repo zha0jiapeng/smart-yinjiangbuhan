@@ -62,5 +62,5 @@ public interface ISysConstructionProgressLogService extends IService<SysConstruc
      */
     public int deleteSysConstructionProgressLogById(Long id);
 
-    Map<String, Object> getSum();
+    List<Map<String, Object>> getSum(int type,String text);
 }

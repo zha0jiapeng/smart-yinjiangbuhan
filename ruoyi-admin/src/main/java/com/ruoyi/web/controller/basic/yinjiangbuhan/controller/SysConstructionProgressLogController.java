@@ -37,6 +37,7 @@ public class SysConstructionProgressLogController extends BaseController
     @RequestMapping("/import")
     public Map<String,Object> excelImport(@RequestParam("file") MultipartFile file ){
         try {
+
             // Read the Excel file
             List<SysConstructionProgressLog> sysConstructionProgressLogs = EasyExcel.read(file.getInputStream())
                     .head(SysConstructionProgressLog.class)
@@ -67,7 +68,7 @@ public class SysConstructionProgressLogController extends BaseController
                 log.setModifyDate(new Date());
             }
             sysConstructionProgressLogService.saveBatch(sysConstructionProgressLogs);
-            return null;
+            return AjaxResult.success("导入成功");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -91,12 +92,11 @@ public class SysConstructionProgressLogController extends BaseController
         return null;
     }
 
-    @GetMapping("/getConstructionProgressLog")
-    public TableDataInfo getConstructionProgressLog()
+    @GetMapping("/getTotal")
+    public List<Map<String, Object>>  getTotal(Integer type,@RequestParam(required = false) String text)
     {
-        return null;
+        return sysConstructionProgressLogService.getSum(type,text);
     }
-
 
     /**
      * 查询施工日志列表
