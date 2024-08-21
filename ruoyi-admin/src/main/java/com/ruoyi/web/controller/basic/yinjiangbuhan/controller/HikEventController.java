@@ -7,9 +7,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventApi;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysEvents;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.hik.Event;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysEventsService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +36,9 @@ public class HikEventController extends BaseController {
 
     @Autowired
     private ISysEventsService sysEventsService;
+
+    @Autowired
+    private RuleService ruleService;
 
 
     @PostMapping("/push")
@@ -103,6 +108,22 @@ public class HikEventController extends BaseController {
             sysEvents.setRawData(prettyData);
 
             sysEventsService.insertSysEvents(sysEvents);
+
+            //添加报警信息
+            Order order = new Order();
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+            order.setDeviceId(28L);
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+            order.setAlarmPoint(28L);
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+            order.setAlarmTypeId(1L);
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+            order.setAlarmType("未佩戴安全帽");
+
+            order.setAlarmCapture(imageUrl);
+            order.setAlarmContent(channelName + "：" + order.getAlarmType());
+            order.setRemark("");
+            ruleService.executeSignRule(order);
 
             //只要了未带安全帽，且srcName是土建4标-洞内-钢筋台车【AI球机】
             com.alibaba.fastjson.JSONObject jsonObject1 = new com.alibaba.fastjson.JSONObject();

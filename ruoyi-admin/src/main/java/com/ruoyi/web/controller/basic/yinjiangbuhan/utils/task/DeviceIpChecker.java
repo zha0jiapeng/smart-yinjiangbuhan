@@ -2,9 +2,11 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.utils.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysDeviceLog;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysDeviceLogService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,9 @@ public class DeviceIpChecker {
 
     @Autowired
     private IDeviceService deviceService;
+
+    @Autowired
+    private RuleService ruleService;
 
     @Autowired
     private ISysDeviceLogService sysDeviceLogService;
@@ -63,6 +68,7 @@ public class DeviceIpChecker {
 
         //更新设备表的配置
         Integer targetDeviceId = IP_TO_DEVICE_ID_MAP.get(device.getDeviceIp());
+        Long deviceId = device.getId();
         if (targetDeviceId != null) {
             deviceService.updateDevice(device);
             QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
@@ -70,9 +76,27 @@ public class DeviceIpChecker {
             device = deviceService.getOne(queryWrapper);
             device.setIsOnline(reachable ? 1 : 0);
         }
-
+        Long alarmPoint = device.getId();
+        addAlarm(deviceId, alarmPoint);
         // 最终更新设备状态
         deviceService.updateDevice(device);
+    }
+
+    public void addAlarm(Long deviceId, Long alarmPoint) {
+        //添加报警信息
+        Order order = new Order();
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+        order.setDeviceId(deviceId);
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+        order.setAlarmPoint(alarmPoint);
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+        order.setAlarmTypeId(2L);
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+        order.setAlarmType("设备下线报警");
+        order.setAlarmCapture("");
+        order.setAlarmContent("门禁：" + order.getAlarmType());
+        order.setRemark("");
+        ruleService.executeSignRule(order);
     }
 
     public SysDeviceLog convertDeviceToLog(Device device) {

@@ -1,0 +1,26 @@
+package rules
+;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+
+rule "Identify alarm type"
+when
+    $alarm: Alarm()
+    $device: Device()
+    $order: Order()
+then
+    $alarm.setDeviceId($device.getId())
+          .setAlarmPoint($order.getAlarmPoint())
+          .setDeviceName($device.getDeviceName())
+          .setDeviceIp($device.getDeviceIp())
+          .setDeviceType($device.getDeviceType())
+          .setSn($device.getSn())
+          .setAlarmTypeId($order.getAlarmTypeId())
+          .setAlarmType($order.getAlarmType())
+          .setAlarmTime($order.getAlarmTime())
+          .setAlarmCapture($order.getAlarmCapture())
+          .setAlarmContent($order.getAlarmContent())
+          .setRemark($order.getRemark())
+          .setAlarmStatus(0);
+end
