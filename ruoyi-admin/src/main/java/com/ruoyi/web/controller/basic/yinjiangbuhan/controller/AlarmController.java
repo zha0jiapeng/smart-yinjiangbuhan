@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiParam;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,15 +30,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 报警Controller
- * 
+ *
  * @author liang
  * @date 2024-08-21
  */
 @RestController
 @RequestMapping("/system/alarm")
-@Api(tags={"报警 Controller"})
-public class AlarmController extends BaseController
-{
+@Api(tags = {"报警 Controller"})
+public class AlarmController extends BaseController {
     @Autowired
     private IAlarmService alarmService;
 
@@ -47,8 +47,7 @@ public class AlarmController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:alarm:list')")
     @GetMapping("/list")
     @ApiOperation("查询报警列表")
-    public TableDataInfo list(Alarm alarm)
-    {
+    public TableDataInfo list(Alarm alarm) {
         startPage();
         List<Alarm> list = alarmService.selectAlarmList(alarm);
         return getDataTable(list);
@@ -61,8 +60,7 @@ public class AlarmController extends BaseController
     @Log(title = "报警", businessType = BusinessType.EXPORT)
     @ApiOperation("导出报警列表Excel")
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Alarm alarm)
-    {
+    public void export(HttpServletResponse response, Alarm alarm) {
         List<Alarm> list = alarmService.selectAlarmList(alarm);
         ExcelUtil<Alarm> util = new ExcelUtil<Alarm>(Alarm.class);
         util.exportExcel(response, list, "报警数据");
@@ -75,8 +73,7 @@ public class AlarmController extends BaseController
     @ApiOperation("获取报警详细信息")
     @GetMapping(value = "/{id}")
     public AjaxResult getInfo(@ApiParam(name = "id", value = "报警参数", required = true)
-            @PathVariable("id") Long id)
-    {
+                              @PathVariable("id") Long id) {
         return success(alarmService.selectAlarmById(id));
     }
 
@@ -87,8 +84,7 @@ public class AlarmController extends BaseController
     @Log(title = "报警", businessType = BusinessType.INSERT)
     @ApiOperation("新增报警")
     @PostMapping
-    public AjaxResult add(@RequestBody Alarm alarm)
-    {
+    public AjaxResult add(@RequestBody Alarm alarm) {
         return toAjax(alarmService.insertAlarm(alarm));
     }
 
@@ -99,8 +95,7 @@ public class AlarmController extends BaseController
     @Log(title = "报警", businessType = BusinessType.UPDATE)
     @ApiOperation("修改报警")
     @PutMapping
-    public AjaxResult edit(@RequestBody Alarm alarm)
-    {
+    public AjaxResult edit(@RequestBody Alarm alarm) {
         return toAjax(alarmService.updateAlarm(alarm));
     }
 
@@ -110,10 +105,9 @@ public class AlarmController extends BaseController
 //    @PreAuthorize("@ss.hasPermi('system:alarm:remove')")
     @Log(title = "报警", businessType = BusinessType.DELETE)
     @ApiOperation("删除报警")
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@ApiParam(name = "ids", value = "报警ids参数", required = true)
-            @PathVariable Long[] ids)
-    {
+                             @PathVariable Long[] ids) {
         return toAjax(alarmService.deleteAlarmByIds(ids));
     }
 
@@ -122,10 +116,9 @@ public class AlarmController extends BaseController
      */
     @ApiOperation("报警数量")
     @GetMapping("/alarmsNumber")
-    public AjaxResult alarmsNumber()
-    {
+    public AjaxResult alarmsNumber() {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.eq("alarm_status",0);
+        alarmQueryWrapper.eq("alarm_status", 0);
         int count = alarmService.count(alarmQueryWrapper);
         return success(count);
     }
@@ -135,13 +128,24 @@ public class AlarmController extends BaseController
      */
     @ApiOperation("报警列表")
     @GetMapping("/alarmList")
-    public AjaxResult alarmList()
-    {
+    public AjaxResult alarmList() {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.in("alarm_status",0);
+        alarmQueryWrapper.in("alarm_status", 0);
         List<Alarm> alarms = alarmService.list(alarmQueryWrapper);
         return success(alarms);
     }
 
+    /**
+     * 报警状态修改
+     */
+    @ApiOperation("报警状态修改")
+    @GetMapping("/alarmStatusModification")
+    public AjaxResult alarmStatusModification(Long deviceId) {
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.eq("id", deviceId);
+        Alarm alarm = alarmService.getOne(alarmQueryWrapper);
+        alarm.setAlarmStatus(0);
+        return toAjax(alarmService.updateAlarm(alarm));
+    }
 
 }
