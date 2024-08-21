@@ -96,19 +96,19 @@ public class GasDetectionController {
             String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+device.getSn()+"/values/timeseries";
             HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
             String body = execute.body();
-            push(body);
+            push(body,device);
         }
 
     }
 
-    private void push(String body) {
+    private void push(String body,Device device) {
         Map map1 = JSON.parseObject(body, Map.class);
         List<Object> valus = new ArrayList<>();
         List<Map<String,Object>> co = (List<Map<String, Object>>) map1.get("co");
         Long ts = (Long) co.get(0).get("ts");
         Object value = co.get(0).get("value");
         Map swzkParam = new HashMap();
-        swzkParam.put("SN","youduyouhai1");
+        swzkParam.put("SN", device.getSn() );
         swzkParam.put("dataType","200300025"); //有毒有害气体
         swzkParam.put("deviceType","2001000060"); //有毒有害气体
         swzkParam.put("workAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
@@ -118,17 +118,17 @@ public class GasDetectionController {
         profile.put("appType","environment");
         profile.put("modelId","2055");
         profile.put("poiCode","w0907001");
-        profile.put("name","8#支洞内有毒有害气体监测");
-        profile.put("model","型号");
+        profile.put("name",device.getDeviceName());
+        profile.put("model","");
         profile.put("manufacture","");
         profile.put("owner","");
         profile.put("makeDate","2024-06-25");
         profile.put("validYear","2024-06-25");
         profile.put("status","01");
-        profile.put("installPosition","");
-        profile.put("x","112");
-        profile.put("y","112");
-        profile.put("z","110");
+        profile.put("installPosition",device.getDeviceArea());
+        profile.put("x","0");
+        profile.put("y","0");
+        profile.put("z","0");
         map.put("profile", profile);
         Map<String,Object> properties = new HashMap<>();
         properties.put("monitorTime",DateUtil.format(DateUtil.date(ts),"yyyy-MM-dd HH:mm:ss"));
