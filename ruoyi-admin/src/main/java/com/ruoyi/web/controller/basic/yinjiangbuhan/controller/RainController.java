@@ -137,7 +137,7 @@ public class RainController extends BaseController {
     }
 
     @GetMapping("/getRain")
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 * * * * ?")
     public void getRain() throws IOException {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("loginName", "h240627ztsb");
