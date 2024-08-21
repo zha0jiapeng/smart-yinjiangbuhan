@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -44,6 +45,8 @@ public class SysConstructionProgressLogController extends BaseController
                     .sheet()
                     .doReadSync();
             for (SysConstructionProgressLog log : sysConstructionProgressLogs) {
+                SysConstructionProgressLog one = sysConstructionProgressLogService.getOne(new LambdaQueryWrapper<SysConstructionProgressLog>().eq(SysConstructionProgressLog::getLogDate, log.getLogDate()));
+                if(one!=null) log.setId(one.getId());
                 if(log.getDrillBlastingStart()!=null && log.getDrillBlastingEnd()!=null) {
                     BigDecimal drillBlasting = convertKNotation(log.getDrillBlastingStart()).subtract(convertKNotation(log.getDrillBlastingEnd())).setScale(2, RoundingMode.HALF_UP);
                     log.setDrillBlasting(drillBlasting.abs());
@@ -67,7 +70,7 @@ public class SysConstructionProgressLogController extends BaseController
                 log.setCreatedDate(new Date());
                 log.setModifyDate(new Date());
             }
-            sysConstructionProgressLogService.saveBatch(sysConstructionProgressLogs);
+            sysConstructionProgressLogService.saveOrUpdateBatch(sysConstructionProgressLogs);
             return AjaxResult.success("导入成功");
         } catch (IOException e) {
             e.printStackTrace();
