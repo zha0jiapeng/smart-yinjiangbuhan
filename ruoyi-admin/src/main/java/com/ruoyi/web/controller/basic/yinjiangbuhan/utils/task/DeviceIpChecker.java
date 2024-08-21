@@ -58,7 +58,7 @@ public class DeviceIpChecker {
             System.err.println("Error: " + e.getMessage());
         }
         // 是否在线
-        if (!reachable) {
+        if (reachable) {
             SysDeviceLog sysDeviceLog = convertDeviceToLog(device);
             sysDeviceLogService.insertSysDeviceLog(sysDeviceLog);
             device.setIsOnline(0);
@@ -77,12 +77,14 @@ public class DeviceIpChecker {
             device.setIsOnline(reachable ? 1 : 0);
         }
         Long alarmPoint = device.getId();
-        addAlarm(deviceId, alarmPoint);
+        String deviceArea = device.getDeviceArea();
+        String deviceName = device.getDeviceName();
+        addAlarm(deviceId, alarmPoint, deviceArea, deviceName);
         // 最终更新设备状态
         deviceService.updateDevice(device);
     }
 
-    public void addAlarm(Long deviceId, Long alarmPoint) {
+    public void addAlarm(Long deviceId, Long alarmPoint, String deviceArea, String deviceName) {
         //添加报警信息
         Order order = new Order();
         //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
@@ -92,9 +94,9 @@ public class DeviceIpChecker {
         //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
         order.setAlarmTypeId(2L);
         //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
-        order.setAlarmType("设备下线报警");
+        order.setAlarmType("设备离线报警");
         order.setAlarmCapture("");
-        order.setAlarmContent("门禁：" + order.getAlarmType());
+        order.setAlarmContent("区域：" + deviceArea + "；报警设备名称：" + deviceName + "；报警内容：" + order.getAlarmType() + "；");
         order.setRemark("");
         ruleService.executeSignRule(order);
     }
