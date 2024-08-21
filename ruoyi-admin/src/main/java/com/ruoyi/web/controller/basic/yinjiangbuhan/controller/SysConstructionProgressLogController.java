@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -35,16 +37,39 @@ public class SysConstructionProgressLogController extends BaseController
     public Map<String,Object> excelImport(@RequestParam("file") MultipartFile file ){
         try {
             // Read the Excel file
-            List<SysConstructionProgressLog> staffList = EasyExcel.read(file.getInputStream())
+            List<SysConstructionProgressLog> sysConstructionProgressLogs = EasyExcel.read(file.getInputStream())
                     .head(SysConstructionProgressLog.class)
                     .sheet()
                     .doReadSync();
-            sysConstructionProgressLogService.saveBatch(staffList);
+            for (SysConstructionProgressLog log : sysConstructionProgressLogs) {
+                BigDecimal drillBlasting = convertKNotation(log.getDrillBlastingStart()).subtract(convertKNotation(log.getDrillBlastingEnd())).setScale(2, RoundingMode.HALF_UP);
+                log.setDrillBlasting(drillBlasting.abs());
+                BigDecimal sideTopArch = convertKNotation(log.getSideTopArchStart()).subtract(convertKNotation(log.getSideTopArchEnd())).setScale(2, RoundingMode.HALF_UP);
+                log.setSideTopArch(sideTopArch.abs());
+                BigDecimal liningCasting = convertKNotation(log.getLiningCastingStart()).subtract(convertKNotation(log.getLiningCastingEnd())).setScale(2, RoundingMode.HALF_UP);
+                log.setLiningCasting(liningCasting.abs());
+                BigDecimal tmb5 = convertKNotation(log.getTmb5Start()).subtract(convertKNotation(log.getTmb5End())).setScale(2, RoundingMode.HALF_UP);
+                log.setTmb5(tmb5.abs());
+                BigDecimal tmb6 = convertKNotation(log.getTmb6Start()).subtract(convertKNotation(log.getTmb6End())).setScale(2, RoundingMode.HALF_UP);
+                log.setTmb6(tmb6.abs());
+            }
+            sysConstructionProgressLogService.saveBatch(sysConstructionProgressLogs);
             return null;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+    public static BigDecimal convertKNotation(String input) {
+        // Remove the "K" prefix
+        String[] parts = input.substring(1).split("\\+");
+
+        // Parse the parts into numbers
+        int kilometers = Integer.parseInt(parts[0]);  // "80" -> 80
+        double meters = Double.parseDouble(parts[1]); // "110.0" -> 110.0
+
+        // Combine the parts into the final result
+        return new BigDecimal(kilometers * 1000 + meters); // 80 * 1000 + 110.0 -> 80110.0
     }
 
 
@@ -110,7 +135,7 @@ public class SysConstructionProgressLogController extends BaseController
      */
     //@PreAuthorize("@ss.hasPermi('system:log:remove')")
     @Log(title = "施工日志", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(sysConstructionProgressLogService.deleteSysConstructionProgressLogByIds(ids));
