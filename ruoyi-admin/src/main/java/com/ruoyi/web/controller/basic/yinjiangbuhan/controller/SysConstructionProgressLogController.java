@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +63,8 @@ public class SysConstructionProgressLogController extends BaseController
                     BigDecimal tmb6 = convertKNotation(log.getTmb6Start()).subtract(convertKNotation(log.getTmb6End())).setScale(2, RoundingMode.HALF_UP);
                     log.setTmb6(tmb6.abs());
                 }
+                log.setCreatedDate(new Date());
+                log.setModifyDate(new Date());
             }
             sysConstructionProgressLogService.saveBatch(sysConstructionProgressLogs);
             return null;

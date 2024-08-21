@@ -72,8 +72,8 @@ public class SysConstructionProgressLog extends BaseEntity
     @ExcelProperty(value = "tbm5掘进起始桩号")
     private String tmb5Start;
 
-    /** tbm5掘进起始桩号 */
-    @ExcelProperty(value = "tbm5掘进起始桩号")
+    /** tbm5掘进结束桩号 */
+    @ExcelProperty(value = "tbm5掘进结束桩号")
     private String tmb5End;
 
     /** tbm5掘进数 */
