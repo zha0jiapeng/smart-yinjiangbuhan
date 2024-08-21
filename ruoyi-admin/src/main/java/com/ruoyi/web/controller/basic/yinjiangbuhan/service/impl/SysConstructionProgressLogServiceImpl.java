@@ -109,4 +109,14 @@ public class SysConstructionProgressLogServiceImpl extends ServiceImpl<SysConstr
         }
 
     }
+
+    @Override
+    public  List<Map<String, Object>> getCurve(Integer type, String text) {
+        switch (type){
+            case 1: return sysConstructionProgressLogMapper.getTotalCurve();
+            case 2: return sysConstructionProgressLogMapper.getYearCurve(text);
+            case 3: return sysConstructionProgressLogMapper.getMonthCurve(text);
+            default: return null;
+        }
+    }
 }

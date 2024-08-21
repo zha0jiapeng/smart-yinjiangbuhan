@@ -88,9 +88,10 @@ public class SysConstructionProgressLogController extends BaseController
     }
 
     @GetMapping("/getCurve")
-    public TableDataInfo getCurve()
+    public AjaxResult getCurve(Integer type, String text)
     {
-        return null;
+        List<Map<String, Object>> curve = sysConstructionProgressLogService.getCurve(type, text);
+        return AjaxResult.success(curve);
     }
 
     @GetMapping("/getTotal")
