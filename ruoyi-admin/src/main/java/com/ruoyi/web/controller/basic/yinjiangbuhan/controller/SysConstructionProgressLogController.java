@@ -27,7 +27,7 @@ import java.util.Map;
  * @date 2024-08-20
  */
 @RestController
-@RequestMapping("/system/constructionProgressLog")
+@RequestMapping("/system/construction/progress/log")
 public class SysConstructionProgressLogController extends BaseController
 {
     @Autowired
