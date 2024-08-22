@@ -128,11 +128,12 @@ public class AlarmController extends BaseController {
      */
     @ApiOperation("报警列表")
     @GetMapping("/alarmList")
-    public AjaxResult alarmList() {
-        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.in("alarm_status", 0);
-        List<Alarm> alarms = alarmService.list(alarmQueryWrapper);
-        return success(alarms);
+    public TableDataInfo alarmList() {
+        startPage();
+        Alarm alarm = new Alarm();
+        alarm.setAlarmStatus(0);
+        List<Alarm> list = alarmService.selectAlarmList(alarm);
+        return getDataTable(list);
     }
 
     /**
@@ -140,9 +141,9 @@ public class AlarmController extends BaseController {
      */
     @ApiOperation("报警状态修改")
     @GetMapping("/alarmStatusModification")
-    public AjaxResult alarmStatusModification(Long deviceId) {
+    public AjaxResult alarmStatusModification(Long id) {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.eq("id", deviceId);
+        alarmQueryWrapper.eq("id", id);
         Alarm alarm = alarmService.getOne(alarmQueryWrapper);
         alarm.setAlarmStatus(2);
         return toAjax(alarmService.updateAlarm(alarm));

@@ -56,16 +56,22 @@ public class RuleServiceImpl implements RuleService {
                     .orderByDesc("id")
                     .last("LIMIT 1");
             Alarm latestAlarm = alarmService.getOne(queryWrapper);
+            boolean shouldInsert = false;
             if (latestAlarm == null || latestAlarm.getAlarmStatus() == 2) {
+                shouldInsert = true;
+            } else if (latestAlarm.getAlarmStatus() == 0 && !alarm.getAlarmContent().equals(latestAlarm.getAlarmContent())) {
+                shouldInsert = true;
+            }
+            if (shouldInsert) {
                 try {
                     alarmService.insertAlarm(alarm);
                 } catch (Exception e) {
                     System.err.println("插入报警信息时发生异常：" + e.getMessage());
                     e.printStackTrace();
                 }
+            } else {
+                System.out.println("未找到设备信息");
             }
-        } else {
-            System.out.println("未找到设备信息");
         }
     }
 }
