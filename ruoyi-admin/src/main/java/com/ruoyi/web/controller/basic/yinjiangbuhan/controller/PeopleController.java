@@ -8,6 +8,7 @@ import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +44,11 @@ public class PeopleController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @GetMapping("/getPeopleGroup")
+    public Map<String,Object> getPeopleGroup( ){
+        return null;
     }
 
     private void savePeople(List<Staff> staffList) {
