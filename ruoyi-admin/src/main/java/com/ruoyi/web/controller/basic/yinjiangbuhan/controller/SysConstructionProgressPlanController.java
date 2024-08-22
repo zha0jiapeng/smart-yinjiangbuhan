@@ -1,18 +1,24 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgress;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgressPlan;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressPlanService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 施工进度计划Controller
@@ -25,6 +31,8 @@ import java.util.List;
 public class SysConstructionProgressPlanController extends BaseController
 {
     @Autowired
+    private ISysConstructionProgressService sysConstructionProgressService;
+    @Autowired
     private ISysConstructionProgressPlanService sysConstructionProgressPlanService;
 
     @GetMapping("/getTotalPlanByYear")
@@ -32,6 +40,17 @@ public class SysConstructionProgressPlanController extends BaseController
     {
         SysConstructionProgressPlan totalByYear = sysConstructionProgressPlanService.getTotalByYear(year);
         return AjaxResult.success(totalByYear);
+    }
+
+    @GetMapping("/getInvestment")
+    public AjaxResult getInvestment()
+    {
+        SysConstructionProgress one = sysConstructionProgressService.getOne(new LambdaQueryWrapper<>(), false);
+        BigDecimal investments = sysConstructionProgressPlanService.getInvestment();
+        Map<String,Object> response = new HashMap<>();
+        response.put("totalInvestments",one.getTotalInvestment());
+        response.put("investments",investments);
+        return AjaxResult.success(response);
     }
 
     /**

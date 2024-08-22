@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgressPlan;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.SysConstructionProgressPlanMapper;
@@ -7,7 +8,9 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProg
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 施工进度计划Service业务层处理
@@ -96,5 +99,18 @@ public class SysConstructionProgressPlanServiceImpl extends ServiceImpl<SysConst
     @Override
     public SysConstructionProgressPlan getTotalByYear(String year) {
         return sysConstructionProgressPlanMapper.getTotalByYear(year);
+    }
+
+    @Override
+    public BigDecimal getInvestment() {
+        QueryWrapper<SysConstructionProgressPlan> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("SUM(total_investment) as totalInvestmentSum");
+        Map<String, Object> resultMap = sysConstructionProgressPlanMapper.selectMaps(queryWrapper).stream().findFirst().orElse(null);
+
+        if (resultMap != null) {
+            return (BigDecimal) resultMap.get("totalInvestmentSum");
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 }

@@ -64,7 +64,9 @@ public class PeopleController {
             workPeople.setIdCard(staff.getIdCardNo());
             workPeople.setWorkType(staff.getStaffType());
             workPeople.setCompany(staff.getOrgId());
-            workPeople.setGroupsName("项目部");
+            workPeople.setGroupsName(staff.getWorkerType());
+            workPeople.setCompany(staff.getLaborSubCom());
+
 
             switch (staff.getBimStaffType()){
                 case "建设单位" : workPeople.setPersonnelConfigType(1);
@@ -73,7 +75,7 @@ public class PeopleController {
                 case "施工单位" : workPeople.setPersonnelConfigType(4);
                 default:
             }
-            //workPeople.setDepartureDate(staff.getComeOut);
+            //workPeople.setDepartureDate(staff.);
             workPeople.setYn(1);
             list.add(workPeople);
         }

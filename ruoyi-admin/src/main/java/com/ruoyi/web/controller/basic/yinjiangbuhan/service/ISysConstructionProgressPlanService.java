@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgressPlan;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -62,4 +63,6 @@ public interface ISysConstructionProgressPlanService extends IService<SysConstru
     public int deleteSysConstructionProgressPlanById(Long id);
 
     SysConstructionProgressPlan getTotalByYear(String year);
+
+    BigDecimal getInvestment();
 }

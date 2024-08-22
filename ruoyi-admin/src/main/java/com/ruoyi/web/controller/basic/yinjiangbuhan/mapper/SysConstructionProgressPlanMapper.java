@@ -64,12 +64,12 @@ public interface SysConstructionProgressPlanMapper extends BaseMapper<SysConstru
     public int deleteSysConstructionProgressPlanByIds(Long[] ids);
 
     @Select("SELECT " +
-            "SUM(main_hole_digging_length) AS total_main_hole_digging_length, " +
-            "SUM(main_hole_lining_length) AS total_main_hole_lining_length, " +
-            "SUM(side_hole_digging_length) AS total_side_hole_digging_length, " +
-            "SUM(side_hole_lining_length) AS total_side_hole_lining_length, " +
-            "SUM(total_investment) AS total_investment_2024 " +
+            "SUM(main_hole_digging_length) AS main_hole_digging_length, " +
+            "SUM(main_hole_lining_length) AS main_hole_lining_length, " +
+            "SUM(side_hole_digging_length) AS side_hole_digging_length, " +
+            "SUM(side_hole_lining_length) AS side_hole_lining_length, " +
+            "SUM(total_investment) AS total_investment " +
             "FROM sys_construction_progress_plan " +
-            "WHERE month LIKE CONCAT(#{year}, '%')")
+            "WHERE `year_month` LIKE CONCAT(#{year}, '%')")
     SysConstructionProgressPlan getTotalByYear(String year);
 }
