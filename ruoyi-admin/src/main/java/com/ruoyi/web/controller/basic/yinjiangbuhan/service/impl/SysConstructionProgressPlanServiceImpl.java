@@ -94,7 +94,7 @@ public class SysConstructionProgressPlanServiceImpl extends ServiceImpl<SysConst
     }
 
     @Override
-    public SysConstructionProgressPlan getTotalByYear(Integer year) {
+    public SysConstructionProgressPlan getTotalByYear(String year) {
         return sysConstructionProgressPlanMapper.getTotalByYear(year);
     }
 }

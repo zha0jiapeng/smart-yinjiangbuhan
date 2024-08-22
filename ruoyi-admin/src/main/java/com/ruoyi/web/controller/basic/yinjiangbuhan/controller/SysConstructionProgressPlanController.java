@@ -28,7 +28,7 @@ public class SysConstructionProgressPlanController extends BaseController
     private ISysConstructionProgressPlanService sysConstructionProgressPlanService;
 
     @GetMapping("/getTotalPlanByYear")
-    public AjaxResult getTotalPlanByYear(Integer year)
+    public AjaxResult getTotalPlanByYear(String year)
     {
         SysConstructionProgressPlan totalByYear = sysConstructionProgressPlanService.getTotalByYear(year);
         return AjaxResult.success(totalByYear);

@@ -61,5 +61,5 @@ public interface ISysConstructionProgressPlanService extends IService<SysConstru
      */
     public int deleteSysConstructionProgressPlanById(Long id);
 
-    SysConstructionProgressPlan getTotalByYear(Integer year);
+    SysConstructionProgressPlan getTotalByYear(String year);
 }

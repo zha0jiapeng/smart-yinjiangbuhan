@@ -52,7 +52,7 @@ public class AdmissionEducationUserController extends BaseController
     @GetMapping("/coverage")
     public AjaxResult coverage()
     {
-        Map<String,Object> response = new HashMap();
+        Map<String,Object> response = new HashMap<>();
         response.put("preshiftEducation",100);
         Integer count3 = admissionEducationUserService.coverage();
         int countTotal = workPeopleService.count(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getWorkType, "劳务人员").eq(SysWorkPeople::getYn,1));

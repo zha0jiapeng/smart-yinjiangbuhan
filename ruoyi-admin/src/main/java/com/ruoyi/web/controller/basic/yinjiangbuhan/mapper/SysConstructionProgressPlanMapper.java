@@ -71,5 +71,5 @@ public interface SysConstructionProgressPlanMapper extends BaseMapper<SysConstru
             "SUM(total_investment) AS total_investment_2024 " +
             "FROM sys_construction_progress_plan " +
             "WHERE month LIKE CONCAT(#{year}, '%')")
-    SysConstructionProgressPlan getTotalByYear(Integer year);
+    SysConstructionProgressPlan getTotalByYear(String year);
 }
