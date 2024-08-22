@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,7 +121,13 @@ public class HikEventController extends BaseController {
             order.setAlarmTypeId(1L);
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
             order.setAlarmType("未佩戴安全帽");
-
+            // 获取当前时间
+            LocalDateTime now = LocalDateTime.now();
+            // 定义时间格式
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            // 格式化当前时间
+            String formattedDateTime = now.format(formatter);
+            order.setAlarmTime(formattedDateTime);
             order.setAlarmCapture(imageUrl);
             order.setAlarmContent("区域：衬砌面；报警设备名称：衬砌台车AI球机；" + "报警内容：" + order.getAlarmType() + "；");
             order.setRemark("");

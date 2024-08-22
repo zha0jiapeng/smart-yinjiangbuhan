@@ -1,8 +1,11 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysDeviceLog;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.SysDeviceLogMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysDeviceLogService;
@@ -55,6 +58,9 @@ public class SysDeviceLogServiceImpl extends ServiceImpl<SysDeviceLogMapper, Sys
     @Override
     public int insertSysDeviceLog(SysDeviceLog sysDeviceLog)
     {
+        Date nowDate = DateUtils.getNowDate();
+        sysDeviceLog.setCreatedDate(nowDate);
+        sysDeviceLog.setModifyDate(nowDate);
         return sysDeviceLogMapper.insertSysDeviceLog(sysDeviceLog);
     }
 

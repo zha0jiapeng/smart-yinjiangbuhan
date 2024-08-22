@@ -70,7 +70,7 @@ public class SysDeviceLog implements Serializable {
 
     /** 类型 */
     @ApiModelProperty(value = "类型")
-    private Long cameraType;
+    private Integer cameraType;
 
     /** 设备sn码 */
     @ApiModelProperty(value = "设备sn码")

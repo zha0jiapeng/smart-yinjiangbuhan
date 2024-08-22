@@ -39,7 +39,7 @@ public class RuleServiceImpl implements RuleService {
     public void executeSignRule(Order order) {
         //去设备表中查出相对应的设备信息
         Device device = deviceService.getById(order.getDeviceId());
-        if (device != null){
+        if (device != null) {
             KieSession kieSession = kieBase.newKieSession();
             kieSession.insert(device);
             kieSession.insert(order);
@@ -56,11 +56,22 @@ public class RuleServiceImpl implements RuleService {
                     .orderByDesc("id")
                     .last("LIMIT 1");
             Alarm latestAlarm = alarmService.getOne(queryWrapper);
+            boolean shouldInsert = false;
             if (latestAlarm == null || latestAlarm.getAlarmStatus() == 2) {
-                alarmService.insertAlarm(alarm);
+                shouldInsert = true;
+            } else if (latestAlarm.getAlarmStatus() == 0 && !alarm.getAlarmContent().equals(latestAlarm.getAlarmContent())) {
+                shouldInsert = true;
             }
-        }else {
-            System.out.println("未找到设备信息");
+            if (shouldInsert) {
+                try {
+                    alarmService.insertAlarm(alarm);
+                } catch (Exception e) {
+                    System.err.println("插入报警信息时发生异常：" + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("未找到设备信息");
+            }
         }
     }
 }

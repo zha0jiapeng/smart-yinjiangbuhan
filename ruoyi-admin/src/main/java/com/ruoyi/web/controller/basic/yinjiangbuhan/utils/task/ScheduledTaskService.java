@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.utils.task;
 
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
 import java.util.concurrent.*;
 
 @Configuration
@@ -58,6 +59,20 @@ public class ScheduledTaskService {
         // 将调度结果和任务对象分别存储到相应的Map中
         scheduledTasks.put(taskId, scheduledFuture);
         taskMap.put(taskId, task);
+    }
+
+    public void printScheduledTasks() {
+        for (Map.Entry<String, ScheduledFuture<?>> entry : scheduledTasks.entrySet()) {
+            System.out.println("Task ID: " + entry.getKey() + ", Scheduled Future: " + entry.getValue());
+        }
+    }
+
+    /**
+     * 获取当前调度任务的数量
+     * @return 当前调度任务的数量
+     */
+    public int getTaskCount() {
+        return scheduledTasks.size();
     }
 
     /**

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,7 @@ public class DeviceIpChecker {
 
     @Autowired
     private ISysDeviceLogService sysDeviceLogService;
+
 
     private static final Map<String, Integer> IP_TO_DEVICE_ID_MAP = new HashMap<>();
 
@@ -50,22 +53,21 @@ public class DeviceIpChecker {
         String ipAddress = device.getDeviceIp(); // 可以替换为具体的 IP 地址或域名
         int timeout = 3000; // 超时时间设置为 3000 毫秒（3 秒）
         boolean reachable = false;
-
         try {
             InetAddress address = InetAddress.getByName(ipAddress);
             reachable = address.isReachable(timeout);
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
+
         // 是否在线
-        if (reachable) {
+        if (!reachable) {
             SysDeviceLog sysDeviceLog = convertDeviceToLog(device);
             sysDeviceLogService.insertSysDeviceLog(sysDeviceLog);
             device.setIsOnline(0);
         } else {
             device.setIsOnline(1);
         }
-
         //更新设备表的配置
         Integer targetDeviceId = IP_TO_DEVICE_ID_MAP.get(device.getDeviceIp());
         Long deviceId = device.getId();
@@ -95,6 +97,13 @@ public class DeviceIpChecker {
         order.setAlarmTypeId(2L);
         //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
         order.setAlarmType("设备离线报警");
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 定义时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 格式化当前时间
+        String formattedDateTime = now.format(formatter);
+        order.setAlarmTime(formattedDateTime);
         order.setAlarmCapture("");
         order.setAlarmContent("区域：" + deviceArea + "；报警设备名称：" + deviceName + "；报警内容：" + order.getAlarmType() + "；");
         order.setRemark("");
@@ -113,11 +122,11 @@ public class DeviceIpChecker {
         log.setConfigJson(device.getConfigJson());
         log.setIsOnline(0L);
         log.setSn(device.getSn());
-        log.setCameraType(Long.valueOf(device.getCameraType()));
+        log.setCameraType(device.getCameraType());
         log.setSysDeviceCreatedBy(device.getCreatedBy());
         log.setSysDeviceCreatedData(device.getCreatedDate());
         log.setSysDeviceModifyBy(device.getModifyBy());
-        log.setModifyDate(device.getModifyDate());
+        log.setSysDeviceModifyDate(device.getModifyDate());
         log.setSysDeviceYn(device.getYn());
         return log;
     }
