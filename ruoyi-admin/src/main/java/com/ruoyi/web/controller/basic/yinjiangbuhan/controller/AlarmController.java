@@ -134,8 +134,8 @@ public class AlarmController extends BaseController {
         alarmQueryWrapper.select("alarm_point");
         alarmQueryWrapper.eq("alarm_status", 0);
         alarmQueryWrapper.groupBy("alarm_point");
-        int count = alarmService.count(alarmQueryWrapper);
-        return success(count);
+        List<Alarm> alarmList = alarmService.list(alarmQueryWrapper);
+        return success(alarmList.size());
     }
 
     /**
@@ -149,7 +149,12 @@ public class AlarmController extends BaseController {
         alarm.setAlarmStatus(0);
         List<Device> list = alarmService.selectAlarmDeviceList(alarm);
         TableDataInfo pageInfo = getDataTable(list);
-        pageInfo.setTotal(list.size());
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.select("alarm_point");
+        alarmQueryWrapper.eq("alarm_status", 0);
+        alarmQueryWrapper.groupBy("alarm_point");
+        List<Alarm> alarmList = alarmService.list(alarmQueryWrapper);
+        pageInfo.setTotal(alarmList.size());
         return pageInfo;
     }
 

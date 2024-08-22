@@ -55,6 +55,7 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
         alarmQueryWrapper.select("alarm_point");
         alarmQueryWrapper.eq("alarm_status", 0);
+        alarmQueryWrapper.orderByAsc("alarm_point");
         alarmQueryWrapper.groupBy("alarm_point");
         List<Alarm> selectList = alarmMapper.selectList(alarmQueryWrapper);
         List<Device> devices = new ArrayList<>();
