@@ -97,4 +97,9 @@ public class AdmissionEducationUserServiceImpl extends ServiceImpl<AdmissionEduc
     {
         return admissionEducationUserMapper.deleteAdmissionEducationUserById(id);
     }
+
+    @Override
+    public Integer coverage() {
+        return admissionEducationUserMapper.coverage();
+    }
 }

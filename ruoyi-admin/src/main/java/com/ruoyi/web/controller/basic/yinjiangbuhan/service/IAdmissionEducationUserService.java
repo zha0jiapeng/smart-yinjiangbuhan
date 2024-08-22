@@ -2,7 +2,6 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 
 import java.util.List;
 
@@ -61,4 +60,6 @@ public interface IAdmissionEducationUserService  extends IService<AdmissionEduca
      * @return 结果
      */
     public int deleteAdmissionEducationUserById(Long id);
+
+    Integer coverage();
 }

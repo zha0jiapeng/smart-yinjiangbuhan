@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysConstructionProgress;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressLogService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +25,6 @@ public class SysConstructionProgressController extends BaseController
 {
     @Autowired
     private ISysConstructionProgressService sysConstructionProgressService;
-
-    @Autowired
-    private ISysConstructionProgressLogService sysConstructionProgressLogService;
 
     /**
      * 获取施工详细信息

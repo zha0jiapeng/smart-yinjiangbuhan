@@ -1,28 +1,26 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
-import javax.servlet.http.HttpServletResponse;
-
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationUserService;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.service.SysWorkPeopleService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAdmissionEducationUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 入场三级教育用户Controller
@@ -36,6 +34,8 @@ public class AdmissionEducationUserController extends BaseController
 {
     @Autowired
     private IAdmissionEducationUserService admissionEducationUserService;
+    @Autowired
+    private SysWorkPeopleService workPeopleService;
 
     /**
      * 查询入场三级教育用户列表
@@ -48,6 +48,18 @@ public class AdmissionEducationUserController extends BaseController
         List<AdmissionEducationUser> list = admissionEducationUserService.selectAdmissionEducationUserList(admissionEducationUser);
         return getDataTable(list);
     }
+
+    @GetMapping("/coverage")
+    public AjaxResult coverage()
+    {
+        Map<String,Object> response = new HashMap();
+        response.put("preshiftEducation",100);
+        Integer count3 = admissionEducationUserService.coverage();
+        int countTotal = workPeopleService.count(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getWorkType, "劳务人员").eq(SysWorkPeople::getYn,1));
+        response.put("threeLevelEducation",new BigDecimal(count3).divide(new BigDecimal(countTotal),0, RoundingMode.HALF_UP));
+        return AjaxResult.success(response);
+    }
+
 
     /**
      * 导出入场三级教育用户列表

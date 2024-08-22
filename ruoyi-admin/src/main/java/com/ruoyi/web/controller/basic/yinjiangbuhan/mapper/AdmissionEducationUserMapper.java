@@ -2,9 +2,8 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducation;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -63,4 +62,10 @@ public interface AdmissionEducationUserMapper  extends BaseMapper<AdmissionEduca
      * @return 结果
      */
     public int deleteAdmissionEducationUserByIds(Long[] ids);
+
+    @Select("SELECT COUNT(DISTINCT user_id) AS user_count" +
+            "FROM sys_admission_education_user" +
+            "WHERE user_score > 60" +
+            "  AND del_flag = '0';")
+    Integer coverage();
 }

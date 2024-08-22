@@ -38,6 +38,9 @@ public class SysConstructionProgress extends BaseEntity
     @TableField(exist = false)
     private Long constructedDuration;
 
+    //投资总额
+    private Long totalInvestment;
+
     /** 开始施工日期 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "开始施工日期", width = 30, dateFormat = "yyyy-MM-dd")
