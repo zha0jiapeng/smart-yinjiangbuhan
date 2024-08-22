@@ -1,14 +1,18 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AlarmMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,9 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     @Autowired(required = false)
     private AlarmMapper alarmMapper;
 
+    @Autowired
+    private IDeviceService deviceService;
+
     /**
      * 查询报警
      * 
@@ -37,8 +44,30 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     /**
-     * 查询报警列表
+     * 查询报警设备列表
      * 
+     * @param alarm 报警
+     * @return 报警
+     */
+    @Override
+    public List<Device> selectAlarmDeviceList(Alarm alarm)
+    {
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.select("alarm_point");
+        alarmQueryWrapper.eq("alarm_status", 0);
+        alarmQueryWrapper.groupBy("alarm_point");
+        List<Alarm> selectList = alarmMapper.selectList(alarmQueryWrapper);
+        List<Device> devices = new ArrayList<>();
+        for (Alarm alarmValue : selectList) {
+            Device device = deviceService.getById(alarmValue.getAlarmPoint());
+            devices.add(device);
+        }
+        return devices;
+    }
+
+    /**
+     * 查询报警列表
+     *
      * @param alarm 报警
      * @return 报警
      */
@@ -47,6 +76,8 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     {
         return alarmMapper.selectAlarmList(alarm);
     }
+
+
 
     /**
      * 新增报警

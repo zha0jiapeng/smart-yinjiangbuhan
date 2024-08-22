@@ -59,8 +59,6 @@ public class DeviceIpChecker {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-        reachable = false;
-
 
         // 是否在线
         if (!reachable) {

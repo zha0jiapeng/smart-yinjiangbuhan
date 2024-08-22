@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 
 import java.util.List;
 
@@ -29,6 +30,14 @@ public interface IAlarmService  extends IService<Alarm>
      * @return 报警集合
      */
     public List<Alarm> selectAlarmList(Alarm alarm);
+
+    /**
+     * 查询报警设备列表
+     *
+     * @param alarm 报警
+     * @return 报警集合
+     */
+    public List<Device> selectAlarmDeviceList(Alarm alarm);
 
     /**
      * 新增报警

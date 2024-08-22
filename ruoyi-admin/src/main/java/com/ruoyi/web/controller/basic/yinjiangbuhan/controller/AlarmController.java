@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -124,14 +125,44 @@ public class AlarmController extends BaseController {
     }
 
     /**
+     * 报警数量
+     */
+    @ApiOperation("报警设备数量")
+    @GetMapping("/alarmsDeviceNumber")
+    public AjaxResult alarmsDeviceNumber() {
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.select("alarm_point");
+        alarmQueryWrapper.eq("alarm_status", 0);
+        alarmQueryWrapper.groupBy("alarm_point");
+        int count = alarmService.count(alarmQueryWrapper);
+        return success(count);
+    }
+
+    /**
+     * 报警设备列表
+     */
+    @ApiOperation("报警设备列表")
+    @GetMapping("/alarmDeviceList")
+    public TableDataInfo alarmDeviceList() {
+        startPage();
+        Alarm alarm = new Alarm();
+        alarm.setAlarmStatus(0);
+        List<Device> list = alarmService.selectAlarmDeviceList(alarm);
+        TableDataInfo pageInfo = getDataTable(list);
+        pageInfo.setTotal(list.size());
+        return pageInfo;
+    }
+
+    /**
      * 报警列表
      */
     @ApiOperation("报警列表")
     @GetMapping("/alarmList")
-    public TableDataInfo alarmList() {
+    public TableDataInfo alarmList(Long alarmPoint) {
         startPage();
         Alarm alarm = new Alarm();
         alarm.setAlarmStatus(0);
+        alarm.setAlarmPoint(alarmPoint);
         List<Alarm> list = alarmService.selectAlarmList(alarm);
         return getDataTable(list);
     }
