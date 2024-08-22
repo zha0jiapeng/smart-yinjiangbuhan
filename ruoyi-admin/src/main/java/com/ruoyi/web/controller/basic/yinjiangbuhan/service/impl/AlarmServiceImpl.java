@@ -1,8 +1,11 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AlarmMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
@@ -54,6 +57,9 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     @Override
     public int insertAlarm(Alarm alarm)
     {
+        Date nowDate = DateUtils.getNowDate();
+        alarm.setCreatedDate(nowDate);
+        alarm.setModifyDate(nowDate);
         return alarmMapper.insertAlarm(alarm);
     }
 
@@ -66,6 +72,7 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     @Override
     public int updateAlarm(Alarm alarm)
     {
+        alarm.setModifyDate(DateUtils.getNowDate());
         return alarmMapper.updateAlarm(alarm);
     }
 

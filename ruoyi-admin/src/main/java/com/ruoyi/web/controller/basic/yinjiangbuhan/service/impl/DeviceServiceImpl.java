@@ -32,29 +32,41 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Resource
     DeviceMapper deviceMapper;
 
+//    @Autowired
+//    private DeviceIpChecker deviceIpChecker;
+
     @Autowired
-    private DeviceIpChecker deviceIpChecker;
+    private ScheduledTaskService scheduledTaskService;
+
+    private final DeviceIpChecker deviceIpChecker;
+
+    @Autowired
+    public DeviceServiceImpl(DeviceIpChecker deviceIpChecker) {
+        this.deviceIpChecker = deviceIpChecker;
+    }
+
 
     /**
      * 监听设备是否在线
      */
-    @PostConstruct
+//    @PostConstruct
     public void isDeviceOnline() {
-        ScheduledTaskService service = new ScheduledTaskService();
         LambdaQueryWrapper<Device> lq = new LambdaQueryWrapper<>();
         lq.eq(Device::getYn, 1);
         List<Device> list = deviceMapper.selectList(lq);
         for (Device v : list) {
             String deviceIp = v.getDeviceIp();
             if (deviceIp != null && StringUtils.isNotEmpty(deviceIp) && !deviceIp.contains(",")) {
-                service.addTask(v.getId().toString(), () -> deviceIpChecker.ping(v), 60, TimeUnit.SECONDS);
+                scheduledTaskService.addTask(v.getId().toString(), () -> deviceIpChecker.ping(v), 30, TimeUnit.SECONDS);
             }
         }
+        System.out.println("Current scheduled tasks: " + scheduledTaskService.getTaskCount());
+        scheduledTaskService.printScheduledTasks();
     }
 
     @Override
     public int updateDevice(Device device) {
-        device.setUpdateTime(DateUtils.getNowDate());
+        device.setModifyDate(DateUtils.getNowDate());
         System.out.println(device.toString());
         return deviceMapper.updateById(device);
     }

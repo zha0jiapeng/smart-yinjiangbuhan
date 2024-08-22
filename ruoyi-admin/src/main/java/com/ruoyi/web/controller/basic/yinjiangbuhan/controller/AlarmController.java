@@ -144,7 +144,7 @@ public class AlarmController extends BaseController {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
         alarmQueryWrapper.eq("id", deviceId);
         Alarm alarm = alarmService.getOne(alarmQueryWrapper);
-        alarm.setAlarmStatus(0);
+        alarm.setAlarmStatus(2);
         return toAjax(alarmService.updateAlarm(alarm));
     }
 
