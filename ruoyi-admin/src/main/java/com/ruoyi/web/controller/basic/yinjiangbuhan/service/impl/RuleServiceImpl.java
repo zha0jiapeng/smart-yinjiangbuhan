@@ -50,6 +50,9 @@ public class RuleServiceImpl implements RuleService {
             kieSession.fireAllRules();
             kieSession.dispose();
 
+            //TODO IPguangbbo
+
+
             // 查询最新的一条数据
             QueryWrapper<Alarm> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("device_id", alarm.getDeviceId())

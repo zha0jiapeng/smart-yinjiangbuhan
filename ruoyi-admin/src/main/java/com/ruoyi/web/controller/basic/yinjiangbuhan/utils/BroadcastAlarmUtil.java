@@ -56,16 +56,16 @@ public class BroadcastAlarmUtil {
         return JSONUtil.parseObj(response.body());
     }
 
-    public void startTask(){
+    public void startTask(Integer fileId){
         String url = serviceUrl+"/v1/real_time_task";
         Map<String, Object> request = new HashMap<>();
 
         // Populate the map
         request.put("audio_source", 0);
         //播放什么
-        request.put("file_ids", Arrays.asList(1));
+        request.put("file_ids", Arrays.asList(fileId));
         //那些设备要播放
-        request.put("device_ids", Arrays.asList(1, 2, 3, 4));
+        request.put("device_ids", Arrays.asList(2, 4));
         request.put("play_order", 0);
         request.put("loop", 0);
         request.put("volume", 100);
