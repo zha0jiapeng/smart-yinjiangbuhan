@@ -25,8 +25,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
  */
 @RestController
 @RequestMapping("/device")
-public class DeviceController extends BaseController
-{
+public class DeviceController extends BaseController {
     @Autowired
     private IDeviceService deviceService;
 
@@ -34,40 +33,37 @@ public class DeviceController extends BaseController
      * 查询设备列表
      */
     @GetMapping("/list")
-    public AjaxResult list(Device device)
-    {
+    public AjaxResult list(Device device) {
         LambdaQueryWrapper<Device> lq = new LambdaQueryWrapper<>();
-        lq.eq(Device::getYn,1);
-        if(StringUtils.isNotEmpty(device.getDeviceType())) {
-            lq.eq(Device::getDeviceType,device.getDeviceType());
+        lq.eq(Device::getYn, 1);
+        if (StringUtils.isNotEmpty(device.getDeviceType())) {
+            lq.eq(Device::getDeviceType, device.getDeviceType());
         }
-        if(StringUtils.isNotEmpty(device.getDeviceArea())) {
-            lq.eq(Device::getDeviceArea,device.getDeviceArea());
+        if (StringUtils.isNotEmpty(device.getDeviceArea())) {
+            lq.eq(Device::getDeviceArea, device.getDeviceArea());
         }
         List<Device> list = deviceService.list(lq);
         return AjaxResult.success(list);
     }
 
     @GetMapping("/info")
-    public AjaxResult info(Device device)
-    {
+    public AjaxResult info(Device device) {
         LambdaQueryWrapper<Device> lq = new LambdaQueryWrapper<>();
-        lq.eq(Device::getYn,1);
-        lq.eq(Device::getId,device.getId());
-        if(StringUtils.isNotEmpty(device.getDeviceType())) {
-            lq.eq(Device::getDeviceType,device.getDeviceType());
+        lq.eq(Device::getYn, 1);
+        lq.eq(Device::getId, device.getId());
+        if (StringUtils.isNotEmpty(device.getDeviceType())) {
+            lq.eq(Device::getDeviceType, device.getDeviceType());
         }
-        if(StringUtils.isNotEmpty(device.getDeviceArea())) {
-            lq.eq(Device::getDeviceArea,device.getDeviceArea());
+        if (StringUtils.isNotEmpty(device.getDeviceArea())) {
+            lq.eq(Device::getDeviceArea, device.getDeviceArea());
         }
-        Device list = deviceService.getOne(lq,false);
+        Device list = deviceService.getOne(lq, false);
         return AjaxResult.success(list);
     }
 
 
     @GetMapping("/getDeviceType")
-    public AjaxResult getDeviceType()
-    {
+    public AjaxResult getDeviceType() {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("DISTINCT device_type");
         List<Map<String, Object>> maps = deviceService.listMaps(queryWrapper);
@@ -80,11 +76,10 @@ public class DeviceController extends BaseController
     }
 
     @GetMapping("/getDeviceArea")
-    public AjaxResult getDeviceArea(String deviceType)
-    {
+    public AjaxResult getDeviceArea(String deviceType) {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("DISTINCT device_area");
-        queryWrapper.eq("device_type",deviceType);
+        queryWrapper.eq("device_type", deviceType);
         List<Map<String, Object>> maps = deviceService.listMaps(queryWrapper);
 
         List<String> deviceArea = new ArrayList<>();
@@ -97,10 +92,31 @@ public class DeviceController extends BaseController
     /**
      * 获取设备详细信息
      */
-   // @PreAuthorize("@ss.hasPermi('system:device:query')")
+    // @PreAuthorize("@ss.hasPermi('system:device:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(deviceService.getById(id));
+    }
+
+    /**
+     * 设备离线总数
+     */
+    @GetMapping("/getTotalDeviceOfflineCount")
+    public AjaxResult getTotalDeviceOfflineCount() {
+        QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_online", 0);
+        int count = deviceService.count(queryWrapper);
+        return success(count);
+    }
+
+    /**
+     * 设备总数
+     */
+    @GetMapping("/getTotalDeviceCount")
+    public AjaxResult getTotalDeviceCount() {
+        QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("device_ip");
+        int count = deviceService.count(queryWrapper);
+        return success(count);
     }
 }
