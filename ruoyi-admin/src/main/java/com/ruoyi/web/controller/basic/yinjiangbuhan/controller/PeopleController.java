@@ -208,17 +208,19 @@ public class PeopleController {
                     new LambdaQueryWrapper<SysWorkPeople>()
                             .eq(SysWorkPeople::getIdCard, staff.getIdCardNo())
                     , false);
-                workPeople.setModifyDate(new Date());
+
             if(workPeople == null) {
                 workPeople = new SysWorkPeople();
                 workPeople.setCreatedDate(new Date());
+            }else{
+                workPeople.setModifyDate(new Date());
             }
             log.info("staff.getStaffName:{},{}",staff.getStaffName(),staff.getBimStaffType());
             workPeople.setName(staff.getStaffName());
             workPeople.setSex(staff.getSex().equals("男")?1:0);
             workPeople.setPhone(staff.getPhone());
             workPeople.setIdCard(staff.getIdCardNo());
-            workPeople.setWorkType(staff.getStaffType());
+            workPeople.setWorkType(staff.getWorkerType());
             workPeople.setCompany(staff.getLaborSubCom());
 
 
