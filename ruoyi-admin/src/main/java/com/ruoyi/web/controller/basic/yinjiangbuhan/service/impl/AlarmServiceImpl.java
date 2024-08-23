@@ -20,13 +20,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * 报警Service业务层处理
- * 
+ *
  * @author liang
  * @date 2024-08-21
  */
 @Service
-public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements IAlarmService
-{
+public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements IAlarmService {
     @Autowired(required = false)
     private AlarmMapper alarmMapper;
 
@@ -35,39 +34,36 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
 
     /**
      * 查询报警
-     * 
+     *
      * @param id 报警主键
      * @return 报警
      */
     @Override
-    public Alarm selectAlarmById(Long id)
-    {
+    public Alarm selectAlarmById(Long id) {
         return alarmMapper.selectAlarmById(id);
     }
 
     /**
      * 查询报警设备列表
-     * 
+     *
      * @param alarm 报警
      * @return 报警
      */
     @Override
-    public List<JSONObject> selectAlarmDeviceList(Alarm alarm)
-    {
+    public List<JSONObject> selectAlarmDeviceList(Alarm alarm) {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.select("alarm_point");
+        alarmQueryWrapper.select("alarm_point", "alarm_type", "alarm_time");
         alarmQueryWrapper.eq("alarm_status", 0);
         alarmQueryWrapper.orderByAsc("alarm_point");
         alarmQueryWrapper.groupBy("alarm_point");
         List<Alarm> selectList = alarmMapper.selectList(alarmQueryWrapper);
-        JSONObject jsonObject = new JSONObject();
         List<JSONObject> devices = new ArrayList<>();
         for (Alarm alarmValue : selectList) {
             Device device = deviceService.getById(alarmValue.getAlarmPoint());
-            jsonObject = (JSONObject) JSON.toJSON(device);
-            jsonObject.put("alarmType",alarmValue.getAlarmType());
-            jsonObject.put("alarmTime",alarmValue.getAlarmTime());
-            jsonObject.put("id",String.valueOf(alarmValue.getId()));
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(device);
+            jsonObject.put("alarmType", alarmValue.getAlarmType());
+            jsonObject.put("alarmTime", alarmValue.getAlarmTime());
+            jsonObject.put("id", jsonObject.get("id").toString());
             devices.add(jsonObject);
         }
         return devices;
@@ -80,22 +76,19 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
      * @return 报警
      */
     @Override
-    public List<Alarm> selectAlarmList(Alarm alarm)
-    {
+    public List<Alarm> selectAlarmList(Alarm alarm) {
         return alarmMapper.selectAlarmList(alarm);
     }
 
 
-
     /**
      * 新增报警
-     * 
+     *
      * @param alarm 报警
      * @return 结果
      */
     @Override
-    public int insertAlarm(Alarm alarm)
-    {
+    public int insertAlarm(Alarm alarm) {
         Date nowDate = DateUtils.getNowDate();
         alarm.setCreatedDate(nowDate);
         alarm.setModifyDate(nowDate);
@@ -104,38 +97,35 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
 
     /**
      * 修改报警
-     * 
+     *
      * @param alarm 报警
      * @return 结果
      */
     @Override
-    public int updateAlarm(Alarm alarm)
-    {
+    public int updateAlarm(Alarm alarm) {
         alarm.setModifyDate(DateUtils.getNowDate());
         return alarmMapper.updateAlarm(alarm);
     }
 
     /**
      * 批量删除报警
-     * 
+     *
      * @param ids 需要删除的报警主键
      * @return 结果
      */
     @Override
-    public int deleteAlarmByIds(Long[] ids)
-    {
+    public int deleteAlarmByIds(Long[] ids) {
         return alarmMapper.deleteAlarmByIds(ids);
     }
 
     /**
      * 删除报警信息
-     * 
+     *
      * @param id 报警主键
      * @return 结果
      */
     @Override
-    public int deleteAlarmById(Long id)
-    {
+    public int deleteAlarmById(Long id) {
         return alarmMapper.deleteAlarmById(id);
     }
 }
