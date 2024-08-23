@@ -1,16 +1,22 @@
+package com.ruoyi;
+
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.system.service.ISysDictDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -23,7 +29,12 @@ import java.util.*;
 
 @SpringBootTest
 @Slf4j
+@RunWith(SpringRunner.class)
 public class Springtetst {
+
+    @Resource
+    private ISysDictDataService dictDataService;
+
     @Resource
     RedisCache redisCache;
 
@@ -32,6 +43,19 @@ public class Springtetst {
 
     @Value("${em.python}")
     String pythonPath;
+
+    @Test
+    public void test2(){
+        String workType = "修刀工,变电安装工,司泵工,安装起重工,安装钳工,工程测量员,建筑电工,建筑起重机械安装拆卸工,弱电工,挖掘机驾驶员,挖掘铲运和桩工机械司机,推土机司机,普工,机械设备安装工,构件制作工,构件装配工,架子工,桥隧工,模板工 ,注浆工,消防安装工,混凝土工,混凝土搅拌工,混凝土模具工,混凝土浇筑工,灌浆工,爆破工,电梯安装维修工,电焊工(焊工),盾构机操作工,砌筑工,管片安装工,箱涵车司机,维保工,试验员,试验工,起重信号工,起重驾驶员,轨线工,钢筋工,除尘工";
+        String[] split = workType.split("\\,");
+        for (String s : split) {
+            SysDictData dd = new SysDictData();
+            dd.setDictLabel(s);
+            dd.setDictValue("0");
+            dd.setDictType("people_work_type");
+            int i = dictDataService.insertDictData(dd);
+        }
+    }
     @Test
     public void test(){
         HttpRequest request = HttpUtil.createPost("http://nhapi.yunjichaobiao.com/api/Device/AmmeterData_Summary")
@@ -64,7 +88,7 @@ public class Springtetst {
                 map.put("currentC", item.get("ValueC"));
             }
         });
-        pushSwzk(map);
+        //pushSwzk(map);
 
     }
     private void pushSwzk(Map map) {

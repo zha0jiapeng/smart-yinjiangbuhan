@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -51,6 +52,68 @@ public class PeopleController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @GetMapping("/simulationOut")
+    private AjaxResult pushSwzk(Integer peopleId) {
+
+        SysWorkPeople byId = workPeopleService.getById(peopleId);
+        if(byId==null) return AjaxResult.error("找不到人员");
+        // Create the main map
+        Map<String, Object> mainMap = new HashMap<>();
+
+        // Add top-level fields
+        mainMap.put("deviceType", "2001000010");
+        mainMap.put("SN", "T99JV01D1DZS");
+        mainMap.put("dataType", "200300003");
+        mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
+        mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+        mainMap.put("deviceName", "土建4标-8#-洞口Ⅰ【出场】");
+
+        // Create the 'values' list
+        List<Map<String, Object>> valuesList = new ArrayList<>();
+        Map<String, Object> valuesMap = new HashMap<>();
+        valuesMap.put("reportTs", DateUtil.current());
+        // Create the 'profile' map
+        Map<String, Object> profileMap = new HashMap<>();
+        profileMap.put("appType", "access_control");
+        profileMap.put("modelId", "2053");
+        profileMap.put("poiCode", "w0713001");
+        profileMap.put("name", "人脸门禁");
+        profileMap.put("model", "S3");
+        profileMap.put("manufacture", "海康威视");
+        profileMap.put("owner", "海康威视");
+        profileMap.put("makeDate", "2020-05-22");
+        profileMap.put("validYear", "2050-05-22");
+        profileMap.put("state", "01");
+        profileMap.put("installPosition", "洞口一级门禁");
+        profileMap.put("x", 0);
+        profileMap.put("y", 0);
+        profileMap.put("z", 0);
+        profileMap.put("level", "01");
+        valuesMap.put("profile", profileMap);
+        // Create the 'events' map
+        Map<String, Object> eventsMap = new HashMap<>();
+        Map<String, Object> passMap = new HashMap<>();
+        passMap.put("eventType", 1);
+        passMap.put("eventTs", DateUtil.now());
+        passMap.put("describe", "");
+        passMap.put("idCardNumber", byId.getIdCard());
+        passMap.put("name", byId.getName());
+        passMap.put("passTime", DateUtil.now());
+        passMap.put("passDirection", "01");
+        eventsMap.put("pass", passMap);
+
+        valuesMap.put("events", eventsMap);
+        // Add empty 'properties' and 'services' maps
+        valuesMap.put("properties", new HashMap<String, Object>());
+        valuesMap.put("services", new HashMap<String, Object>());
+        // Add the valuesMap to the valuesList
+        valuesList.add(valuesMap);
+        mainMap.put("values", valuesList);
+        log.info("模拟门禁推送：{}", JSON.toJSONString(mainMap));
+        swzkHttpUtils.pushIOT(mainMap);
+        return AjaxResult.success();
     }
 
     @GetMapping("/getPeopleNumStatistics")
@@ -126,17 +189,16 @@ public class PeopleController {
         return AjaxResult.success(finalResult);
     }
 
-    //TODO 建立字典表
-//    @GetMapping("/getPeopleAttendanceStatisticsByWorkType")
-//    public Map<String,Object> getPeopleAttendanceStatisticsByWorkType(String today){
-//        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByWorkType(today);
-//        return AjaxResult.success(list);
-//    }
-//    @GetMapping("/getPeopleAttendanceStatisticsByCompany")
-//    public Map<String,Object> getPeopleAttendanceStatisticsByCompany(String today){
-//        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);
-//        return AjaxResult.success(list);
-//    }
+    @GetMapping("/getPeopleAttendanceStatisticsByWorkType")
+    public Map<String,Object> getPeopleAttendanceStatisticsByWorkType(String today){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByWorkType(today);
+        return AjaxResult.success(list);
+    }
+    @GetMapping("/getPeopleAttendanceStatisticsByCompany")
+    public Map<String,Object> getPeopleAttendanceStatisticsByCompany(String today){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);
+        return AjaxResult.success(list);
+    }
 
 
     private void savePeople(List<Staff> staffList) {
@@ -157,8 +219,6 @@ public class PeopleController {
             workPeople.setPhone(staff.getPhone());
             workPeople.setIdCard(staff.getIdCardNo());
             workPeople.setWorkType(staff.getStaffType());
-            workPeople.setCompany(staff.getOrgId());
-            workPeople.setGroupsName(staff.getWorkerType());
             workPeople.setCompany(staff.getLaborSubCom());
 
 
