@@ -1,7 +1,8 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
-import cn.hutool.json.JSONObject;
+
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;

@@ -1,7 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
-import cn.hutool.json.JSONObject;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -65,9 +65,9 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
         for (Alarm alarmValue : selectList) {
             Device device = deviceService.getById(alarmValue.getAlarmPoint());
             jsonObject = (JSONObject) JSON.toJSON(device);
-            jsonObject.putOpt("alarmType",alarmValue.getAlarmType());
-            jsonObject.putOpt("alarmTime",alarmValue.getAlarmTime());
-            jsonObject.putOpt("id",String.valueOf(alarmValue.getId()));
+            jsonObject.put("alarmType",alarmValue.getAlarmType());
+            jsonObject.put("alarmTime",alarmValue.getAlarmTime());
+            jsonObject.put("id",String.valueOf(alarmValue.getId()));
             devices.add(jsonObject);
         }
         return jsonObject;
