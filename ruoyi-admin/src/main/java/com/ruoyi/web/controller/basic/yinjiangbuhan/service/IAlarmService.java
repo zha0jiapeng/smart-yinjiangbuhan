@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service;
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
@@ -37,7 +38,7 @@ public interface IAlarmService  extends IService<Alarm>
      * @param alarm 报警
      * @return 报警集合
      */
-    public List<Device> selectAlarmDeviceList(Alarm alarm);
+    public List<JSONObject> selectAlarmDeviceList(Alarm alarm);
 
     /**
      * 新增报警

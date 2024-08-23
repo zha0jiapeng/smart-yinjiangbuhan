@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
@@ -147,7 +148,7 @@ public class AlarmController extends BaseController {
         startPage();
         Alarm alarm = new Alarm();
         alarm.setAlarmStatus(0);
-        List<Device> list = alarmService.selectAlarmDeviceList(alarm);
+        List<JSONObject> list = alarmService.selectAlarmDeviceList(alarm);
         TableDataInfo pageInfo = getDataTable(list);
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
         alarmQueryWrapper.select("alarm_point");

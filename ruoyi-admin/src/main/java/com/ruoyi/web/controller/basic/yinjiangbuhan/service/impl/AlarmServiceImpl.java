@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -50,7 +52,7 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
      * @return 报警
      */
     @Override
-    public List<Device> selectAlarmDeviceList(Alarm alarm)
+    public List<JSONObject> selectAlarmDeviceList(Alarm alarm)
     {
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
         alarmQueryWrapper.select("alarm_point");
@@ -58,12 +60,17 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
         alarmQueryWrapper.orderByAsc("alarm_point");
         alarmQueryWrapper.groupBy("alarm_point");
         List<Alarm> selectList = alarmMapper.selectList(alarmQueryWrapper);
-        List<Device> devices = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject();
+        List<JSONObject> devices = new ArrayList<>();
         for (Alarm alarmValue : selectList) {
             Device device = deviceService.getById(alarmValue.getAlarmPoint());
-            devices.add(device);
+            jsonObject = (JSONObject) JSON.toJSON(device);
+            jsonObject.putOpt("alarmType",alarmValue.getAlarmType());
+            jsonObject.putOpt("alarmTime",alarmValue.getAlarmTime());
+            jsonObject.putOpt("id",String.valueOf(alarmValue.getId()));
+            devices.add(jsonObject);
         }
-        return devices;
+        return jsonObject;
     }
 
     /**

@@ -8,6 +8,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.BroadcastAlarmUtil;
 import lombok.RequiredArgsConstructor;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -30,6 +31,10 @@ public class RuleServiceImpl implements RuleService {
     @Autowired
     private IDeviceService deviceService;
 
+    @Autowired
+    private BroadcastAlarmUtil broadcastAlarmUtil;
+
+
     /**
      * 通过规则引擎处理
      *
@@ -50,8 +55,6 @@ public class RuleServiceImpl implements RuleService {
             kieSession.fireAllRules();
             kieSession.dispose();
 
-            //TODO IPguangbbo
-
 
             // 查询最新的一条数据
             QueryWrapper<Alarm> queryWrapper = new QueryWrapper<>();
@@ -67,6 +70,10 @@ public class RuleServiceImpl implements RuleService {
             }
             if (shouldInsert) {
                 try {
+                    //ip广播
+//                    if (alarm.getAlarmTypeId() == 1){
+//                        broadcastAlarmUtil.startTask(1);
+//                    }
                     alarmService.insertAlarm(alarm);
                 } catch (Exception e) {
                     System.err.println("插入报警信息时发生异常：" + e.getMessage());
