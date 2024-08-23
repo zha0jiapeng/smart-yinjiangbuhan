@@ -83,7 +83,9 @@ public class DeviceIpChecker {
         Long alarmPoint = device.getId();
         String deviceArea = device.getDeviceArea();
         String deviceName = device.getDeviceName();
-        addAlarm(deviceId, alarmPoint, deviceArea, deviceName);
+        if (device.getIsOnline() == 0) {
+            addAlarm(deviceId, alarmPoint, deviceArea, deviceName);
+        }
         // 最终更新设备状态
         deviceService.updateDevice(device);
     }
