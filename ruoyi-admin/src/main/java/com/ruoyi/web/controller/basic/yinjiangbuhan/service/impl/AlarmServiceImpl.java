@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
@@ -47,25 +48,39 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
      * 查询报警设备列表
      *
      * @param alarm 报警
-     * @return 报警
+     * @return 报警集合
      */
     @Override
     public List<JSONObject> selectAlarmDeviceList(Alarm alarm) {
+        // Step 1: 查询每个 alarm_point 最新的 alarm_time
         QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.select("alarm_point", "alarm_type", "alarm_time");
+        alarmQueryWrapper.select("alarm_point", "MAX(alarm_time) as alarm_time");
         alarmQueryWrapper.eq("alarm_status", 0);
-        alarmQueryWrapper.orderByAsc("alarm_point");
         alarmQueryWrapper.groupBy("alarm_point");
+        alarmQueryWrapper.orderByAsc("alarm_point");
+
         List<Alarm> selectList = alarmMapper.selectList(alarmQueryWrapper);
-        List<JSONObject> devices = new ArrayList<>();
-        for (Alarm alarmValue : selectList) {
+
+        // Step 2: 根据每个最新的 alarm_time 获取完整记录
+        List<JSONObject> devices = selectList.stream().map(subAlarm -> {
+            // 获取对应的完整记录
+            QueryWrapper<Alarm> finalQuery = new QueryWrapper<>();
+            finalQuery.eq("alarm_point", subAlarm.getAlarmPoint());
+            finalQuery.eq("alarm_time", subAlarm.getAlarmTime());
+            Alarm alarmValue = alarmMapper.selectOne(finalQuery);
+
+            // 获取设备信息
             Device device = deviceService.getById(alarmValue.getAlarmPoint());
+
+            // 将设备信息和报警信息组合成 JSON 对象
             JSONObject jsonObject = (JSONObject) JSON.toJSON(device);
             jsonObject.put("alarmType", alarmValue.getAlarmType());
             jsonObject.put("alarmTime", alarmValue.getAlarmTime());
             jsonObject.put("id", jsonObject.get("id").toString());
-            devices.add(jsonObject);
-        }
+
+            return jsonObject;
+        }).collect(Collectors.toList());
+
         return devices;
     }
 
