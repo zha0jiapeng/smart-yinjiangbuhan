@@ -199,6 +199,13 @@ public class PeopleController {
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);
         return AjaxResult.success(list);
     }
+    @GetMapping("/getPeopleAttendanceForLast7Days")
+    public Map<String,Object> getPeopleAttendanceForLast7Days(){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.countDailyAttendanceForLast7Days();
+        return AjaxResult.success(list);
+    }
+
+
 
 
     private void savePeople(List<Staff> staffList) {

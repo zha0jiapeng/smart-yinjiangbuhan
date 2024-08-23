@@ -56,4 +56,11 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             "WHERE DATE(log_time) BETWEEN #{today} AND DATE_ADD(#{today}, INTERVAL 1 DAY) " +
             "GROUP BY sys_work_people.company")
     List<Map<String, Object>> getPeopleAttendanceStatisticsByCompany(String today);
+
+    @Select("SELECT DATE(log_time) AS date, COUNT(DISTINCT sys_work_people_id) AS count " +
+            "FROM sys_work_people_inout_log " +
+            "WHERE DATE(log_time) BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE() " +
+            "GROUP BY DATE(log_time) " +
+            "ORDER BY DATE(log_time)")
+    List<Map<String, Object>> countDailyAttendanceForLast7Days();
 }
