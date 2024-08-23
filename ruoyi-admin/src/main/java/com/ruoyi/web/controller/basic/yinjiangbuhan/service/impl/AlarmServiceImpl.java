@@ -67,8 +67,8 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
             QueryWrapper<Alarm> finalQuery = new QueryWrapper<>();
             finalQuery.eq("alarm_point", subAlarm.getAlarmPoint());
             finalQuery.eq("alarm_time", subAlarm.getAlarmTime());
-            Alarm alarmValue = alarmMapper.selectOne(finalQuery);
-
+            List<Alarm> alarmValueList = alarmMapper.selectList(finalQuery);
+            Alarm alarmValue = alarmValueList.get(0);
             // 获取设备信息
             Device device = deviceService.getById(alarmValue.getAlarmPoint());
 

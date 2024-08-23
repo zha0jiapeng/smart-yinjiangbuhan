@@ -313,6 +313,10 @@ public class RainController extends BaseController {
 
         //设备使用状态
         valuesJSONproperties.put("state", "1");
+        //产权单位
+        valuesJSONproperties.put("owner", "土建4标");
+        //安装日期
+        valuesJSONproperties.put("makeDate", "2024-06-28");
 
         //设备安装位置
         valuesJSONproperties.put("installPosition", "8号洞出渣场");
