@@ -3,7 +3,11 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
@@ -26,6 +30,9 @@ public class PeopleController {
     SwzkHttpUtils swzkHttpUtils;
 
     @Resource
+    SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
+
+    @Resource
     private SysWorkPeopleService workPeopleService;
 
     @RequestMapping("/import")
@@ -39,17 +46,98 @@ public class PeopleController {
             savePeople(staffList);
             pushSwzk(staffList);
 
-            return null;
+            return AjaxResult.success("导入成功");
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    @GetMapping("/getPeopleGroup")
-    public Map<String,Object> getPeopleGroup( ){
-        return null;
+    @GetMapping("/getPeopleNumStatistics")
+    public Map<String,Object> getPeopleNumStatistics( ){
+        Map<String,Object> map = new HashMap<>();
+        QueryWrapper<SysWorkPeople> queryWrapper = Wrappers.query();
+        queryWrapper.select("personnel_config_type, COUNT(*) AS count")
+                .groupBy("personnel_config_type");
+        List<Map<String, Object>> list = workPeopleService.listMaps(queryWrapper);
+        Map<Integer, Map<String, Object>> defaultMap = new HashMap<>();
+        for (int i = 1; i <= 4; i++) {
+            Map<String, Object> typeMap = new HashMap<>();
+            typeMap.put("personnel_config_type", i);
+            typeMap.put("count", 0);
+            defaultMap.put(i, typeMap);
+        }
+        // 更新默认结果的 count 值
+        for (Map<String, Object> item : list) {
+            Integer type = (Integer) item.get("personnel_config_type");
+            defaultMap.put(type, item);
+        }
+
+        List<Map<String, Object>> finalList = new ArrayList<>(defaultMap.values());
+
+
+        int inHoleNum = sysWorkPeopleInoutLogMapper.countOnlyEnteredPeopleToday();
+        map.put("inHoleNum",inHoleNum);
+        map.put("items",finalList);
+        return AjaxResult.success(map);
     }
+
+    @GetMapping("/getAttendanceStatistics")
+    public Map<String,Object> getPeopleAttendanceStatistics(String yearMonth){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatistics(yearMonth);
+        return AjaxResult.success(list);
+    }
+
+    @GetMapping("/getAttendanceStatisticsByPeopleType")
+    public Map<String,Object> getAttendanceStatisticsByPeopleType(String year){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getMonthlyAttendanceCountByPersonnelConfigType(year);
+        Map<String, Map<Integer, Integer>> monthDataMap = new LinkedHashMap<>();
+
+        // 初始化所有可能的 personnel_config_type
+        for (Map<String, Object> record : list) {
+            String month = (String) record.get("month");
+            Integer personnelConfigType = (Integer) record.get("personnel_config_type");
+            Integer count = ((Long) record.get("attendance_count")).intValue();
+
+            Map<Integer, Integer> attendanceMap = monthDataMap.computeIfAbsent(month, k -> {
+                Map<Integer, Integer> initialMap = new LinkedHashMap<>();
+                initialMap.put(1, 0);  // 默认值0
+                initialMap.put(2, 0);
+                initialMap.put(3, 0);
+                initialMap.put(4, 0);
+                return initialMap;
+            });
+
+            attendanceMap.put(personnelConfigType, count);
+        }
+
+        // 生成最终输出
+        List<Map<String, Object>> resultList = new ArrayList<>();
+        for (Map.Entry<String, Map<Integer, Integer>> entry : monthDataMap.entrySet()) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("month", entry.getKey());
+            resultMap.put("personnelConfigTypeAttendance", entry.getValue());
+            resultList.add(resultMap);
+        }
+
+        Map<String, Object> finalResult = new HashMap<>();
+        finalResult.put("year", year);
+        finalResult.put("data", resultList);
+        return AjaxResult.success(finalResult);
+    }
+
+    //TODO 建立字典表
+//    @GetMapping("/getPeopleAttendanceStatisticsByWorkType")
+//    public Map<String,Object> getPeopleAttendanceStatisticsByWorkType(String today){
+//        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByWorkType(today);
+//        return AjaxResult.success(list);
+//    }
+//    @GetMapping("/getPeopleAttendanceStatisticsByCompany")
+//    public Map<String,Object> getPeopleAttendanceStatisticsByCompany(String today){
+//        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);
+//        return AjaxResult.success(list);
+//    }
+
 
     private void savePeople(List<Staff> staffList) {
         List<SysWorkPeople> list = new ArrayList<>();
@@ -87,6 +175,8 @@ public class PeopleController {
         }
         workPeopleService.saveOrUpdateBatch(list);
     }
+
+
 
 
     public void pushSwzk(List<Staff> staffList) {

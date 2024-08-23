@@ -8,6 +8,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysDeviceLogService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
@@ -19,9 +20,10 @@ import java.util.Map;
 @Component
 public class DeviceIpChecker {
 
+    @Lazy
     @Autowired
     private IDeviceService deviceService;
-
+    @Lazy
     @Autowired
     private RuleService ruleService;
 

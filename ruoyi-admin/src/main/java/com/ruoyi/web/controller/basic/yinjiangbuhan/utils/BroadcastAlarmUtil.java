@@ -46,13 +46,13 @@ public class BroadcastAlarmUtil {
 
     public JSONObject getDeviceList(){
         HttpResponse response = HttpUtil.createGet(serviceUrl + "/v1/device")
-                .header("access_token", new BroadcastAlarmUtil().getToken()).execute();
+                .header("access_token", getToken()).execute();
         return JSONUtil.parseObj(response.body());
     }
 
     public JSONObject getFileList(){
         HttpResponse response = HttpUtil.createGet(serviceUrl + "/v1/file_group")
-                .header("access_token", new BroadcastAlarmUtil().getToken()).execute();
+                .header("access_token", getToken()).execute();
         return JSONUtil.parseObj(response.body());
     }
 
