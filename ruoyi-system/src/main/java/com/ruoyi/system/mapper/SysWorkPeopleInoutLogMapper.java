@@ -20,6 +20,7 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             "AND b.mode = 0 " +
             "AND DATE(b.log_time) = CURDATE() " +
             "WHERE a.mode = 1 " +
+            "AND sn like 'T99%' "+
             "AND DATE(a.log_time) = CURDATE() " +
             "AND b.sys_work_people_id IS NULL")
     int countOnlyEnteredPeopleToday();

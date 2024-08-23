@@ -18,10 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -120,6 +118,10 @@ public class QualityProblemServiceImpl implements QualityProblemService {
      */
     @Override
     public QualityProblem insert(QualityProblem qualityProblem) {
+        qualityProblem.setCreateTime(LocalDateTime.now());
+        int currentMonth = DateUtil.thisMonth() + 1; // 获取当前月份
+        String formattedMonth = String.format("%02d", currentMonth); // 将月份格式化为两位数
+        qualityProblem.setMoonBase(formattedMonth);
         qualityProblem.setCreateUserName(SecurityUtils.getUsername());
         qualityProblem.setCreateUserId(SecurityUtils.getUserId().intValue());
         qualityProblem.setProblemProgress("问题审核");
