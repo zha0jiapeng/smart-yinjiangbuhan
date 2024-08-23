@@ -70,7 +70,7 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
             jsonObject.put("id",String.valueOf(alarmValue.getId()));
             devices.add(jsonObject);
         }
-        return jsonObject;
+        return devices;
     }
 
     /**
