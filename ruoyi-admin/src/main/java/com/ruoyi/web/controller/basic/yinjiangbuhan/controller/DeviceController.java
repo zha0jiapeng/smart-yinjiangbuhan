@@ -105,6 +105,8 @@ public class DeviceController extends BaseController {
     public AjaxResult getTotalDeviceOfflineCount() {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_online", 0);
+        queryWrapper.isNotNull("device_ip")
+                .notLike("device_ip", "%,%");
         int count = deviceService.count(queryWrapper);
         return success(count);
     }
@@ -115,7 +117,8 @@ public class DeviceController extends BaseController {
     @GetMapping("/getTotalDeviceCount")
     public AjaxResult getTotalDeviceCount() {
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
-        queryWrapper.isNotNull("device_ip");
+        queryWrapper.isNotNull("device_ip")
+                .notLike("device_ip", "%,%");
         int count = deviceService.count(queryWrapper);
         return success(count);
     }
