@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.AlarmTypeMapper">
-    
+
     <resultMap type="AlarmType" id="AlarmTypeResult">
         <result property="id"    column="id"    />
         <result property="typeName"    column="type_name"    />
+        <result property="broadcastVoiceId"    column="broadcast_voice_id"    />
+        <result property="broadcastDeviceId"    column="broadcast_device_id"    />
         <result property="yn"    column="yn"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -16,17 +18,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectAlarmTypeVo">
-        select id, type_name, yn, create_by, create_time, update_by, update_time, remark from alarm_type
+        select id, type_name, broadcast_voice_id, broadcast_device_id, yn, create_by, create_time, update_by, update_time, remark from alarm_type
     </sql>
 
     <select id="selectAlarmTypeList" parameterType="AlarmType" resultMap="AlarmTypeResult">
         <include refid="selectAlarmTypeVo"/>
-        <where>  
+        <where>
             <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="broadcastVoiceId != null "> and broadcast_voice_id = #{broadcastVoiceId}</if>
+            <if test="broadcastDeviceId != null  and broadcastDeviceId != ''"> and broadcast_device_id = #{broadcastDeviceId}</if>
             <if test="yn != null "> and yn = #{yn}</if>
         </where>
     </select>
-    
+
     <select id="selectAlarmTypeById" parameterType="Long" resultMap="AlarmTypeResult">
         <include refid="selectAlarmTypeVo"/>
         where id = #{id}
@@ -36,28 +40,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into alarm_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="typeName != null and typeName != ''">type_name,</if>
+            <if test="broadcastVoiceId != null">broadcast_voice_id,</if>
+            <if test="broadcastDeviceId != null">broadcast_device_id,</if>
             <if test="yn != null">yn,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
             <if test="remark != null">remark,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="typeName != null and typeName != ''">#{typeName},</if>
+            <if test="broadcastVoiceId != null">#{broadcastVoiceId},</if>
+            <if test="broadcastDeviceId != null">#{broadcastDeviceId},</if>
             <if test="yn != null">#{yn},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateAlarmType" parameterType="AlarmType">
         update alarm_type
         <trim prefix="SET" suffixOverrides=",">
             <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="broadcastVoiceId != null">broadcast_voice_id = #{broadcastVoiceId},</if>
+            <if test="broadcastDeviceId != null">broadcast_device_id = #{broadcastDeviceId},</if>
             <if test="yn != null">yn = #{yn},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -73,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteAlarmTypeByIds" parameterType="String">
-        delete from alarm_type where id in 
+        delete from alarm_type where id in
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
