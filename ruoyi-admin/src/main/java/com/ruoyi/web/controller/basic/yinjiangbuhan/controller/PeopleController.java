@@ -234,9 +234,6 @@ public class PeopleController {
         return AjaxResult.success(list);
     }
 
-
-
-
     private void savePeople(List<Staff> staffList) {
         List<SysWorkPeople> list = new ArrayList<>();
         for (Staff staff : staffList) {
