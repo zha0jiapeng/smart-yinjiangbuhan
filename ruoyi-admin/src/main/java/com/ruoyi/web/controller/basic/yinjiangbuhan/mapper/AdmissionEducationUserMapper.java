@@ -63,9 +63,9 @@ public interface AdmissionEducationUserMapper  extends BaseMapper<AdmissionEduca
      */
     public int deleteAdmissionEducationUserByIds(Long[] ids);
 
-    @Select("SELECT COUNT(DISTINCT user_id) AS user_count" +
-            "FROM sys_admission_education_user" +
-            "WHERE user_score > 60" +
-            "  AND del_flag = '0';")
+    @Select(" SELECT COUNT(DISTINCT user_id) AS user_count " +
+            " FROM sys_admission_education_user " +
+            " WHERE user_score > 60 " +
+            "  AND del_flag = '0' ")
     Integer coverage();
 }
