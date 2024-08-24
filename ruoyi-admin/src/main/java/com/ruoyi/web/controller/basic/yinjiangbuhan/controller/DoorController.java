@@ -56,7 +56,7 @@ public class DoorController extends BaseController
             if(object.get("personName") == null){
                 iterator.remove();
             }
-            object.put("picUri","https://192.168.1.207"+object.get("picUri"));
+            object.put("picUri","http://192.168.1.207"+object.get("picUri"));
         }
         return jsonObject;
     }
