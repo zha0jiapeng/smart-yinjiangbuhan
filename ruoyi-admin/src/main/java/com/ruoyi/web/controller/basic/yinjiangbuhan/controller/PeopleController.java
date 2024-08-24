@@ -221,16 +221,16 @@ public class PeopleController {
     }
     @GetMapping("/getStayStatistics")
     public Map<String,Object> getStayStatistics(){
-        Map<String, Integer> list = sysWorkPeopleInoutLogMapper.getStayStatistics();
+        Map<String, BigDecimal> list = sysWorkPeopleInoutLogMapper.getStayStatistics();
         HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
                 .body(com.alibaba.fastjson.JSON.toJSONString(new HashMap()), ContentType.JSON.getValue())
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
         int inHoleNum = data.size();
-        Integer onsitePeopleCount = list.get("onsite_people_count");
-        BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
-        list.put("wear_rate",divide.intValue());
+        BigDecimal onsitePeopleCount = list.get("onsite_people_count");
+        BigDecimal divide = new BigDecimal(inHoleNum).divide(onsitePeopleCount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
+        list.put("wear_rate",divide);
         return AjaxResult.success(list);
     }
 

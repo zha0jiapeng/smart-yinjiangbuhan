@@ -5,6 +5,7 @@ import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -97,5 +98,5 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             "  GROUP BY " +
             "    sys_work_people_id " +
             ") l;")
-    Map<String, Integer> getStayStatistics();
+    Map<String, BigDecimal> getStayStatistics();
 }
