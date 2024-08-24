@@ -117,6 +117,9 @@ public class SysWorkPeople extends BaseDomain {
 
     private Integer sort;
 
+    //是否重点人员
+    private Integer keyPersonnelFlag;
+
     @TableField(exist = false)
     private Integer appCase;
 

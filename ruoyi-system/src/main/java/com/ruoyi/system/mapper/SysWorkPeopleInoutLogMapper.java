@@ -63,4 +63,39 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             "GROUP BY DATE(log_time) " +
             "ORDER BY DATE(log_time)")
     List<Map<String, Object>> countDailyAttendanceForLast7Days();
+
+    @Select("SELECT " +
+            "  p.personnel_config_type, " +
+            "  COUNT(DISTINCT l.sys_work_people_id) AS attended_people_count, " +
+            "  COUNT(DISTINCT p.id) AS total_people_count, " +
+            "  ROUND(COUNT(DISTINCT l.sys_work_people_id) / COUNT(DISTINCT p.id) * 100, 2) AS attendance_rate " +
+            "FROM " +
+            "  sys_work_people p " +
+            "LEFT JOIN " +
+            "  sys_work_people_inout_log l " +
+            "ON " +
+            "  p.id = l.sys_work_people_id " +
+            "  AND l.mode = 1 " +  // 1表示进入
+            "  AND DATE(l.log_time) = CURDATE() " +  // 只统计今天的出勤
+            "WHERE " +
+            "  p.key_personnel_flag = 1 " +
+            "GROUP BY " +
+            "  p.personnel_config_type")
+    List<Map<String, Object>> getAttendanceRateByPersonnelConfigType();
+
+    @Select("SELECT " +
+            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL THEN 1 ELSE 0 END) AS onsite_people_count, " +
+            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL AND TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) BETWEEN 12 AND 24 THEN 1 ELSE 0 END) AS stay_12_24_hours_count, " +
+            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL AND TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) > 24 THEN 1 ELSE 0 END) AS stay_over_24_hours_count " +
+            "FROM ( " +
+            "  SELECT " +
+            "    sys_work_people_id, " +
+            "    MIN(log_time) AS enter_time, " +
+            "    MAX(CASE WHEN mode = 0 THEN log_time ELSE NULL END) AS exit_time " +
+            "  FROM " +
+            "    sys_work_people_inout_log " +
+            "  GROUP BY " +
+            "    sys_work_people_id " +
+            ") l;")
+    Map<String, Integer> getStayStatistics();
 }

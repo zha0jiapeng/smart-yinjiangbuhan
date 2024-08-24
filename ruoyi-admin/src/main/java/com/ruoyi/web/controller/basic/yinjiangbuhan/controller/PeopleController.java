@@ -1,6 +1,12 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.ContentType;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -21,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @RestController
@@ -202,6 +210,27 @@ public class PeopleController {
     @GetMapping("/getPeopleAttendanceForLast7Days")
     public Map<String,Object> getPeopleAttendanceForLast7Days(){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.countDailyAttendanceForLast7Days();
+        return AjaxResult.success(list);
+    }
+
+
+    @GetMapping("/getAttendanceRateByPersonnelConfigType")
+    public Map<String,Object> getAttendanceRateByPersonnelConfigType(){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getAttendanceRateByPersonnelConfigType();
+        return AjaxResult.success(list);
+    }
+    @GetMapping("/getStayStatistics")
+    public Map<String,Object> getStayStatistics(){
+        Map<String, Integer> list = sysWorkPeopleInoutLogMapper.getStayStatistics();
+        HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
+                .body(com.alibaba.fastjson.JSON.toJSONString(new HashMap()), ContentType.JSON.getValue())
+                .execute();
+        JSONObject jsonObject = JSONUtil.parseObj(execute.body());
+        JSONArray data = jsonObject.getJSONArray("data");
+        int inHoleNum = data.size();
+        Integer onsitePeopleCount = list.get("onsite_people_count");
+        BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
+        list.put("wear_rate",divide.intValue());
         return AjaxResult.success(list);
     }
 
