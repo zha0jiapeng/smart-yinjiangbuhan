@@ -79,4 +79,7 @@ public class Staff {
 
     @ExcelProperty("bim人员类型")
     private String bimStaffType;
+
+    @ExcelProperty("是否重点人员")
+    private Integer keyPersonnelFlag;
 }
