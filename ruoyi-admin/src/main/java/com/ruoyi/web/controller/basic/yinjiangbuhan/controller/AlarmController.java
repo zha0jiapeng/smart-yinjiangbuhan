@@ -201,7 +201,7 @@ public class AlarmController extends BaseController {
      * 新增ThingsBoard状态报警
      */
     @ApiOperation("新增ThingsBoard报警")
-    @GetMapping("/alarmStatusModification")
+    @GetMapping("/addThingsBoardAlarm")
     public void addThingsBoardAlarm(Order order) {
         //先判断设备id
         //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
