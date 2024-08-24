@@ -1,16 +1,20 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
-
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,6 +47,12 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class AlarmController extends BaseController {
     @Autowired
     private IAlarmService alarmService;
+
+    @Autowired
+    private RuleService ruleService;
+
+    @Autowired
+    private IDeviceService deviceService;
 
     /**
      * 查询报警列表
@@ -185,6 +195,42 @@ public class AlarmController extends BaseController {
         Alarm alarm = alarmService.getOne(alarmQueryWrapper);
         alarm.setAlarmStatus(2);
         return toAjax(alarmService.updateAlarm(alarm));
+    }
+
+    /**
+     * 新增ThingsBoard状态报警
+     */
+    @ApiOperation("新增ThingsBoard报警")
+    @GetMapping("/alarmStatusModification")
+    public void addThingsBoardAlarm(Order order) {
+        //先判断设备id
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+        if (order.getDeviceId() == 65) {
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+            order.setAlarmPoint(65L);
+        } else if (order.getDeviceId() == 52) {
+            //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
+            order.setAlarmPoint(52L);
+        }
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+        order.setAlarmTypeId(2L);
+        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
+        order.setAlarmType("设备离线报警");
+
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 定义时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 格式化当前时间
+        String formattedDateTime = now.format(formatter);
+        order.setAlarmTime(formattedDateTime);
+        order.setAlarmCapture("");
+        QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",order.getDeviceId());
+        Device device = deviceService.getOne(queryWrapper);
+        order.setAlarmContent("区域：" + device.getDeviceArea() + "；报警设备名称：" + device.getDeviceName() + "；报警内容：" + order.getAlarmType() + "；");
+        order.setRemark("");
+        ruleService.executeSignRule(order);
     }
 
 }
