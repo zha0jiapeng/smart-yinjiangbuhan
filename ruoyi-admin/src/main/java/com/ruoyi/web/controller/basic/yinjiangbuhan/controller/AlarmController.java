@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -155,19 +156,19 @@ public class AlarmController extends BaseController {
      */
     @ApiOperation("报警设备列表")
     @GetMapping("/alarmDeviceList")
-    public TableDataInfo alarmDeviceList() {
-        startPage();
+    public AjaxResult alarmDeviceList() {
+//        startPage();
         Alarm alarm = new Alarm();
         alarm.setAlarmStatus(0);
         List<JSONObject> list = alarmService.selectAlarmDeviceList(alarm);
-        TableDataInfo pageInfo = getDataTable(list);
-        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
-        alarmQueryWrapper.select("alarm_point");
-        alarmQueryWrapper.eq("alarm_status", 0);
-        alarmQueryWrapper.groupBy("alarm_point");
-        List<Alarm> alarmList = alarmService.list(alarmQueryWrapper);
-        pageInfo.setTotal(alarmList.size());
-        return pageInfo;
+//        TableDataInfo pageInfo = getDataTable(list);
+//        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+//        alarmQueryWrapper.select("alarm_point");
+//        alarmQueryWrapper.eq("alarm_status", 0);
+//        alarmQueryWrapper.groupBy("alarm_point");
+//        List<Alarm> alarmList = alarmService.list(alarmQueryWrapper);
+//        pageInfo.setTotal(alarmList.size());
+        return success(list);
     }
 
     /**
@@ -212,10 +213,6 @@ public class AlarmController extends BaseController {
             //由于当前信息跟设备表没有对应，只能手动去数据库中查找（sys_device）
             order.setAlarmPoint(52L);
         }
-        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
-        order.setAlarmTypeId(2L);
-        //由于当前信息跟设备表没有对应，只能手动去数据库中查找（alarm_type）
-        order.setAlarmType("设备离线报警");
 
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
@@ -226,11 +223,46 @@ public class AlarmController extends BaseController {
         order.setAlarmTime(formattedDateTime);
         order.setAlarmCapture("");
         QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",order.getDeviceId());
+        queryWrapper.eq("id", order.getDeviceId());
         Device device = deviceService.getOne(queryWrapper);
         order.setAlarmContent("区域：" + device.getDeviceArea() + "；报警设备名称：" + device.getDeviceName() + "；报警内容：" + order.getAlarmType() + "；");
         order.setRemark("");
-        ruleService.executeSignRule(order);
+
+        //查设备id、报警类型id、报警状态
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.eq("device_id", order.getDeviceId())
+                .eq("alarm_type_id", order.getAlarmTypeId())
+                .orderByDesc("id")
+                .last("LIMIT 1");
+        Alarm latestAlarm = alarmService.getOne(alarmQueryWrapper);
+        if (latestAlarm == null) {
+            ruleService.executeSignRule(order);
+        } else {
+            LocalDateTime alarmDateTime = LocalDateTime.parse(latestAlarm.getAlarmTime(), formatter);
+            LocalDateTime alarmTime = LocalDateTime.parse(order.getAlarmTime(), formatter);
+            Duration duration = Duration.between(alarmDateTime, alarmTime);
+            //计算时间差，判断是否在5分钟以内
+            if (!(duration.toMinutes() <= 5)) {
+                ruleService.executeSignRule(order);
+            }
+        }
+    }
+
+
+    /**
+     * 有毒有害气体超标实时监测
+     */
+    @ApiOperation("有毒有害气体超标实时监测")
+    @GetMapping("/getHazardousGasAlarmCount")
+    public AjaxResult getHazardousGasAlarmCount() {
+        QueryWrapper<Alarm> alarmQueryWrapper = new QueryWrapper<>();
+        alarmQueryWrapper.in("alarm_type_id", 3, 4, 5, 6, 7, 8, 9, 10);
+        List<Alarm> list = alarmService.list(alarmQueryWrapper);
+        int count = 0;
+        if (list != null){
+            count = list.size();
+        }
+        return success(count);
     }
 
 }

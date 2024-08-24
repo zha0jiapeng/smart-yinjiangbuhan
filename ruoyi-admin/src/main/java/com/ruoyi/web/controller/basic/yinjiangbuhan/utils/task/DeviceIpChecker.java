@@ -73,8 +73,11 @@ public class DeviceIpChecker {
         //更新设备表的配置
         Integer targetDeviceId = IP_TO_DEVICE_ID_MAP.get(device.getDeviceIp());
         Long deviceId = device.getId();
+        Device newDevice = new Device();
+        newDevice.setId(deviceId);
+        newDevice.setIsOnline(device.getIsOnline());
         if (targetDeviceId != null) {
-            deviceService.updateDevice(device);
+            deviceService.updateDevice(newDevice);
             QueryWrapper<Device> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("id", targetDeviceId);
             device = deviceService.getOne(queryWrapper);
@@ -86,8 +89,10 @@ public class DeviceIpChecker {
         if (device.getIsOnline() == 0) {
             addAlarm(deviceId, alarmPoint, deviceArea, deviceName);
         }
+        newDevice.setId(deviceId);
+        newDevice.setIsOnline(device.getIsOnline());
         // 最终更新设备状态
-        deviceService.updateDevice(device);
+        deviceService.updateDevice(newDevice);
     }
 
     public void addAlarm(Long deviceId, Long alarmPoint, String deviceArea, String deviceName) {

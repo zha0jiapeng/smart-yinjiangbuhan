@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.Date;
-
+import java.math.BigDecimal;
 
 /**
  * 报警类型表对象 alarm_type
  *
  * @author liang
- * @date 2024-08-21
+ * @date 2024-08-24
  */
 @Data
 @NoArgsConstructor
@@ -23,17 +23,25 @@ import java.util.Date;
 @ApiModel(value = "AlarmType", description = "报警类型表对象 alarm_type")
 public class AlarmType implements Serializable {
 
-private static final long serialVersionUID=1L;
+    private static final long serialVersionUID=1L;
 
 
-    /** $column.columnComment */
+    /**  */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "${column.columnComment}")
+    @ApiModelProperty(value = "")
     private Long id;
 
     /** 报警类型 */
     @ApiModelProperty(value = "报警类型")
     private String typeName;
+
+    /** 广播语音id */
+    @ApiModelProperty(value = "广播语音id")
+    private Long broadcastVoiceId;
+
+    /** 广播设备id */
+    @ApiModelProperty(value = "广播设备id")
+    private String broadcastDeviceId;
 
     /** 逻辑删除标识 0删除 1正常 */
     @ApiModelProperty(value = "逻辑删除标识 0删除 1正常")
