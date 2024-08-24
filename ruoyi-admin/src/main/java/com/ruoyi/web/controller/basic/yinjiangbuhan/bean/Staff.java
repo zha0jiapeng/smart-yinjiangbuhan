@@ -81,5 +81,5 @@ public class Staff {
     private String bimStaffType;
 
     @ExcelProperty("是否重点人员")
-    private Integer keyPersonnelFlag;
+    private String keyPersonnelFlag;
 }

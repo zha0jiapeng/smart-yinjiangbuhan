@@ -255,7 +255,7 @@ public class PeopleController {
             workPeople.setIdCard(staff.getIdCardNo());
             workPeople.setWorkType(staff.getWorkerType());
             workPeople.setCompany(staff.getLaborSubCom());
-            workPeople.setKeyPersonnelFlag(staff.getKeyPersonnelFlag());
+            workPeople.setKeyPersonnelFlag(staff.getKeyPersonnelFlag().equals("是")?1:0);
 
             switch (staff.getBimStaffType()){
                 case "建设单位" : workPeople.setPersonnelConfigType(1);
