@@ -42,7 +42,7 @@ public class HolePeopleAccessController {
     @RequestMapping("/push")
     public Map<String, Object> push(@RequestBody Map<String, Object> map) {
         Map<String, Object> result = new HashMap<>();
-        if(StringUtils.isEmpty(map.get("name").toString())) {
+        if(StringUtils.isEmpty(map.get("name").toString()) || StringUtils.isEmpty(map.get("idNum").toString()) ) {
             result.put("result", 0);
             result.put("message", "ok");
             return result;
