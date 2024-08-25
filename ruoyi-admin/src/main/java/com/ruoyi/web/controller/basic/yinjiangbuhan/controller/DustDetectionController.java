@@ -116,7 +116,7 @@ public class DustDetectionController {
             profileObj.put("name", "环境监测仪");
             profileObj.put("model", "");
             profileObj.put("manufacture", "");
-            profileObj.put("owner", "");
+            profileObj.put("owner", "土建4标");
             profileObj.put("makeDate", "2020-05-22");
             profileObj.put("validYear", "2050-05-22");
             profileObj.put("state", "01");
@@ -131,7 +131,7 @@ public class DustDetectionController {
             propertiesObj.put("pm2_5", dustdetection.getPm25());
             propertiesObj.put("pm10", dustdetection.getPm10());
             propertiesObj.put("windSpeed", dustdetection.getWs());
-            propertiesObj.put("windDirection", dustdetection.getWd());
+            propertiesObj.put("windDirection", getWindDirection(dustdetection.getWd()));
             propertiesObj.put("noiseDb", dustdetection.getNoise());
             propertiesObj.put("temperature", dustdetection.getTem());
             propertiesObj.put("humidity", dustdetection.getHum());

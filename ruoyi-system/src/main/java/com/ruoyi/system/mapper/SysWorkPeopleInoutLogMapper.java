@@ -5,7 +5,6 @@ import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -85,18 +84,29 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
     List<Map<String, Object>> getAttendanceRateByPersonnelConfigType();
 
     @Select("SELECT " +
-            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL THEN 1 ELSE 0 END) AS onsite_people_count, " +
-            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL AND TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) BETWEEN 12 AND 24 THEN 1 ELSE 0 END) AS stay_12_24_hours_count, " +
-            "  SUM(CASE WHEN l.enter_time IS NOT NULL AND l.exit_time IS NULL AND TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) > 24 THEN 1 ELSE 0 END) AS stay_over_24_hours_count " +
-            "FROM ( " +
+            "p.name, " +
+            "TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) AS hours_stayed, " +
+            "l.enter_time AS earliest_enter_time " +  // 添加最早进入时间列
+            "FROM sys_work_people p " +
+            "JOIN ( " +
             "  SELECT " +
-            "    sys_work_people_id, " +
-            "    MIN(log_time) AS enter_time, " +
-            "    MAX(CASE WHEN mode = 0 THEN log_time ELSE NULL END) AS exit_time " +
-            "  FROM " +
-            "    sys_work_people_inout_log " +
-            "  GROUP BY " +
-            "    sys_work_people_id " +
-            ") l;")
-    Map<String, BigDecimal> getStayStatistics();
+            "    l1.sys_work_people_id, " +
+            "    MIN(l1.log_time) AS enter_time " +
+            "  FROM sys_work_people_inout_log l1 " +
+            "  JOIN sys_device d ON l1.sn = d.sn " +
+            "  WHERE " +
+            "    l1.mode = 1 " +  // 只选取进入记录
+            "    AND d.camera_type = 1 " +  // 只统计 camera_type = 1 的记录
+            "    AND l1.sys_work_people_id IS NOT NULL " +  // 只统计 sys_work_people_id 不为空的记录
+            "    AND NOT EXISTS ( " +
+            "      SELECT 1 " +
+            "      FROM sys_work_people_inout_log l2 " +
+            "      WHERE l2.sys_work_people_id = l1.sys_work_people_id " +
+            "      AND l2.mode = 0 " +  // 查找离开记录
+            "      AND l2.log_time > l1.log_time " +  // 离开的时间要晚于进入的时间
+            "    ) " +
+            "  GROUP BY l1.sys_work_people_id, l1.name " +  // 将 l1.name 添加到 GROUP BY 中
+            ") l ON p.id = l.sys_work_people_id " +
+            "ORDER BY hours_stayed DESC")
+    List<Map<String, Object>> getStayStatistics();
 }

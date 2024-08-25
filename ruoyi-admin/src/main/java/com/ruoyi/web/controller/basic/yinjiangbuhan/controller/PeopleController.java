@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/people")
@@ -221,17 +222,29 @@ public class PeopleController {
     }
     @GetMapping("/getStayStatistics")
     public Map<String,Object> getStayStatistics(){
-        Map<String, BigDecimal> list = sysWorkPeopleInoutLogMapper.getStayStatistics();
+        Map<String,Object> response = new HashMap<>();
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getStayStatistics();
+        Map<Object, List<Map<String, Object>>> mapp = list.stream().collect(Collectors.groupingBy(person -> {
+            long hoursStayed = (long) person.get("hours_stayed");
+            if (hoursStayed >= 0 && hoursStayed < 12) {
+                return "onsite_people_list";
+            } else if (hoursStayed >= 12 && hoursStayed <= 24) {
+                return "onsite_people_over12_list";
+            } else {
+                return "onsite_people_over24_list";
+            }
+        }));
+        response.put("onsite_people_data",mapp);
         HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
                 .body(com.alibaba.fastjson.JSON.toJSONString(new HashMap()), ContentType.JSON.getValue())
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
         int inHoleNum = data.size();
-        BigDecimal onsitePeopleCount = list.get("onsite_people_count");
-        BigDecimal divide = new BigDecimal(inHoleNum).divide(onsitePeopleCount, 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
-        list.put("wear_rate",divide);
-        return AjaxResult.success(list);
+        Integer onsitePeopleCount = mapp.get("onsite_people_list").size();
+        BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
+        response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
+        return AjaxResult.success(response);
     }
 
     private void savePeople(List<Staff> staffList) {
