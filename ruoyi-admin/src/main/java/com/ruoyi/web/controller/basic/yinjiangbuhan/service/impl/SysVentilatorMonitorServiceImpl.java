@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 通风机监测数据Service业务层处理
@@ -99,5 +100,10 @@ public class SysVentilatorMonitorServiceImpl extends ServiceImpl<SysVentilatorMo
     @Override
     public SysVentilatorMonitor getRandomRecord() {
         return sysVentilatorMonitorMapper.getRandomRecord();
+    }
+
+    @Override
+    public List<Map<String, Object>> getCurve() {
+        return sysVentilatorMonitorMapper.getHourlyAverage();
     }
 }

@@ -56,6 +56,12 @@ public class SysVentilatorMonitorController extends BaseController
        return sysVentilatorMonitorService.getRandomRecord();
     }
 
+
+    @GetMapping("/getCurve")
+    public List<Map<String,Object>> getCurve()
+    {
+        return sysVentilatorMonitorService.getCurve();
+    }
     /**
      * 查询通风机监测数据列表
      */

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysVentilatorMonitor;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 通风机监测数据Service接口
@@ -62,4 +63,6 @@ public interface ISysVentilatorMonitorService extends IService<SysVentilatorMoni
     public int deleteSysVentilatorMonitorById(Long id);
 
     SysVentilatorMonitor getRandomRecord();
+
+    List<Map<String, Object>> getCurve();
 }
