@@ -271,10 +271,10 @@ public class PeopleController {
             workPeople.setKeyPersonnelFlag(staff.getKeyPersonnelFlag().equals("是")?1:0);
 
             switch (staff.getBimStaffType()){
-                case "建设单位" : workPeople.setPersonnelConfigType(1); return;
-                case "设计单位" : workPeople.setPersonnelConfigType(2); return;
-                case "监理单位" : workPeople.setPersonnelConfigType(3); return;
-                case "施工单位" : workPeople.setPersonnelConfigType(4); return;
+                case "建设单位" : workPeople.setPersonnelConfigType(1); break;
+                case "设计单位" : workPeople.setPersonnelConfigType(2); break;
+                case "监理单位" : workPeople.setPersonnelConfigType(3); break;
+                case "施工单位" : workPeople.setPersonnelConfigType(4); break;
                 default:
             }
             //workPeople.setDepartureDate(staff.);

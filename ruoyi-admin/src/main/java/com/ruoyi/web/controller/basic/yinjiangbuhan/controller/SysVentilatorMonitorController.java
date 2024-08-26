@@ -25,7 +25,7 @@ import java.util.Map;
  * @date 2024-08-24
  */
 @RestController
-@RequestMapping("/system/ventilator/monitor")
+    @RequestMapping("/system/ventilator/monitor")
 public class SysVentilatorMonitorController extends BaseController
 {
     @Autowired

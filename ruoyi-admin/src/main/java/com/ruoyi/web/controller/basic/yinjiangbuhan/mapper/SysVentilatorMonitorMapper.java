@@ -26,7 +26,7 @@ public interface SysVentilatorMonitorMapper extends BaseMapper<SysVentilatorMoni
             "AVG(air_supply) AS avg_air_supply, " +
             "AVG(wind_presssure) AS avg_wind_pressure " +
             "FROM sys_ventilator_monitor " +
-            "WHERE DATE(created_date) = CURDATE() " +
+            //"WHERE DATE(created_date) = CURDATE() " +
             "GROUP BY hour " +
             "ORDER BY hour ASC")
     List<Map<String, Object>> getHourlyAverage();
