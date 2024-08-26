@@ -133,11 +133,15 @@ public class GasDetectionController {
         Map<String,Object> properties = new HashMap<>();
         properties.put("monitorTime",DateUtil.format(DateUtil.date(ts),"yyyy-MM-dd HH:mm:ss"));
 
-        properties.put("co",value);
-        properties.put("co2",((List<Map<String, Object>>)map1.get("co2")).get(0).get("value"));
-        properties.put("so2",((List<Map<String, Object>>)map1.get("so2")).get(0).get("value"));
-        properties.put("so",0); //无指标
-        properties.put("ch4",((List<Map<String, Object>>)map1.get("ch4")).get(0).get("value"));
+        properties.put("CO",value);
+        properties.put("CO2",map1.containsKey("co2") ? ((List<Map<String, Object>>) map1.get("co2")).get(0).get("value") : null);
+        properties.put("SO2",map1.containsKey("so2") ? ((List<Map<String, Object>>)map1.get("so2")).get(0).get("value") : null);
+        properties.put("SO", map1.containsKey("so") ? ((List<Map<String, Object>>)map1.get("so")).get(0).get("value") : null);
+        properties.put("CH4", map1.containsKey("ch4") ? ((List<Map<String, Object>>)map1.get("ch4")).get(0).get("value") : null);
+        properties.put("O2",map1.containsKey("o2") ? ((List<Map<String, Object>>)map1.get("o2")).get(0).get("value") : null);
+        properties.put("S2H",map1.containsKey("s2h") ? ((List<Map<String, Object>>)map1.get("s2h")).get(0).get("value") : null);
+        properties.put("TEMPERATURE",map1.containsKey("temperature") ? ((List<Map<String, Object>>)map1.get("temperature")).get(0).get("value") : null);
+        properties.put("HUMIDNESS",map1.containsKey("humidity") ? ((List<Map<String, Object>>)map1.get("humidity")).get(0).get("value") : null);
         properties.put("location","1");
         properties.put("x","0");
         properties.put("y","0");

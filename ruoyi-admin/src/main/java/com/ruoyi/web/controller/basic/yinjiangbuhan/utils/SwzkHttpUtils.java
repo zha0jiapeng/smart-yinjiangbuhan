@@ -17,10 +17,10 @@ public class SwzkHttpUtils {
         param.put("bidCode","YJBH-SSZGX_BD-SG-205"); //土建4标
         log.info("push tcp swzk:{}",JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
         //String s = TcpClientService.sendTcpRequest(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue));
-        HttpResponse execute1 = HttpRequest.post("http://58.48.101.155:8089/receive/pushIOT")
+        HttpResponse execute = HttpRequest.post("http://58.48.101.155:8089/receive/pushIOT")
                 .body(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue), "application/json").execute();
-        log.info("push tcp swzk response:{}",execute1.body());
-        return execute1.body();
+        log.info("push tcp swzk response:{}",execute.body());
+        return execute.body();
 
     }
 }
