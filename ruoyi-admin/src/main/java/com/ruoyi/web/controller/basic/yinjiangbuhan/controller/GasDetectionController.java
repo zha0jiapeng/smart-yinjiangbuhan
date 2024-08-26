@@ -63,7 +63,7 @@ public class GasDetectionController {
         Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
         if(thingsboardToken==null) {
             String url = "192.168.1.201:8080/api/auth/login";
-            Map<String, Object> map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("username", "1939291579@qq.com");
             map.put("password", "zhao521a.");
             HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
@@ -83,7 +83,7 @@ public class GasDetectionController {
         Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
         if(thingsboardToken==null) {
             String url = "192.168.1.201:8080/api/auth/login";
-            Map<String, Object> map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("username", "1939291579@qq.com");
             map.put("password", "zhao521a.");
             HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
@@ -96,18 +96,20 @@ public class GasDetectionController {
             String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+device.getSn()+"/values/timeseries";
             HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
             String body = execute.body();
+            System.out.println("gas:"+body);
             push(body,device);
         }
 
     }
 
     private void push(String body,Device device) {
-        Map map1 = JSON.parseObject(body, Map.class);
+        Map jsonMap = JSON.parseObject(body, Map.class);
+
         List<Object> valus = new ArrayList<>();
-        List<Map<String,Object>> co = (List<Map<String, Object>>) map1.get("co");
+        List<Map<String,Object>> co = (List<Map<String, Object>>) jsonMap.get("co");
         Long ts = (Long) co.get(0).get("ts");
         Object value = co.get(0).get("value");
-        Map swzkParam = new HashMap();
+        Map<String, Object> swzkParam = new HashMap<String, Object>();
         swzkParam.put("SN", device.getSn() );
         swzkParam.put("dataType","200300025"); //有毒有害气体
         swzkParam.put("deviceType","2001000060"); //有毒有害气体
@@ -134,14 +136,14 @@ public class GasDetectionController {
         properties.put("monitorTime",DateUtil.format(DateUtil.date(ts),"yyyy-MM-dd HH:mm:ss"));
 
         properties.put("CO",value);
-        properties.put("CO2",map1.containsKey("co2") ? ((List<Map<String, Object>>) map1.get("co2")).get(0).get("value") : null);
-        properties.put("SO2",map1.containsKey("so2") ? ((List<Map<String, Object>>)map1.get("so2")).get(0).get("value") : null);
-        properties.put("SO", map1.containsKey("so") ? ((List<Map<String, Object>>)map1.get("so")).get(0).get("value") : null);
-        properties.put("CH4", map1.containsKey("ch4") ? ((List<Map<String, Object>>)map1.get("ch4")).get(0).get("value") : null);
-        properties.put("O2",map1.containsKey("o2") ? ((List<Map<String, Object>>)map1.get("o2")).get(0).get("value") : null);
-        properties.put("S2H",map1.containsKey("s2h") ? ((List<Map<String, Object>>)map1.get("s2h")).get(0).get("value") : null);
-        properties.put("TEMPERATURE",map1.containsKey("temperature") ? ((List<Map<String, Object>>)map1.get("temperature")).get(0).get("value") : null);
-        properties.put("HUMIDNESS",map1.containsKey("humidity") ? ((List<Map<String, Object>>)map1.get("humidity")).get(0).get("value") : null);
+        properties.put("CO2",jsonMap.containsKey("co2") ? ((List<Map<String, Object>>) jsonMap.get("co2")).get(0).get("value") : null);
+        properties.put("SO2",jsonMap.containsKey("so2") ? ((List<Map<String, Object>>)jsonMap.get("so2")).get(0).get("value") : null);
+        properties.put("SO", jsonMap.containsKey("so") ? ((List<Map<String, Object>>)jsonMap.get("so")).get(0).get("value") : null);
+        properties.put("CH4", jsonMap.containsKey("ch4") ? ((List<Map<String, Object>>)jsonMap.get("ch4")).get(0).get("value") : null);
+        properties.put("O2",jsonMap.containsKey("o2") ? ((List<Map<String, Object>>)jsonMap.get("o2")).get(0).get("value") : null);
+        properties.put("S2H",jsonMap.containsKey("s2h") ? ((List<Map<String, Object>>)jsonMap.get("s2h")).get(0).get("value") : null);
+        properties.put("TEMPERATURE",jsonMap.containsKey("temperature") ? ((List<Map<String, Object>>)jsonMap.get("temperature")).get(0).get("value") : null);
+        properties.put("HUMIDNESS",jsonMap.containsKey("humidity") ? ((List<Map<String, Object>>)jsonMap.get("humidity")).get(0).get("value") : null);
         properties.put("location","1");
         properties.put("x","0");
         properties.put("y","0");
