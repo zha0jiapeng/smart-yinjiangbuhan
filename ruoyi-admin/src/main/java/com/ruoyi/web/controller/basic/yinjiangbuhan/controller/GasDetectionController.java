@@ -141,7 +141,7 @@ public class GasDetectionController {
         properties.put("SO", jsonMap.containsKey("so") ? ((List<Map<String, Object>>)jsonMap.get("so")).get(0).get("value") : null);
         properties.put("CH4", jsonMap.containsKey("ch4") ? ((List<Map<String, Object>>)jsonMap.get("ch4")).get(0).get("value") : null);
         properties.put("O2",jsonMap.containsKey("o2") ? ((List<Map<String, Object>>)jsonMap.get("o2")).get(0).get("value") : null);
-        properties.put("S2H",jsonMap.containsKey("s2h") ? ((List<Map<String, Object>>)jsonMap.get("s2h")).get(0).get("value") : null);
+        properties.put("H2S",jsonMap.containsKey("h2s") ? ((List<Map<String, Object>>)jsonMap.get("h2s")).get(0).get("value") : null);
         properties.put("TEMPERATURE",jsonMap.containsKey("temperature") ? ((List<Map<String, Object>>)jsonMap.get("temperature")).get(0).get("value") : null);
         properties.put("HUMIDNESS",jsonMap.containsKey("humidity") ? ((List<Map<String, Object>>)jsonMap.get("humidity")).get(0).get("value") : null);
         properties.put("location","1");
