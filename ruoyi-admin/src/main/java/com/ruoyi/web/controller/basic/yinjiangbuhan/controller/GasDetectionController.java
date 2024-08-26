@@ -136,14 +136,14 @@ public class GasDetectionController {
         properties.put("monitorTime",DateUtil.format(DateUtil.date(ts),"yyyy-MM-dd HH:mm:ss"));
 
         properties.put("CO",value);
-        properties.put("CO2",jsonMap.containsKey("co2") ? ((List<Map<String, Object>>) jsonMap.get("co2")).get(0).get("value") : null);
-        properties.put("SO2",jsonMap.containsKey("so2") ? ((List<Map<String, Object>>)jsonMap.get("so2")).get(0).get("value") : null);
-        properties.put("SO", jsonMap.containsKey("so") ? ((List<Map<String, Object>>)jsonMap.get("so")).get(0).get("value") : null);
-        properties.put("CH4", jsonMap.containsKey("ch4") ? ((List<Map<String, Object>>)jsonMap.get("ch4")).get(0).get("value") : null);
-        properties.put("O2",jsonMap.containsKey("o2") ? ((List<Map<String, Object>>)jsonMap.get("o2")).get(0).get("value") : null);
-        properties.put("S2H",jsonMap.containsKey("h2s") ? ((List<Map<String, Object>>)jsonMap.get("h2s")).get(0).get("value") : null);
-        properties.put("TEMPERATURE",jsonMap.containsKey("temperature") ? ((List<Map<String, Object>>)jsonMap.get("temperature")).get(0).get("value") : null);
-        properties.put("HUMIDNESS",jsonMap.containsKey("humidity") ? ((List<Map<String, Object>>)jsonMap.get("humidity")).get(0).get("value") : null);
+        properties.put("CO2",jsonMap.containsKey("co2") ? ((List<Map<String, Object>>) jsonMap.get("co2")).get(0).get("value") : "");
+        properties.put("SO2",jsonMap.containsKey("so2") ? ((List<Map<String, Object>>)jsonMap.get("so2")).get(0).get("value") : "");
+        properties.put("SO", jsonMap.containsKey("so") ? ((List<Map<String, Object>>)jsonMap.get("so")).get(0).get("value") : "");
+        properties.put("CH4", jsonMap.containsKey("ch4") ? ((List<Map<String, Object>>)jsonMap.get("ch4")).get(0).get("value") : "");
+        properties.put("O2",jsonMap.containsKey("o2") ? ((List<Map<String, Object>>)jsonMap.get("o2")).get(0).get("value") : "");
+        properties.put("S2H",jsonMap.containsKey("h2s") ? ((List<Map<String, Object>>)jsonMap.get("h2s")).get(0).get("value") : "");
+        properties.put("TEMPERATURE",jsonMap.containsKey("temperature") ? ((List<Map<String, Object>>)jsonMap.get("temperature")).get(0).get("value") : "");
+        properties.put("HUMIDNESS",jsonMap.containsKey("humidity") ? ((List<Map<String, Object>>)jsonMap.get("humidity")).get(0).get("value") : "");
         properties.put("location","1");
         properties.put("x","0");
         properties.put("y","0");

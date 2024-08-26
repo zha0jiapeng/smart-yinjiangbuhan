@@ -1,5 +1,6 @@
 package com.ruoyi.system.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.system.domain.basic.BaseDomain;
@@ -15,6 +16,8 @@ import java.util.List;
 @Data
 @TableName("sys_work_people")
 public class SysWorkPeople extends BaseDomain {
+
+    @TableId
     private Integer id;
     // 姓名
     private String name;
