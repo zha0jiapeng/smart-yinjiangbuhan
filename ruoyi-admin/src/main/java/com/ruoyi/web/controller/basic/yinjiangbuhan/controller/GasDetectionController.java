@@ -78,6 +78,27 @@ public class GasDetectionController {
         return JSON.parseObject(body,Map.class);
     }
 
+    @RequestMapping("/getCurve/{id}")
+    public Map getCurve(@PathVariable String id){
+        Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
+        if(thingsboardToken==null) {
+            String url = "192.168.1.201:8080/api/auth/login";
+            Map<String, Object> map = new HashMap<>();
+            map.put("username", "1939291579@qq.com");
+            map.put("password", "zhao521a.");
+            HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
+            JSONObject jsonObject = JSON.parseObject(execute.body());
+            Object token = jsonObject.get("token");
+            redisCache.setCacheObject("thingsboard_token",token,2, TimeUnit.HOURS);
+        }
+        Device byId = deviceService.getById(id);
+        if(byId==null) return null;
+        String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+byId.getSn()+"/values/timeseries";
+        HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
+        String body = execute.body();
+        return JSON.parseObject(body,Map.class);
+    }
+
     @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzk() {
         Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");

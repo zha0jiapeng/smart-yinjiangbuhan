@@ -52,6 +52,12 @@ public class TspController extends BaseController {
         return getDataTable(iotTspLists);
     }
 
+    @RequestMapping("getCurve")
+    public List<Map<String,Object>> getCurve(Integer type,Integer text) {
+        return iotTspService.getCurve(type,text);
+    }
+
+
     /**
      * 数据推送
      *

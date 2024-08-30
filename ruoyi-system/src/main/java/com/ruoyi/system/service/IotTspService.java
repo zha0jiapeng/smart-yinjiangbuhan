@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.basic.IotTsp;
 import com.ruoyi.system.domain.basic.IotTspCopy;
 import java.util.List;
+import java.util.Map;
 
 public interface IotTspService extends IService<IotTsp> {
 
@@ -10,4 +11,5 @@ public interface IotTspService extends IService<IotTsp> {
 
     IotTspCopy queryByPageCopy(IotTspCopy iotTspCopy);
 
+    List<Map<String, Object>> getCurve(Integer type, Integer text);
 }
