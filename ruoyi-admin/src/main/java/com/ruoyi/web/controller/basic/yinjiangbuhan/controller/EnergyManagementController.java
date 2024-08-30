@@ -75,6 +75,13 @@ public class EnergyManagementController {
         }
     }
 
+    @GetMapping("getBigScreen")
+    public AjaxResult get() {
+        String token = getToken();
+        String url = "http://119.23.59.186:18996/#/home?ProjectID=11649&projectName=%E9%A9%AC%E8%89%AF%E9%95%87%E4%B8%AD%E9%93%81%E5%8D%81%E5%85%AB%E5%B1%80&token="+token;
+        return AjaxResult.success(url);
+    }
+
     @Scheduled(cron = "0 */5 * * * *")
     private void cron() {
         HttpRequest request = HttpUtil.createPost("http://nhapi.yunjichaobiao.com/api/Device/AmmeterData_Summary")
