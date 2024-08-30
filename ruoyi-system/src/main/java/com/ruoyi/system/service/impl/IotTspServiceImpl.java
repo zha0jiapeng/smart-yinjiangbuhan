@@ -174,7 +174,7 @@ public class IotTspServiceImpl extends ServiceImpl<IotTspMapper, IotTsp> impleme
     }
 
     @Override
-    public List<Map<String, Object>> getCurve(Integer type, Integer text) {
+    public List<Map<String, Object>> getCurve(Integer type, String text) {
         return iotTspMapper.getCurve(type,text);
     }
 

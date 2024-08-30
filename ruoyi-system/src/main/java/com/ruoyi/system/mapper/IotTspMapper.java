@@ -29,14 +29,19 @@ public interface IotTspMapper extends BaseMapper<IotTsp> {
             "<if test='type == 4'> " +
             "   DATE_FORMAT(created_date, '%Y-%m-%d %H') AS period, " +
             "</if> " +
-            "AVG(temperature) AS avg_temperature, " +
-            "AVG(pm_two_five) AS avg_pm_two_five, " +
-            "AVG(pm_ten) AS avg_pm_ten, " +
-            "AVG(tsp) AS avg_tsp, " +
-            "AVG(humidity) AS avg_humidity, " +
-            "AVG(wind_speed) AS avg_wind_speed, " +
-            "AVG(noise) AS avg_noise, " +
-            "AVG(pressure) AS avg_pressure " +
+            "ROUND(AVG(temperature), 2) AS avg_temperature, " +
+            "ROUND(AVG(pm_two_five), 2) AS avg_pm_two_five, " +
+            "ROUND(AVG(pm_ten), 2) AS avg_pm_ten, " +
+            "ROUND(AVG(tsp), 2) AS avg_tsp, " +
+            "ROUND(AVG(humidity), 2) AS avg_humidity, " +
+            "ROUND(AVG(wind_speed), 2) AS avg_wind_speed, " +
+            "ROUND(AVG(noise), 2) AS avg_noise, " +
+            "ROUND(AVG(pressure), 2) AS avg_pressure, " +
+            "ROUND(AVG(no_two), 2) AS avg_no_two, " +
+            "ROUND(AVG(so_two), 2) AS avg_so_two, " +
+            "ROUND(AVG(co), 2) AS avg_co, " +
+            "ROUND(AVG(three), 2) AS avg_three, " +
+            "ROUND(AVG(voc), 2) AS avg_voc " +
             "FROM lot_tsp " +
             "WHERE yn = 1 " +
             "<if test='type == 1'> " +
@@ -51,8 +56,18 @@ public interface IotTspMapper extends BaseMapper<IotTsp> {
             "<if test='type == 4'> " +
             "   AND DATE_FORMAT(created_date, '%Y-%m-%d') = #{text} " +
             "</if> " +
-            "GROUP BY period " +
-            "ORDER BY period ASC" +
+            "<if test='type == 2'>" +
+            "   GROUP BY DATE_FORMAT(created_date, '%Y-%m') " +
+            "   ORDER BY DATE_FORMAT(created_date, '%Y-%m') ASC " +
+            "</if> " +
+            "<if test='type == 3'>" +
+            "   GROUP BY DATE_FORMAT(created_date, '%Y-%m-%d') " +
+            "   ORDER BY DATE_FORMAT(created_date, '%Y-%m-%d') ASC " +
+            "</if> " +
+            "<if test='type == 4'>" +
+            "   GROUP BY DATE_FORMAT(created_date, '%Y-%m-%d %H') " +
+            "   ORDER BY DATE_FORMAT(created_date, '%Y-%m-%d %H') ASC " +
+            "</if> " +
             "</script>")
-    List<Map<String, Object>> getCurve(@Param("type") Integer type,@Param("text") Integer text);
+    List<Map<String, Object>> getCurve(@Param("type") Integer type,@Param("text") String text);
 }

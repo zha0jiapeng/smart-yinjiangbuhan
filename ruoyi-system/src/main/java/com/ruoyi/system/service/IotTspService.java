@@ -11,5 +11,5 @@ public interface IotTspService extends IService<IotTsp> {
 
     IotTspCopy queryByPageCopy(IotTspCopy iotTspCopy);
 
-    List<Map<String, Object>> getCurve(Integer type, Integer text);
+    List<Map<String, Object>> getCurve(Integer type, String text);
 }

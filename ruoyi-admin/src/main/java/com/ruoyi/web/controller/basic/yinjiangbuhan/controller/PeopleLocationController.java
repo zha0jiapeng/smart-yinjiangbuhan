@@ -129,7 +129,8 @@ public class PeopleLocationController {
             propertiesObj.put("humanZ", itemMap.get("result_z"));
             propertiesObj.put("stationDistance",0);
             propertiesObj.put("holeDistance", new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString())));
-            propertiesObj.put("idCardNumber", ((Map<String, Object>) itemMap.get("user_info")).get("number"));
+            Object idcard = ((Map<String, Object>) itemMap.get("user_info")).get("number");
+            propertiesObj.put("idCardNumber", idcard);
 //                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
 //                if(one!=null)
 //                    propertiesObj.put("idCardNumber", one.getIdCard());
