@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -131,7 +132,8 @@ public class DustDetectionController {
             propertiesObj.put("pm2_5", dustdetection.getPm25());
             propertiesObj.put("pm10", dustdetection.getPm10());
             propertiesObj.put("windSpeed", dustdetection.getWs());
-            propertiesObj.put("windDirection", getWindDirection(dustdetection.getWd()));
+            String windDirection = getWindDirection(dustdetection.getWd());
+            propertiesObj.put("windDirection", StrUtil.sub(windDirection, 0, windDirection.length() - 1));
             propertiesObj.put("noiseDb", dustdetection.getNoise());
             propertiesObj.put("temperature", dustdetection.getTem());
             propertiesObj.put("humidity", dustdetection.getHum());
