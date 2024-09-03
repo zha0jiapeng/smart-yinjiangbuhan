@@ -7,12 +7,15 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventsRequest;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,6 +57,8 @@ public class DoorEvent {
     @Resource
     SysWorkPeopleService workPeopleService;
 
+    @Resource
+    IDeviceService deviceService;
     @Scheduled(cron = "0 */10 * * * ?")
     public void execute() {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
@@ -195,7 +200,14 @@ public class DoorEvent {
         if(workPeople!=null ) {
             sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
         }
-        sysWorkPeopleInoutLog.setSn(door.get("devSerialNum").toString());
+        String sn = door.get("devSerialNum").toString();
+        sysWorkPeopleInoutLog.setSn(sn);
+        Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn), false);
+        if(one!=null){
+            if(StringUtils.isNotEmpty(one.getModifyBy())){
+                sysWorkPeopleInoutLog.setSn(one.getModifyBy());
+            }
+        }
         sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inAndOutType").toString()));
         sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
