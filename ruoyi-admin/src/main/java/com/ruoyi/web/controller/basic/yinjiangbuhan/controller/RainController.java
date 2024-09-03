@@ -195,6 +195,14 @@ public class RainController extends BaseController {
                 rowDataCurRain = Double.parseDouble(registerItemJsonObject.get("data").toString());
                 rain.setOldRain1(String.valueOf(rowDataCurRain));
             }
+            //雷达水位计液位高
+            if (nodeId.equals("4")) {
+                String registerItem = object.get("registerItem").toString();
+                JSONArray registerItemJsonArray = JSONArray.parse(registerItem);
+                JSONObject registerItemJsonObject = (JSONObject) registerItemJsonArray.get(0);
+                rowDataCurRain = Double.parseDouble(registerItemJsonObject.get("data").toString());
+                rain.setWaterLevel(String.valueOf(rowDataCurRain));
+            }
         }
         //一分钟的降雨量
         QueryWrapper<Rain> rainQueryWrapper = new QueryWrapper<>();
@@ -253,8 +261,8 @@ public class RainController extends BaseController {
         // 格式化日期时间
         String formattedDateTime = dateTime.format(formatter);
         valuesJSONEventsMonitorData.put("monitorTime", formattedDateTime);
-        valuesJSONEventsMonitorData.put("waterLevel", rain.getOldRain1());
-        rain.setWaterLevel(rain.getOldRain1());
+        valuesJSONEventsMonitorData.put("waterLevel", rain.getWaterLevel());
+        rain.setWaterLevel(rain.getWaterLevel());
         valuesJSONEventsMonitorData.put("curRain", rain.getCurRain());
         valuesJSONEventsMonitorData.put("totalRain", rain.getTotalRain());
         valuesJSONEventsMonitorData.put("rain1", rain.getRain1());
