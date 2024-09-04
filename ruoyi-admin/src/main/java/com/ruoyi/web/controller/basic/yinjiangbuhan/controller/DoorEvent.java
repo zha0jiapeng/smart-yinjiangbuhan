@@ -117,12 +117,20 @@ public class DoorEvent {
            logger.info("devIndexCode:{} list:{}",devIndexCode,JSON.toJSONString(value));
            JSONObject door = getDoor(devIndexCode);
 
+
            // Create the main map
            Map<String, Object> mainMap = new HashMap<>();
 
            // Add top-level fields
            mainMap.put("deviceType", "2001000010");
-           mainMap.put("SN", door.get("devSerialNum"));
+           String sn = door.get("devSerialNum").toString();
+           mainMap.put("SN", sn);
+           Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn), false);
+           if(one!=null){
+               if(StringUtils.isNotEmpty(one.getModifyBy())){
+                   mainMap.put("SN", one.getModifyBy());
+               }
+           }
            mainMap.put("dataType", "200300003");
            mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
            mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
@@ -149,7 +157,7 @@ public class DoorEvent {
                profileMap.put("makeDate", "2020-05-22");
                profileMap.put("validYear", "2050-05-22");
                profileMap.put("state", "01");
-               profileMap.put("installPosition", "项目部大门");
+               profileMap.put("installPosition", "");
                profileMap.put("x", 0);
                profileMap.put("y", 0);
                profileMap.put("z", 0);
@@ -164,7 +172,7 @@ public class DoorEvent {
                passMap.put("describe", "");
                passMap.put("idCardNumber", map.get("certNo"));
                passMap.put("name", map.get("personName"));
-               passMap.put("passTime", eventTime);
+               passMap.put("passTime", DateUtil.formatDateTime(eventTime));
                passMap.put("passDirection",map.get("inAndOutType").toString().equals("1") ? "02" : "01");
                eventsMap.put("pass", passMap);
 
@@ -184,12 +192,6 @@ public class DoorEvent {
            swzkHttpUtils.pushIOT(mainMap);
 
        }
-
-
-
-
-
-
    }
 
     private void insertInOutLog(JSONObject door, Map<String, Object> jsonObject, DateTime eventTime) {
@@ -202,12 +204,6 @@ public class DoorEvent {
         }
         String sn = door.get("devSerialNum").toString();
         sysWorkPeopleInoutLog.setSn(sn);
-        Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn), false);
-        if(one!=null){
-            if(StringUtils.isNotEmpty(one.getModifyBy())){
-                sysWorkPeopleInoutLog.setSn(one.getModifyBy());
-            }
-        }
         sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inAndOutType").toString()));
         sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
