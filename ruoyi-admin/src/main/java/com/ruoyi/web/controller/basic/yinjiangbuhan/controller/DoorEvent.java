@@ -28,6 +28,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,7 +80,7 @@ public class DoorEvent {
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
         List<Map<String, Object>> lists = jsonArrayToList(list);
-        pushSwzk(lists);
+        pushSwzk(lists,true);
     }
 
     @RequestMapping("/door/pushHik")
@@ -102,10 +104,10 @@ public class DoorEvent {
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
         List<Map<String, Object>> lists = jsonArrayToList(list);
-        pushSwzk(lists);
+        pushSwzk(lists,false);
     }
 
-   private void pushSwzk(List<Map<String, Object>> list){
+   private void pushSwzk(List<Map<String, Object>> list,boolean flag){
 
        // 根据devIndexCode字段分组
        Map<String, List<Map<String, Object>>> groupedByDevIndexCode = list.stream()
@@ -182,8 +184,8 @@ public class DoorEvent {
                valuesMap.put("services", new HashMap<String, Object>());
                // Add the valuesMap to the valuesList
                valuesList.add(valuesMap);
-
-               insertInOutLog(door, map, eventTime);
+                if(flag)
+                insertInOutLog(door, map, eventTime);
 
 
            }
@@ -267,16 +269,49 @@ public class DoorEvent {
         ZoneOffset offset = ZoneOffset.of("+08:00");
         OffsetDateTime date = OffsetDateTime.of(ldt ,offset);
         DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-
         return date.format(dtf2 );
     }
 
-    public static String getDateStrFromISO8601Timestamp(String ISOdate){
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(ISOdate, formatter);
 
-        return offsetDateTime.toString();
+//    public static String getDateStrFromISO8601Timestamp(String ISOdate){
+//        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+//        OffsetDateTime offsetDateTime = OffsetDateTime.parse(ISOdate, formatter);
+//
+//        return offsetDateTime.toString();
+//    }
+
+    public static String getDateStrFromISO8601Timestamp(String dateTimeStr) {
+        // 检查并补全不完整的时间字符串
+        if (dateTimeStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}\\+\\d{2}:\\d{2}$")) {
+            // 如果只有小时信息，补充 :00:00
+            dateTimeStr = dateTimeStr.replaceFirst("(\\d{2})\\+(\\d{2}:\\d{2})$", "$1:00:00+$2");
+        } else if (dateTimeStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}\\+\\d{2}:\\d{2}$")) {
+            // 如果没有秒信息，补充 :00
+            dateTimeStr = dateTimeStr.replaceFirst("(\\d{2}:\\d{2})\\+(\\d{2}:\\d{2})$", "$1:00+$2");
+        }
+
+        try {
+            // 尝试将输入字符串解析为 OffsetDateTime
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateTimeStr);
+
+            // 将 OffsetDateTime 转换为 LocalDateTime
+            LocalDateTime localDateTime = offsetDateTime.toLocalDateTime();
+
+            // 确保格式为 yyyy-MM-dd HH:mm:ss
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            // 如果时间中缺少秒或者分钟，需要补充0
+            LocalDateTime normalizedDateTime = localDateTime
+                    .withSecond(localDateTime.getSecond() == 0 ? 0 : localDateTime.getSecond())
+                    .truncatedTo(ChronoUnit.SECONDS); // 去除毫秒
+
+            return normalizedDateTime.format(outputFormatter);
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date time format.");
+        }
     }
+
 
 }
 
