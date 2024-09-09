@@ -18,9 +18,9 @@ public enum IndexType {
     CARBON_MONOXIDE(11,1),
     HYDROGEN_SULFIDE(12,0),
     CARBON_DIOXIDE(13,1),//二氧化碳
-    SULFUR_DIOXIDE(14,0), //二氧化硫
+    so2(14,0), //二氧化硫
     ammonia(15,0), //氨气
-    NITRIC_OXIDE(16,0),//一氧化氮
+    no(16,0),//一氧化氮
     ILLUMINATION(17,1), //光照
     NEGATIVE_PRESSURE(18,1);//
 

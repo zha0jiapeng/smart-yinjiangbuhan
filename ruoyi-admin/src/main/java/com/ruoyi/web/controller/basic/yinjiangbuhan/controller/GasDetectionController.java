@@ -5,6 +5,7 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
@@ -38,9 +39,11 @@ public class GasDetectionController {
     IDeviceService deviceService;
     @Resource
     SwzkHttpUtils swzkHttpUtils;
-    @RequestMapping("/list")
-    public List<Map<String,Object>> getGasGasDetection(){
-        ModbusMaster master = new ModbusTcpMaster().getSlave("192.168.103.178", 6066);
+    @RequestMapping("/list/{deviceId}")
+    public List<Map<String,Object>> getGasGasDetection(@PathVariable String deviceId){
+        Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, deviceId));
+        if (one == null) return null;
+        ModbusMaster master = new ModbusTcpMaster().getSlave(one.getDeviceIp(), 6066);
         List<Map<String,Object>> list = new ArrayList<>();
         for (int i =0; i <18;i++) {
             Map<String,Object> map = new HashMap<>();

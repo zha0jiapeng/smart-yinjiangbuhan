@@ -346,7 +346,7 @@ public class RainController extends BaseController {
         values.add(valuesJSON);
         object.put("values", values);
         Map<String, Object> map = jsonObjectToMap(object);
-       // swzkHttpUtils.pushIOT(map);
+        swzkHttpUtils.pushIOT(map);
     }
 
 
