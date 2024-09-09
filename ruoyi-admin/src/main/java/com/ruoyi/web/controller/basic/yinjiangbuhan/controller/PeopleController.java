@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
@@ -65,7 +66,7 @@ public class PeopleController {
 
     @GetMapping("/simulationOut")
     private AjaxResult pushSwzk(Integer peopleId) {
-
+        String now = DateUtil.now();
         SysWorkPeople byId = workPeopleService.getById(peopleId);
         if(byId==null) return AjaxResult.error("找不到人员");
         // Create the main map
@@ -105,11 +106,11 @@ public class PeopleController {
         Map<String, Object> eventsMap = new HashMap<>();
         Map<String, Object> passMap = new HashMap<>();
         passMap.put("eventType", 1);
-        passMap.put("eventTs", DateUtil.now());
+        passMap.put("eventTs", now);
         passMap.put("describe", "");
         passMap.put("idCardNumber", byId.getIdCard());
         passMap.put("name", byId.getName());
-        passMap.put("passTime", DateUtil.now());
+        passMap.put("passTime", now);
         passMap.put("passDirection", "01");
         eventsMap.put("pass", passMap);
 
@@ -122,7 +123,23 @@ public class PeopleController {
         mainMap.put("values", valuesList);
         log.info("模拟门禁推送：{}", JSON.toJSONString(mainMap));
         swzkHttpUtils.pushIOT(mainMap);
+        insertInOutLog(now,"T99JV01D1DZS",byId);
         return AjaxResult.success();
+    }
+
+    private void insertInOutLog(String now,String sn,SysWorkPeople people) {
+        SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
+        sysWorkPeopleInoutLog.setSn(sn);
+        sysWorkPeopleInoutLog.setIdCard(people.getIdCard());
+        sysWorkPeopleInoutLog.setMode(0);
+        sysWorkPeopleInoutLog.setLogTime(now);
+        sysWorkPeopleInoutLog.setName(people.getName());
+        //sysWorkPeopleInoutLog.setPhone(jsonObject.get("telephone").toString());
+        sysWorkPeopleInoutLog.setPhotoUrl(null);
+        sysWorkPeopleInoutLog.setCreatedDate(new Date());
+        sysWorkPeopleInoutLog.setModifyDate(new Date());
+        sysWorkPeopleInoutLog.setCreatedBy("simulation");
+        sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);
     }
 
     @GetMapping("/getPeopleNumStatistics")
