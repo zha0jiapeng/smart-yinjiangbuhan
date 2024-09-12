@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/peopleLocation")
+@Slf4j
 public class PeopleLocationController {
 
     @Resource
@@ -70,6 +72,7 @@ public class PeopleLocationController {
 
     @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzkIn() {
+        log.info("=========人员定位推送=============");
         String now = DateUtil.now();
         HttpResponse execute = HttpRequest.post("http://192.168.1.200:9501/push/list")
                 .body(JSON.toJSONString(new Object()), "application/json")

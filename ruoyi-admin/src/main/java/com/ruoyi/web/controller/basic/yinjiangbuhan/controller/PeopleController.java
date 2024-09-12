@@ -123,7 +123,7 @@ public class PeopleController {
         mainMap.put("values", valuesList);
         log.info("模拟门禁推送：{}", JSON.toJSONString(mainMap));
         swzkHttpUtils.pushIOT(mainMap);
-        insertInOutLog(now,"T99JV01D1DZS",byId);
+        insertInOutLog(now,"DS-K1T670M20231222V031801CHFH5917119",byId);
         return AjaxResult.success();
     }
 
@@ -131,6 +131,7 @@ public class PeopleController {
         SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
         sysWorkPeopleInoutLog.setSn(sn);
         sysWorkPeopleInoutLog.setIdCard(people.getIdCard());
+        sysWorkPeopleInoutLog.setSysWorkPeopleId(people.getId());
         sysWorkPeopleInoutLog.setMode(0);
         sysWorkPeopleInoutLog.setLogTime(now);
         sysWorkPeopleInoutLog.setName(people.getName());
