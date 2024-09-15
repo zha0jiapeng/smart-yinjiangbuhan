@@ -37,7 +37,7 @@ public class Device extends BaseEntity
 
     /** 设备端口 */
     @Excel(name = "设备端口")
-    private String devicePort;
+    private Integer devicePort;
 
     /** 设备区域 */
     @Excel(name = "设备区域")

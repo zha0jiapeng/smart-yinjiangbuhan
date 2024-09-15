@@ -1,15 +1,11 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.enums.IndexType;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Modbus4jReadUtil;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.ModbusTcpMaster;
@@ -18,7 +14,6 @@ import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/gasDetection")
@@ -39,100 +33,88 @@ public class GasDetectionController {
     IDeviceService deviceService;
     @Resource
     SwzkHttpUtils swzkHttpUtils;
-    @RequestMapping("/list/{deviceId}")
-    public List<Map<String,Object>> getGasGasDetection(@PathVariable String deviceId){
-        Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, deviceId));
-        if (one == null) return null;
-        ModbusMaster master = new ModbusTcpMaster().getSlave(one.getDeviceIp(), 6066);
-        List<Map<String,Object>> list = new ArrayList<>();
-        for (int i =0; i <18;i++) {
-            Map<String,Object> map = new HashMap<>();
-            Number number = Modbus4jReadUtil.readHoldingRegister(master, 1, i, DataType.TWO_BYTE_INT_UNSIGNED, "");
-            Integer flagByType = IndexType.getFlagByType(i);
-            String name = IndexType.getNameByType(i);
-            Integer value = number.intValue();
-            if(flagByType ==0){
-                value = new BigDecimal(value).divide(new BigDecimal(10),0, RoundingMode.HALF_UP).intValue();
-            }
-            map.put(name,value);
-        }
-        return list;
+
+    @RequestMapping("/list")
+    public AjaxResult list(String sn){
+        Device device = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn).eq(Device::getDeviceType, "GASDETECTOR").eq(Device::getYn, 1));
+        Map<String, Object> item = new HashMap<>();
+        item.put("sn", device.getSn());
+        ModbusMaster master = new ModbusTcpMaster().getSlave(device.getDeviceIp(), device.getDevicePort());
+        Number temp = Modbus4jReadUtil.readHoldingRegister(master, 1, 0, DataType.TWO_BYTE_INT_UNSIGNED, "温度");
+        Number humi = Modbus4jReadUtil.readHoldingRegister(master, 1, 1, DataType.TWO_BYTE_INT_UNSIGNED, "湿度");
+        Number dust = Modbus4jReadUtil.readHoldingRegister(master, 1, 5, DataType.TWO_BYTE_INT_UNSIGNED, "粉尘");
+        Number o2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 10, DataType.TWO_BYTE_INT_UNSIGNED, "氧气");
+        Number ch4 = Modbus4jReadUtil.readHoldingRegister(master, 1, 11, DataType.TWO_BYTE_INT_UNSIGNED, "甲烷");
+        Number co = Modbus4jReadUtil.readHoldingRegister(master, 1, 12, DataType.TWO_BYTE_INT_UNSIGNED, "一氧化碳");
+        Number h2s = Modbus4jReadUtil.readHoldingRegister(master, 1, 13, DataType.TWO_BYTE_INT_UNSIGNED, "硫化氢");
+        Number co2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 14, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化碳");
+        Number so2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 15, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化硫");
+        Number nh3 = Modbus4jReadUtil.readHoldingRegister(master, 1, 16, DataType.TWO_BYTE_INT_UNSIGNED, "氨气");
+        Number no2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 21, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化氮");
+        item.put("temp", new BigDecimal(temp.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("humi",  new BigDecimal(humi.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("dust", dust.doubleValue());
+        item.put("o2", new BigDecimal(o2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("ch4", new BigDecimal(ch4.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("co", new BigDecimal(co.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("h2s", new BigDecimal(h2s.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("co2", co2.doubleValue());
+        item.put("so2", new BigDecimal(so2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("nh3", new BigDecimal(nh3.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+        item.put("no2", new BigDecimal(no2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+
+        return AjaxResult.success(item);
     }
+
+
+
+
     @Autowired
     RedisCache redisCache;
 
-    @RequestMapping("/listByThingsBoard/{deviceId}")
-    public Map getGasGasDetection2(@PathVariable String deviceId){
-        Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
-        if(thingsboardToken==null) {
-            String url = "192.168.1.201:8080/api/auth/login";
-            Map<String, Object> map = new HashMap<>();
-            map.put("username", "1939291579@qq.com");
-            map.put("password", "zhao521a.");
-            HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
-            JSONObject jsonObject = JSON.parseObject(execute.body());
-            Object token = jsonObject.get("token");
-            redisCache.setCacheObject("thingsboard_token",token,2, TimeUnit.HOURS);
-        }
-        //915b16e0-3069-11ef-b890-e5136757558e
-        String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+deviceId+"/values/timeseries";
-        HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
-        String body = execute.body();
-        return JSON.parseObject(body,Map.class);
-    }
-
-    @RequestMapping("/getCurve/{id}")
-    public Map getCurve(@PathVariable String id){
-        Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
-        if(thingsboardToken==null) {
-            String url = "192.168.1.201:8080/api/auth/login";
-            Map<String, Object> map = new HashMap<>();
-            map.put("username", "1939291579@qq.com");
-            map.put("password", "zhao521a.");
-            HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
-            JSONObject jsonObject = JSON.parseObject(execute.body());
-            Object token = jsonObject.get("token");
-            redisCache.setCacheObject("thingsboard_token",token,2, TimeUnit.HOURS);
-        }
-        Device byId = deviceService.getById(id);
-        if(byId==null) return null;
-        String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+byId.getSn()+"/values/timeseries";
-        HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
-        String body = execute.body();
-        return JSON.parseObject(body,Map.class);
-    }
-
     @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzk() {
-        Object thingsboardToken = redisCache.getCacheObject("thingsboard_token");
-        if(thingsboardToken==null) {
-            String url = "192.168.1.201:8080/api/auth/login";
-            Map<String, Object> map = new HashMap<>();
-            map.put("username", "1939291579@qq.com");
-            map.put("password", "zhao521a.");
-            HttpResponse execute = HttpRequest.post(url).body(JSON.toJSONString(map), "application/json").execute();
-            JSONObject jsonObject = JSON.parseObject(execute.body());
-            Object token = jsonObject.get("token");
-            redisCache.setCacheObject("thingsboard_token",token,2, TimeUnit.HOURS);
-        }
         List<Device> gasdetector = deviceService.list(new LambdaUpdateWrapper<Device>().eq(Device::getDeviceType, "GASDETECTOR"));
         for (Device device : gasdetector) {
-            String url = "http://192.168.1.201:8080/api/plugins/telemetry/DEVICE/"+device.getSn()+"/values/timeseries";
-            HttpResponse execute = HttpRequest.get(url).bearerAuth(thingsboardToken.toString()).execute();
-            String body = execute.body();
-            System.out.println("gas:"+body);
-            push(body,device);
+            ModbusMaster master = new ModbusTcpMaster().getSlave(device.getDeviceIp(), device.getDevicePort());
+            Map<String, Object> item = new HashMap<>();
+            Number temp = Modbus4jReadUtil.readHoldingRegister(master, 1, 0, DataType.TWO_BYTE_INT_UNSIGNED, "温度");
+            Number humi = Modbus4jReadUtil.readHoldingRegister(master, 1, 1, DataType.TWO_BYTE_INT_UNSIGNED, "湿度");
+            Number dust = Modbus4jReadUtil.readHoldingRegister(master, 1, 5, DataType.TWO_BYTE_INT_UNSIGNED, "粉尘");
+            Number o2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 10, DataType.TWO_BYTE_INT_UNSIGNED, "氧气");
+            Number ch4 = Modbus4jReadUtil.readHoldingRegister(master, 1, 11, DataType.TWO_BYTE_INT_UNSIGNED, "甲烷");
+            Number co = Modbus4jReadUtil.readHoldingRegister(master, 1, 12, DataType.TWO_BYTE_INT_UNSIGNED, "一氧化碳");
+            Number h2s = Modbus4jReadUtil.readHoldingRegister(master, 1, 13, DataType.TWO_BYTE_INT_UNSIGNED, "硫化氢");
+            Number co2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 14, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化碳");
+            Number so2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 15, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化硫");
+            Number nh3 = Modbus4jReadUtil.readHoldingRegister(master, 1, 16, DataType.TWO_BYTE_INT_UNSIGNED, "氨气");
+            Number no2 = Modbus4jReadUtil.readHoldingRegister(master, 1, 21, DataType.TWO_BYTE_INT_UNSIGNED, "二氧化氮");
+            item.put("temp", new BigDecimal(temp.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("humi",  new BigDecimal(humi.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            if(device.getId() == 52){
+                redisCache.setCacheObject("temp",item.get("temp"));
+                redisCache.setCacheObject("humi",item.get("humi"));
+            }else{
+                item.put("temp",redisCache.getCacheObject("temp"));
+                item.put("humi",redisCache.getCacheObject("humi"));
+            }
+
+            item.put("dust", dust.doubleValue());
+            item.put("o2", new BigDecimal(o2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("ch4", new BigDecimal(ch4.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("co", new BigDecimal(co.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("h2s", new BigDecimal(h2s.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("co2", co2.doubleValue());
+            item.put("so2", new BigDecimal(so2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("nh3", new BigDecimal(nh3.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            item.put("no2", new BigDecimal(no2.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1,RoundingMode.HALF_UP));
+            push(item,device);
         }
 
     }
 
-    private void push(String body,Device device) {
-        Map jsonMap = JSON.parseObject(body, Map.class);
-
+    private void push(Map<String, Object> item,Device device) {
         List<Object> valus = new ArrayList<>();
-        List<Map<String,Object>> co = (List<Map<String, Object>>) jsonMap.get("co");
-        Long ts = (Long) co.get(0).get("ts");
-        Object value = co.get(0).get("value");
         Map<String, Object> swzkParam = new HashMap<String, Object>();
         swzkParam.put("SN", device.getSn() );
         swzkParam.put("dataType","200300025"); //有毒有害气体
@@ -157,17 +139,17 @@ public class GasDetectionController {
         profile.put("z","0");
         map.put("profile", profile);
         Map<String,Object> properties = new HashMap<>();
-        properties.put("monitorTime",DateUtil.format(DateUtil.date(ts),"yyyy-MM-dd HH:mm:ss"));
+        properties.put("monitorTime",DateUtil.now());
 
-        properties.put("CO",value);
-        properties.put("CO2",jsonMap.containsKey("co2") ? ((List<Map<String, Object>>) jsonMap.get("co2")).get(0).get("value") : "");
-        properties.put("SO2",jsonMap.containsKey("so2") ? ((List<Map<String, Object>>)jsonMap.get("so2")).get(0).get("value") : "");
-        properties.put("SO", jsonMap.containsKey("so") ? ((List<Map<String, Object>>)jsonMap.get("so")).get(0).get("value") : "");
-        properties.put("CH4", jsonMap.containsKey("ch4") ? ((List<Map<String, Object>>)jsonMap.get("ch4")).get(0).get("value") : "");
-        properties.put("O2",jsonMap.containsKey("o2") ? ((List<Map<String, Object>>)jsonMap.get("o2")).get(0).get("value") : "");
-        properties.put("S2H",jsonMap.containsKey("h2s") ? ((List<Map<String, Object>>)jsonMap.get("h2s")).get(0).get("value") : "");
-        properties.put("TEMPERATURE",jsonMap.containsKey("temperature") ? ((List<Map<String, Object>>)jsonMap.get("temperature")).get(0).get("value") : "");
-        properties.put("HUMIDNESS",jsonMap.containsKey("humidity") ? ((List<Map<String, Object>>)jsonMap.get("humidity")).get(0).get("value") : "");
+        properties.put("CO",item.get("co"));
+        properties.put("CO2",item.get("co2"));
+        properties.put("SO2",item.get("so2"));
+        properties.put("SO", item.get("so"));
+        properties.put("CH4", item.get("ch4"));
+        properties.put("O2",item.get("o2"));
+        properties.put("S2H",item.get("h2s"));
+        properties.put("TEMPERATURE",item.get("temp"));
+        properties.put("HUMIDNESS",item.get("humi"));
         properties.put("location","1");
         properties.put("x","0");
         properties.put("y","0");

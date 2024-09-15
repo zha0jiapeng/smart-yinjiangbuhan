@@ -115,7 +115,7 @@ public class PeopleLocationController {
             propertiesObj.put("sos", "0");
 
 
-            if(one!=null){
+            if(one!=null &&one.getWorkType()!=null){
                 switch (one.getWorkType()){
                     case "劳务人员": propertiesObj.put("type", "04");
                     case "管理人员": propertiesObj.put("type", "03");

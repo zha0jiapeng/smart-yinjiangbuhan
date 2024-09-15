@@ -1,15 +1,17 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.domain;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 import java.util.Date;
-import java.math.BigDecimal;
 
 /**
  * 设备日志对象 sys_device_log
@@ -50,7 +52,7 @@ public class SysDeviceLog implements Serializable {
 
     /** 设备端口 */
     @ApiModelProperty(value = "设备端口")
-    private String devicePort;
+    private Integer devicePort;
 
     /** 设备区域 */
     @ApiModelProperty(value = "设备区域")
