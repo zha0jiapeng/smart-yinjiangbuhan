@@ -46,14 +46,14 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
     List<Map<String, Object>> getMonthlyAttendanceCountByPersonnelConfigType(@Param("year") String year);
 
 
-    @Select("SELECT sys_work_people.work_type, COUNT(DISTINCT id_card) AS count " +
+    @Select("SELECT sys_work_people.work_type, COUNT(DISTINCT sys_work_people.id_card) AS count " +
             "FROM sys_work_people_inout_log " +
             "JOIN sys_work_people ON sys_work_people.id_card = sys_work_people_inout_log.id_card " +
             "WHERE DATE(log_time) BETWEEN #{today} AND DATE_ADD(#{today}, INTERVAL 1 DAY) " +
             "GROUP BY sys_work_people.work_type")
     List<Map<String, Object>> getPeopleAttendanceStatisticsByWorkType(String today);
 
-    @Select("SELECT sys_work_people.company, COUNT(DISTINCT id_card) AS count " +
+    @Select("SELECT sys_work_people.company, COUNT(DISTINCT sys_work_people.id_card) AS count " +
             "FROM sys_work_people_inout_log " +
             "JOIN sys_work_people ON sys_work_people.id_card = sys_work_people_inout_log.id_card " +
             "WHERE DATE(log_time) BETWEEN #{today} AND DATE_ADD(#{today}, INTERVAL 1 DAY) " +

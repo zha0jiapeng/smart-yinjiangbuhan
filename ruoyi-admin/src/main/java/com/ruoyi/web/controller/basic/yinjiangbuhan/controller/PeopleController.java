@@ -18,6 +18,7 @@ import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.listen.PeopleImportListen;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +50,9 @@ public class PeopleController {
     @RequestMapping("/import")
     public Map<String,Object> excelImport(@RequestParam("file") MultipartFile file ){
         try {
+            PeopleImportListen listener = new PeopleImportListen();
+            EasyExcel.read(file.getInputStream(), Staff.class, listener).sheet().doRead();
+
             // Read the Excel file
             List<Staff> staffList = EasyExcel.read(file.getInputStream())
                     .head(Staff.class)
@@ -295,7 +299,6 @@ public class PeopleController {
                 case "施工单位" : workPeople.setPersonnelConfigType(4); break;
                 default:
             }
-            //workPeople.setDepartureDate(staff.);
             workPeople.setYn(1);
             list.add(workPeople);
         }
