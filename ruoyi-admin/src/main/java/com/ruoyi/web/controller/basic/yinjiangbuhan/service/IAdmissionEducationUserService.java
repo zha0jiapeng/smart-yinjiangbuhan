@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUser;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 入场三级教育用户Service接口
@@ -62,4 +63,6 @@ public interface IAdmissionEducationUserService  extends IService<AdmissionEduca
     public int deleteAdmissionEducationUserById(Long id);
 
     Integer coverage();
+
+    List<Map<String, Object>> coverageList();
 }

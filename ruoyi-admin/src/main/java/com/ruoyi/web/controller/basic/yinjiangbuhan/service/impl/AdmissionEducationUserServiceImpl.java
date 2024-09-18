@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -101,5 +102,10 @@ public class AdmissionEducationUserServiceImpl extends ServiceImpl<AdmissionEduc
     @Override
     public Integer coverage() {
         return admissionEducationUserMapper.coverage();
+    }
+
+    @Override
+    public List<Map<String, Object>> coverageList() {
+        return admissionEducationUserMapper.coverageList();
     }
 }

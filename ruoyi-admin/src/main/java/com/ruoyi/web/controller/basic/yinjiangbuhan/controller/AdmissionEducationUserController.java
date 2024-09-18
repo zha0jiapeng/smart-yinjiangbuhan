@@ -55,10 +55,21 @@ public class AdmissionEducationUserController extends BaseController
         Map<String,Object> response = new HashMap<>();
         response.put("preshiftEducation",100);
         Integer count3 = admissionEducationUserService.coverage();
-        int countTotal = workPeopleService.count(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getPersonnelConfigType, 4).ne(SysWorkPeople::getWorkType,"管理人员").eq(SysWorkPeople::getYn,1));
+        int countTotal = workPeopleService.count(
+                new LambdaQueryWrapper<SysWorkPeople>()
+                        .eq(SysWorkPeople::getYn,1));
         response.put("threeLevelEducation",new BigDecimal(count3).divide(new BigDecimal(countTotal),2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP));
         return AjaxResult.success(response);
     }
+
+    //未接受三级教育的人员列表
+    @GetMapping("/coverageList")
+    public AjaxResult coverageList()
+    {
+        List<Map<String,Object>> list =  admissionEducationUserService.coverageList();
+        return AjaxResult.success(list);
+    }
+
 
 
     /**

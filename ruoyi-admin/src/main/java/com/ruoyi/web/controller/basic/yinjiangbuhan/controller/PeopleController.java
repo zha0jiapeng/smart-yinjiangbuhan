@@ -226,6 +226,7 @@ public class PeopleController {
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByWorkType(today);
         return AjaxResult.success(list);
     }
+
     @GetMapping("/getPeopleAttendanceStatisticsByCompany")
     public AjaxResult getPeopleAttendanceStatisticsByCompany(String today){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);

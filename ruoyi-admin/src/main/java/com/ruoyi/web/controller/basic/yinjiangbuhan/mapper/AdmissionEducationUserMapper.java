@@ -6,6 +6,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.AdmissionEducationUse
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 入场三级教育用户Mapper接口
@@ -68,4 +69,16 @@ public interface AdmissionEducationUserMapper  extends BaseMapper<AdmissionEduca
             " WHERE user_score > 60 " +
             "  AND del_flag = '0' ")
     Integer coverage();
+
+    @Select("SELECT p.id, p.name, p.id_card " +
+            "FROM sys_work_people p " +
+            "WHERE  " +
+            "p.id_card is not null and p.yn = 1 " +
+            "and NOT EXISTS ( " +
+            "    SELECT 1  " +
+            "    FROM sys_admission_education_user aeu " +
+            "    WHERE aeu.user_id = p.id " +
+            "    AND aeu.del_flag = '0' " +
+            ")")
+    List<Map<String, Object>> coverageList();
 }
