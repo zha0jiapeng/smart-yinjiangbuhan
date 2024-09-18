@@ -136,15 +136,6 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
-oss:
-  enable: true
-  info: true
-  path-style-access: false  #使用云OSS 需要关闭
-  endpoint: http://116.63.153.54:9000 #对应上图 ③ 处配置
-  access-key: minioadmin  # 上文创建的AK
-  secret-key: minioadmin # 上文创建的SK
-  bucket-name: v2-cloud  # 上文创建的桶名称
-
 fastdfs:
   query:
     url: http://218.17.102.70:8888/
@@ -173,3 +164,4 @@ minio:
   secretKey: minio_123456
   carAccessBucketName: car-access
   peopleAccessBucketName: people-access
+  fileControlBucketName: file-control

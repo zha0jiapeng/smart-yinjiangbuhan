@@ -37,6 +37,9 @@ public class MinioConfig {
     @Value("${minio.peopleAccessBucketName}")
     private String peopleAccessBucketName;
 
+    @Value("${minio.fileControlBucketName}")
+    private String fileControlBucketName;
+
     @Bean
     public MinioClient minioClient() {
         MinioClient minioClient = MinioClient.builder()

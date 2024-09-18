@@ -16,11 +16,7 @@ import lombok.EqualsAndHashCode;
 @TableName("sys_work_people_inout_log")
 public class SysWorkPeopleInoutLog extends BaseDomain {
 
-    /**
-     * 日志业务主键
-     */
-    private String inoutId;
-    private Integer sysWorkPeopleId;
+    private Integer id;
     private String sn;
     @TableField(exist = false)
     private String sns;

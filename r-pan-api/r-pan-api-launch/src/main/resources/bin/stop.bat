@@ -1,1 +1,0 @@
-wmic process where "commandLine like '%%com.rubin.rpan.launch.RPanLaunch%%' and Name='javaw.exe'" call terminate

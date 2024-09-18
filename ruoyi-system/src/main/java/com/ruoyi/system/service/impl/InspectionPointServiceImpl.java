@@ -2,13 +2,10 @@ package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
-import com.ruoyi.common.config.oss.OssProperties;
-import com.ruoyi.common.config.oss.OssTemplate;
 import com.ruoyi.system.domain.vo.PointProjectVO;
 import com.ruoyi.system.entity.InspectionPoint;
 import com.ruoyi.system.mapper.InspectionPointMapper;
 import com.ruoyi.system.service.InspectionPointService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,11 +26,11 @@ public class InspectionPointServiceImpl implements InspectionPointService {
     @Resource
     private InspectionPointMapper inspectionPointMapper;
 
-    @Autowired
-    private OssTemplate template;
-
-    @Autowired
-    private OssProperties ossProperties;
+//    @Autowired
+//    private OssTemplate template;
+//
+//    @Autowired
+//    private OssProperties ossProperties;
 
     /**
      * 通过ID查询单条数据
@@ -72,7 +69,7 @@ public class InspectionPointServiceImpl implements InspectionPointService {
         InputStream in = null;
         try {
             in = new FileInputStream(generate);
-            template.putObject(ossProperties.getBucketName(),id + ".jpg",in);
+            //template.putObject(ossProperties.getBucketName(),id + ".jpg",in);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -86,8 +83,8 @@ public class InspectionPointServiceImpl implements InspectionPointService {
                 System.out.println("删除临时二维码文件失败");
             }
         }
-        String objectURL = ossProperties.getEndpoint() + "/" + ossProperties.getBucketName() + "/" + id + ".jpg";
-        inspectionPoint.setCodeImageFileUrl(objectURL);
+        //String objectURL = ossProperties.getEndpoint() + "/" + ossProperties.getBucketName() + "/" + id + ".jpg";
+        //inspectionPoint.setCodeImageFileUrl(objectURL);
         inspectionPointMapper.update(inspectionPoint);
         return inspectionPoint;
     }

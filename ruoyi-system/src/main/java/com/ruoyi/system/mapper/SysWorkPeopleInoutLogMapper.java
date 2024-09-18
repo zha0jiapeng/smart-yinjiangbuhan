@@ -13,16 +13,19 @@ import java.util.Map;
  * @date 2024/6/23
  */
 public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleInoutLog> {
-    @Select("SELECT COUNT(DISTINCT a.id_card) inHoleNum " +
-            "FROM sys_work_people_inout_log a " +
-            "LEFT JOIN sys_work_people_inout_log b " +
-            "ON a.id_card = b.id_card " +
-            "AND b.mode = 0 " +
-            "AND DATE(b.log_time) = CURDATE() " +
-            "WHERE a.mode = 1 " +
-            "AND a.sn like 'T99%' "+
-            "AND DATE(a.log_time) = CURDATE() " +
-            "AND b.id_card IS NULL")
+    @Select("WITH LatestInOut AS (" +
+            "    SELECT " +
+            "        log.id_card, " +
+            "        log.log_time, " +
+            "        log.mode," +
+            "        ROW_NUMBER() OVER (PARTITION BY log.id_card ORDER BY log.log_time DESC) AS rn " +
+            "    FROM sys_work_people_inout_log log " +
+            "    JOIN sys_device dev ON log.sn = dev.sn " +
+            "    WHERE dev.camera_type = 1 " +
+            ") " +
+            "SELECT COUNT(DISTINCT id_card) AS inHoleNum " +
+            "FROM LatestInOut " +
+            "WHERE rn = 1 AND mode = 1")
     int countOnlyEnteredPeopleToday();
 
     @Select("SELECT DATE(log_time) as date, COUNT(DISTINCT id_card) AS attendance_count " +
