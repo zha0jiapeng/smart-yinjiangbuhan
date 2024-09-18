@@ -165,3 +165,4 @@ minio:
   carAccessBucketName: car-access
   peopleAccessBucketName: people-access
   fileControlBucketName: file-control
+  specialWorkerFileBucketName: pecialworker-file

@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
@@ -21,11 +22,9 @@ import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.listen.PeopleImportListen;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import com.ruoyi.web.core.config.MinioConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -42,6 +41,12 @@ import java.util.stream.Collectors;
 public class PeopleController {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
+
+    @Resource
+    MinioUtils minioUtil;
+
+    @Resource
+    MinioConfig minioConfig;
 
     @Resource
     SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
@@ -68,6 +73,18 @@ public class PeopleController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @PostMapping("/uploadPeopleSpecialWorkerFile/{idCard}")
+    public AjaxResult uploadPeopleSpecialWorkerFile(@PathVariable("idCard") String idCard,@RequestParam("file") MultipartFile file){
+        minioUtil.uploadFile(minioConfig.getSpecialWorkerFileBucketName(), file, idCard, "image/jpeg");
+        return AjaxResult.success("上传成功");
+    }
+
+    @PostMapping("/getPeopleSpecialWorkerFile/{idCard}")
+    public AjaxResult uploadPeopleSpecialWorkerFile(@PathVariable("idCard") String idCard){
+        String presignedObjectUrl = minioUtil.getPresignedObjectUrl(minioConfig.getSpecialWorkerFileBucketName(), idCard + ".jpeg", 600);
+        return AjaxResult.success(presignedObjectUrl);
     }
 
     @GetMapping("/simulationOut")
@@ -302,19 +319,28 @@ public class PeopleController {
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
         int inHoleNum = 0;
+        List<String> idcards= new ArrayList<>();
         for (Object datum : data) {
-            com.alibaba.fastjson.JSONObject item = (com.alibaba.fastjson.JSONObject) datum;
-            com.alibaba.fastjson.JSONObject userInfo = item.getJSONObject("user_info");
-            String number = userInfo.getString("number");
+            JSONObject item = (JSONObject) datum;
+            JSONObject userInfo = item.getJSONObject("user_info");
+            String number = userInfo.getStr("number");
             String regex = "^\\d{6}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$";
             boolean isValid = ReUtil.isMatch(regex, number);
             if(isValid) {
                 inHoleNum++;
+                idcards.add(number);
             }
         }
+        List<String> idCardList = list.stream()
+                .map(map -> map.get("id_card").toString())
+                .collect(Collectors.toList());
+        List<String> result = idCardList.stream()
+                .filter(item -> !idcards.contains(item))
+                .collect(Collectors.toList());
         Integer onsitePeopleCount = mapp.get("onsite_people_list").size()+mapp.get("onsite_people_over12_list").size()+mapp.get("onsite_people_over24_list").size();
         BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
+        response.put("dis_wear_list",result);
         return AjaxResult.success(response);
     }
 

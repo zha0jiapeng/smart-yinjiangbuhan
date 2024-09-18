@@ -99,6 +99,19 @@ public class TuhuguancheUtil {
         return jsonObject.toJavaObject(Map.class);
     }
 
+    public static Map getDeviceHistoryLocation(){
+        String token = getToken();
+        Map<String, String> paramMap2 = getCommonParam();
+        Map<String, String> paramMap = getCommonParam();
+        paramMap.put("mapType","WGS84");
+        paramMap.put("userId", "13521470746");
+        JSONObject jsonObject = getParam(token, paramMap, "/v1/device/track/list");
+        if(0==(Integer)jsonObject.get("code")){
+
+        }
+        return jsonObject.toJavaObject(Map.class);
+    }
+
     private static JSONObject getParam (String token, Map<String, String>paramMap,String url){
         Map<String, String> headerMap = new HashMap<String, String>();
         headerMap.put("Content-Type", "application/x-www-form-urlencoded");

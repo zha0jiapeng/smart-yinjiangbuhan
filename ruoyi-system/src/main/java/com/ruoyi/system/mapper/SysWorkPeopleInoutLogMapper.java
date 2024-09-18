@@ -89,6 +89,7 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
 
     @Select("SELECT " +
             "p.name, " +
+            "p.id_card, " +
             "TIMESTAMPDIFF(HOUR, l.enter_time, NOW()) AS hours_stayed, " +
             "l.enter_time AS earliest_enter_time " +  // 添加最早进入时间列
             "FROM sys_work_people p " +

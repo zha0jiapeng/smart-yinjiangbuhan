@@ -40,6 +40,9 @@ public class MinioConfig {
     @Value("${minio.fileControlBucketName}")
     private String fileControlBucketName;
 
+    @Value("${minio.specialWorkerFileBucketName}")
+    private String specialWorkerFileBucketName;
+
     @Bean
     public MinioClient minioClient() {
         MinioClient minioClient = MinioClient.builder()
