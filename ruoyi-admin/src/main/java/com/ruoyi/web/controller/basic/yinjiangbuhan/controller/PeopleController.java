@@ -31,6 +31,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -148,7 +149,7 @@ public class PeopleController {
     }
 
     @GetMapping("/getPeopleNumStatistics")
-    public Map<String,Object> getPeopleNumStatistics( ){
+    public AjaxResult getPeopleNumStatistics( ){
         Map<String,Object> map = new HashMap<>();
         QueryWrapper<SysWorkPeople> queryWrapper = Wrappers.query();
         queryWrapper.select("personnel_config_type, COUNT(*) AS count")
@@ -177,13 +178,13 @@ public class PeopleController {
     }
 
     @GetMapping("/getAttendanceStatistics")
-    public Map<String,Object> getPeopleAttendanceStatistics(String yearMonth){
+    public AjaxResult getPeopleAttendanceStatistics(String yearMonth){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatistics(yearMonth);
         return AjaxResult.success(list);
     }
 
     @GetMapping("/getAttendanceStatisticsByPeopleType")
-    public Map<String,Object> getAttendanceStatisticsByPeopleType(String year){
+    public AjaxResult getAttendanceStatisticsByPeopleType(String year){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getMonthlyAttendanceCountByPersonnelConfigType(year);
         Map<String, Map<Integer, Integer>> monthDataMap = new LinkedHashMap<>();
 
@@ -226,22 +227,58 @@ public class PeopleController {
         return AjaxResult.success(list);
     }
     @GetMapping("/getPeopleAttendanceStatisticsByCompany")
-    public Map<String,Object> getPeopleAttendanceStatisticsByCompany(String today){
+    public AjaxResult getPeopleAttendanceStatisticsByCompany(String today){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getPeopleAttendanceStatisticsByCompany(today);
         return AjaxResult.success(list);
     }
+
     @GetMapping("/getPeopleAttendanceForLast7Days")
-    public Map<String,Object> getPeopleAttendanceForLast7Days(){
+    public AjaxResult getPeopleAttendanceForLast7Days(){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.countDailyAttendanceForLast7Days();
         return AjaxResult.success(list);
     }
 
-
+    //重点人员考勤率
     @GetMapping("/getAttendanceRateByPersonnelConfigType")
-    public Map<String,Object> getAttendanceRateByPersonnelConfigType(){
+    public AjaxResult getAttendanceRateByPersonnelConfigType(){
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getAttendanceRateByPersonnelConfigType();
         return AjaxResult.success(list);
     }
+
+    //重点人员考勤列表
+    @GetMapping("/getAttendanceRateListKeyList")
+    public AjaxResult getAttendanceRateListKeyList(Integer type){
+        List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getAttendanceRateListKeyList(type);
+        return AjaxResult.success(list);
+    }
+
+    //工人考勤统计
+    @GetMapping("/getAttendanceRateByPeopleId")
+    public AjaxResult getWorkerAttendance(
+            @RequestParam("peopleId") Long peopleId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month) {
+        LocalDate monthStart = LocalDate.of(year, month, 1);
+        LocalDate monthEnd = monthStart.withDayOfMonth(monthStart.lengthOfMonth());
+
+        // 获取某个月的天数
+        int totalDaysInMonth = monthStart.lengthOfMonth();
+
+        // 查询实际出勤次数
+        int attendanceCount = sysWorkPeopleInoutLogMapper.getAttendanceCountForWorker(peopleId, monthStart, monthEnd);
+
+        // 计算缺勤次数
+        int absentDays = totalDaysInMonth - attendanceCount;
+
+        // 组装返回数据
+        Map<String, Object> result = new HashMap<>();
+        result.put("totalDaysInMonth", totalDaysInMonth);
+        result.put("attendanceCount", attendanceCount);
+        result.put("absentDays", absentDays);
+        result.put("peopleId", peopleId);
+        return AjaxResult.success(result);
+    }
+
     @GetMapping("/getStayStatistics")
     public Map<String,Object> getStayStatistics(){
         Map<String,Object> response = new HashMap<>();
@@ -291,6 +328,7 @@ public class PeopleController {
             workPeople.setWorkType(staff.getWorkerType());
             workPeople.setCompany(staff.getLaborSubCom());
             workPeople.setKeyPersonnelFlag(staff.getKeyPersonnelFlag().equals("是")?1:0);
+            workPeople.setSpecialWorkerFlag(staff.getSpecialWorker().equals("是")?1:0);
 
             switch (staff.getBimStaffType()){
                 case "建设单位" : workPeople.setPersonnelConfigType(1); break;

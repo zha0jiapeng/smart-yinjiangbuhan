@@ -123,6 +123,10 @@ public class SysWorkPeople extends BaseDomain {
     //是否重点人员
     private Integer keyPersonnelFlag;
 
+    private Integer specialWorkerFlag;
+
+    private String specialWorkerFile;
+
     @TableField(exist = false)
     private Integer appCase;
 

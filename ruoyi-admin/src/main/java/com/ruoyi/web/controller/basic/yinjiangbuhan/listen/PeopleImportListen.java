@@ -27,6 +27,12 @@ public class PeopleImportListen extends AnalysisEventListener<Staff> {
         if (StringUtils.isEmpty(data.getWorkerType())) {
             errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的工种不能为空");
         }
+        if (StringUtils.isEmpty(data.getKeyPersonnelFlag())) {
+            errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的是否重点人员不能为空");
+        }
+        if (StringUtils.isEmpty(data.getSpecialWorker())) {
+            errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的是否特种人员不能为空");
+        }
 
     }
 

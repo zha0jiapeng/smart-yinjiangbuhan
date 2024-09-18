@@ -5,6 +5,7 @@ import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -112,4 +113,33 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             ") l ON p.id_card = l.id_card " +
             "ORDER BY hours_stayed DESC")
     List<Map<String, Object>> getStayStatistics();
+
+    @Select("SELECT  " +
+            "  p.id,  " +
+            "  p.name,  " +
+            "  p.id_card,  " +
+            "  p.personnel_config_type,  " +
+            "  l.log_time AS attendance_time  " +
+            "FROM  " +
+            "  sys_work_people p  " +
+            "LEFT JOIN ( " +
+            "    SELECT id_card, MAX(log_time) AS log_time  " +
+            "    FROM sys_work_people_inout_log  " +
+            "    WHERE mode = 1 AND DATE(log_time) = CURDATE()  " +
+            "    GROUP BY id_card " +
+            ") l  " +
+            "ON p.id_card = l.id_card  " +
+            "WHERE  " +
+            "  p.key_personnel_flag = 1   -- 重点人员  " +
+            " and p.personnel_config_type = #{type} " +
+            "ORDER BY  " +
+            "  l.log_time DESC")
+    List<Map<String, Object>> getAttendanceRateListKeyList(Integer type);
+
+    @Select("SELECT COUNT(DISTINCT DATE(l.log_time)) FROM sys_work_people_inout_log l WHERE l.idCard = " +
+            "(SELECT p.id_card FROM sys_work_people p WHERE p.id = #{peopleId}) " +
+            "AND l.mode = 1 AND l.log_time BETWEEN #{monthStart} AND #{monthEnd}")
+    int getAttendanceCountForWorker(@Param("peopleId") Long peopleId,
+                                    @Param("monthStart") LocalDate monthStart,
+                                    @Param("monthEnd") LocalDate monthEnd);
 }
