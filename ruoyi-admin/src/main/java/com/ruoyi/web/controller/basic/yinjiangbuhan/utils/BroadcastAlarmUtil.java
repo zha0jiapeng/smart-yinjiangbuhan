@@ -56,6 +56,12 @@ public class BroadcastAlarmUtil {
         return JSONUtil.parseObj(response.body());
     }
 
+    public JSONObject getLogList(){
+        HttpResponse response = HttpUtil.createGet(serviceUrl + "/v1/task_log")
+                .header("access_token", getToken()).execute();
+        return JSONUtil.parseObj(response.body());
+    }
+
     public void startTask(Integer fileId){
         String url = serviceUrl+"/v1/real_time_task";
         Map<String, Object> request = new HashMap<>();

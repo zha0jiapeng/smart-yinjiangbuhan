@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ReUtil;
 import cn.hutool.http.ContentType;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -300,12 +301,25 @@ public class PeopleController {
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
-        int inHoleNum = data.size();
-        Integer onsitePeopleCount = mapp.get("onsite_people_list").size();
+        int inHoleNum = 0;
+        for (Object datum : data) {
+            com.alibaba.fastjson.JSONObject item = (com.alibaba.fastjson.JSONObject) datum;
+            com.alibaba.fastjson.JSONObject userInfo = item.getJSONObject("user_info");
+            String number = userInfo.getString("number");
+            String regex = "^\\d{6}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$";
+            boolean isValid = ReUtil.isMatch(regex, number);
+            if(isValid) {
+                inHoleNum++;
+            }
+        }
+        Integer onsitePeopleCount = mapp.get("onsite_people_list").size()+mapp.get("onsite_people_over12_list").size()+mapp.get("onsite_people_over24_list").size();
         BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
         return AjaxResult.success(response);
     }
+
+
+
 
     private void savePeople(List<Staff> staffList) {
         List<SysWorkPeople> list = new ArrayList<>();
