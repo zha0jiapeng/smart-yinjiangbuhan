@@ -3,10 +3,8 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson2.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
@@ -56,12 +54,6 @@ public class HolePeopleAccessController {
 
     private void saveLog(Map<String, Object> map) {
         SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
-        SysWorkPeople workPeople = workPeopleService.getOne(
-                new LambdaQueryWrapper<SysWorkPeople>()
-                        .eq(SysWorkPeople::getIdCard, map.get("idNum")));
-        if(workPeople!=null ) {
-            sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
-        }
         sysWorkPeopleInoutLog.setSn(map.get("SN").toString());
         sysWorkPeopleInoutLog.setIdCard(map.get("idNum").toString());
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(map.get("inout").toString()));

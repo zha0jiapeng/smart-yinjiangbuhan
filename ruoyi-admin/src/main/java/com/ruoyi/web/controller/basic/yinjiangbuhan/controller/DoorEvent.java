@@ -201,9 +201,9 @@ public class DoorEvent {
         SysWorkPeople workPeople = workPeopleService.getOne(
                 new LambdaQueryWrapper<SysWorkPeople>()
                         .eq(SysWorkPeople::getIdCard, jsonObject.get("certNo")));
-        if(workPeople!=null ) {
-            sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
-        }
+//        if(workPeople!=null ) {
+//            sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
+//        }
         String sn = door.get("devSerialNum").toString();
         sysWorkPeopleInoutLog.setSn(sn);
         sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());

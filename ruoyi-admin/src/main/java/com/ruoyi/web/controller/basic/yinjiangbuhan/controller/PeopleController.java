@@ -131,7 +131,7 @@ public class PeopleController {
         SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
         sysWorkPeopleInoutLog.setSn(sn);
         sysWorkPeopleInoutLog.setIdCard(people.getIdCard());
-        sysWorkPeopleInoutLog.setSysWorkPeopleId(people.getId());
+       // sysWorkPeopleInoutLog.setSysWorkPeopleId(people.getId());
         sysWorkPeopleInoutLog.setMode(0);
         sysWorkPeopleInoutLog.setLogTime(now);
         sysWorkPeopleInoutLog.setName(people.getName());
