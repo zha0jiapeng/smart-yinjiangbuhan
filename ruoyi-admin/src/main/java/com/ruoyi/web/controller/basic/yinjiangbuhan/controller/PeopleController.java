@@ -81,9 +81,9 @@ public class PeopleController {
         return AjaxResult.success("上传成功");
     }
 
-    @PostMapping("/getPeopleSpecialWorkerFile/{idCard}")
+    @GetMapping("/getPeopleSpecialWorkerFile/{idCard}")
     public AjaxResult uploadPeopleSpecialWorkerFile(@PathVariable("idCard") String idCard){
-        String presignedObjectUrl = minioUtil.getPresignedObjectUrl(minioConfig.getSpecialWorkerFileBucketName(), idCard + ".jpeg", 600);
+        String presignedObjectUrl = minioUtil.getPresignedObjectUrl(minioConfig.getSpecialWorkerFileBucketName(), idCard);
         return AjaxResult.success(presignedObjectUrl);
     }
 
@@ -337,7 +337,16 @@ public class PeopleController {
         List<String> result = idCardList.stream()
                 .filter(item -> !idcards.contains(item))
                 .collect(Collectors.toList());
-        Integer onsitePeopleCount = mapp.get("onsite_people_list").size()+mapp.get("onsite_people_over12_list").size()+mapp.get("onsite_people_over24_list").size();
+        Integer onsitePeopleCount = 0;
+        if(mapp.get("onsite_people_list") != null){
+            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_list").size();
+        }
+        if(mapp.get("onsite_people_over12_list") != null){
+            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_over12_list").size();
+        }
+        if(mapp.get("onsite_people_over24_list") != null){
+            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_over24_list").size();
+        }
         BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
         response.put("dis_wear_list",result);
