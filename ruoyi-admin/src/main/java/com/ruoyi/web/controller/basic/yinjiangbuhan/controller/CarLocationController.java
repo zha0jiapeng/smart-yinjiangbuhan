@@ -9,6 +9,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.TuhuguancheUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,11 @@ public class CarLocationController {
         }else{
             return JSON.parseObject(carLocationStr, Map.class);
         }
+    }
+
+    @GetMapping("/historyLocation")
+    public Map historyLocation(String imei) {
+        return TuhuguancheUtil.getDeviceHistoryLocation(imei);
     }
 
     @Scheduled(cron = "0 */5 * * * *")

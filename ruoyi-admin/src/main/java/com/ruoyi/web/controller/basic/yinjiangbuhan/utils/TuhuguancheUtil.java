@@ -49,7 +49,7 @@ public class TuhuguancheUtil {
         JSONObject result = jsonObject.getJSONObject("result");
         Object accessToken = result.get("accessToken");
         redisTemplate.opsForValue().set("carToken",accessToken,1, TimeUnit.HOURS);
-        System.out.println("redis token :"+carToken);
+        System.out.println("token :"+accessToken);
         return accessToken.toString();
     }
 
@@ -99,16 +99,14 @@ public class TuhuguancheUtil {
         return jsonObject.toJavaObject(Map.class);
     }
 
-    public static Map getDeviceHistoryLocation(){
+    public static Map getDeviceHistoryLocation(String imei){
         String token = getToken();
-        Map<String, String> paramMap2 = getCommonParam();
         Map<String, String> paramMap = getCommonParam();
-        paramMap.put("mapType","WGS84");
+        paramMap.put("startTime", DateUtil.format(DateUtil.beginOfDay(DateUtil.date()), "yyyy-MM-dd HH:mm:ss"));
+        paramMap.put("endTime",DateUtil.now());
         paramMap.put("userId", "13521470746");
+        paramMap.put("imei", imei);
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/track/list");
-        if(0==(Integer)jsonObject.get("code")){
-
-        }
         return jsonObject.toJavaObject(Map.class);
     }
 
