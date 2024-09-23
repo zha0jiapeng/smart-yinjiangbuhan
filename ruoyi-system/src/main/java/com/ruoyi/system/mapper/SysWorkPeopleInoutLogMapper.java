@@ -137,7 +137,7 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             "  l.log_time DESC")
     List<Map<String, Object>> getAttendanceRateListKeyList(Integer type);
 
-    @Select("SELECT COUNT(DISTINCT DATE(l.log_time)) FROM sys_work_people_inout_log l WHERE l.idCard = " +
+    @Select("SELECT COUNT(DISTINCT DATE(l.log_time)) FROM sys_work_people_inout_log l WHERE l.id_card = " +
             "(SELECT p.id_card FROM sys_work_people p WHERE p.id = #{peopleId}) " +
             "AND l.mode = 1 AND l.log_time BETWEEN #{monthStart} AND #{monthEnd}")
     int getAttendanceCountForWorker(@Param("peopleId") Long peopleId,

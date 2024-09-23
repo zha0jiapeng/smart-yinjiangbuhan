@@ -104,7 +104,7 @@ public class DoorEvent {
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
         List<Map<String, Object>> lists = jsonArrayToList(list);
-        pushSwzk(lists,false);
+        pushSwzk(lists,true);
     }
 
    private void pushSwzk(List<Map<String, Object>> list,boolean flag){
