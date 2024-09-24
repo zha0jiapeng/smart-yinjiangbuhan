@@ -343,7 +343,7 @@ public class PeopleController {
         Integer onsitePeopleCount = list.size();
         BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
-        response.put("dis_wear_people",difference;
+        response.put("dis_wear_people",difference);
         return AjaxResult.success(response);
     }
 
