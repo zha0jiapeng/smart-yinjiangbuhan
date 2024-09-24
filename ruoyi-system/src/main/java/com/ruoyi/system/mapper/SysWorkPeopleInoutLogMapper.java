@@ -131,11 +131,11 @@ public interface SysWorkPeopleInoutLogMapper extends BaseMapper<SysWorkPeopleIno
             ") l  " +
             "ON p.id_card = l.id_card  " +
             "WHERE  " +
-            "  p.key_personnel_flag = 1   -- 重点人员  " +
-            " and p.personnel_config_type = #{type} " +
+            "  p.key_personnel_flag = 1 " +
+            " and p.personnel_config_type = #{typee} " +
             "ORDER BY  " +
             "  l.log_time DESC")
-    List<Map<String, Object>> getAttendanceRateListKeyList(Integer type);
+    List<Map<String, Object>> getAttendanceRateListKeyList(@Param("typee")Integer type);
 
     @Select("SELECT COUNT(DISTINCT DATE(l.log_time)) FROM sys_work_people_inout_log l WHERE l.id_card = " +
             "(SELECT p.id_card FROM sys_work_people p WHERE p.id = #{peopleId}) " +

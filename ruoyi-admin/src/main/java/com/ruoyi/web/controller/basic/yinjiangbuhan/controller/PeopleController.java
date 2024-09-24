@@ -266,7 +266,8 @@ public class PeopleController {
 
     //重点人员考勤列表
     @GetMapping("/getAttendanceRateListKeyList")
-    public AjaxResult getAttendanceRateListKeyList(Integer type){
+    public AjaxResult getAttendanceRateListKeyList(@RequestParam("type") Integer type){
+        System.out.println(type);
         List<Map<String, Object>> list = sysWorkPeopleInoutLogMapper.getAttendanceRateListKeyList(type);
         return AjaxResult.success(list);
     }
@@ -319,37 +320,30 @@ public class PeopleController {
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
         int inHoleNum = 0;
-        List<String> idcards= new ArrayList<>();
+        List<String> names= new ArrayList<>();
         for (Object datum : data) {
             JSONObject item = (JSONObject) datum;
             JSONObject userInfo = item.getJSONObject("user_info");
             String number = userInfo.getStr("number");
+            String name = userInfo.getStr("user_name");
             String regex = "^\\d{6}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$";
             boolean isValid = ReUtil.isMatch(regex, number);
             if(isValid) {
                 inHoleNum++;
-                idcards.add(number);
+                names.add(name);
             }
         }
-        List<String> idCardList = list.stream()
-                .map(map -> map.get("id_card").toString())
+        List<String> namesList = list.stream()
+                .map(map -> (String) map.get("name")) // Extract "name" value
+                .filter(Objects::nonNull) // Optional: filter out null values if any
                 .collect(Collectors.toList());
-        List<String> result = idCardList.stream()
-                .filter(item -> !idcards.contains(item))
-                .collect(Collectors.toList());
-        Integer onsitePeopleCount = 0;
-        if(mapp.get("onsite_people_list") != null){
-            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_list").size();
-        }
-        if(mapp.get("onsite_people_over12_list") != null){
-            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_over12_list").size();
-        }
-        if(mapp.get("onsite_people_over24_list") != null){
-            onsitePeopleCount = onsitePeopleCount + mapp.get("onsite_people_over24_list").size();
-        }
+        List<String> difference = new ArrayList<>(namesList);
+        difference.removeAll(names); // 从 listA 中移除所有存在于 listB 的元素
+
+        Integer onsitePeopleCount = list.size();
         BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
-        response.put("dis_wear_list",result);
+        response.put("dis_wear_people",difference;
         return AjaxResult.success(response);
     }
 
