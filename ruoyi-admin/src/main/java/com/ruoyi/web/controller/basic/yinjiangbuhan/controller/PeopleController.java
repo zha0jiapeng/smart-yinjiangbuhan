@@ -319,7 +319,6 @@ public class PeopleController {
                 .execute();
         JSONObject jsonObject = JSONUtil.parseObj(execute.body());
         JSONArray data = jsonObject.getJSONArray("data");
-        int inHoleNum = 0;
         List<String> names= new ArrayList<>();
         for (Object datum : data) {
             JSONObject item = (JSONObject) datum;
@@ -328,8 +327,8 @@ public class PeopleController {
             String name = userInfo.getStr("user_name");
             String regex = "^\\d{6}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$";
             boolean isValid = ReUtil.isMatch(regex, number);
-            if(isValid) {
-                inHoleNum++;
+            boolean isValid2 = name.length()>4;
+            if(isValid && isValid2) {
                 names.add(name);
             }
         }
@@ -339,9 +338,8 @@ public class PeopleController {
                 .collect(Collectors.toList());
         List<String> difference = new ArrayList<>(namesList);
         difference.removeAll(names); // 从 listA 中移除所有存在于 listB 的元素
-
         Integer onsitePeopleCount = list.size();
-        BigDecimal divide = new BigDecimal(inHoleNum).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
+        BigDecimal divide = new BigDecimal(difference.size()).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
         response.put("dis_wear_people",difference);
         return AjaxResult.success(response);
