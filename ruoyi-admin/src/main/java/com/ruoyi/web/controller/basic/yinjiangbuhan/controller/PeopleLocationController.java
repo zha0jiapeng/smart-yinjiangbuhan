@@ -80,6 +80,9 @@ public class PeopleLocationController {
         String body = execute.body();
         Map parse = JSONObject.parseObject(body, Map.class);
         List<Map<String, Object>> datee = (List<Map<String, Object>>) parse.get("data");
+
+
+
         // 创建主数据结构
         Map<String, Object> data = new HashMap<>();
         data.put("deviceType", "2001000040");

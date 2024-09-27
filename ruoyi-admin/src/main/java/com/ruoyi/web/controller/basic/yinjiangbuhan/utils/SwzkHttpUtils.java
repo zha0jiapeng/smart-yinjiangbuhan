@@ -13,7 +13,7 @@ import java.util.Map;
 @Component
 public class SwzkHttpUtils {
 
-    public String pushIOT(Map param){
+    public static String pushIOT(Map param){
         param.put("bidCode","YJBH-SSZGX_BD-SG-205"); //土建4标
         log.info("push tcp swzk:{}",JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
         //String s = TcpClientService.sendTcpRequest(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue));
