@@ -79,8 +79,11 @@ public class TuhuguancheUtil {
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/location/list");
         if(0==(Integer)jsonObject.get("code")){
             JSONArray array = jsonObject.getJSONArray("result");
+
             for (Object obj : array) {
                 JSONObject item = (JSONObject) obj;
+                Integer status = item.getInteger("status");
+                if(status==0) continue;
                 for (Object o : result) {
                     JSONObject item2 = (JSONObject) o;
                     if(item2.get("imei").equals(item.get("imei"))){
