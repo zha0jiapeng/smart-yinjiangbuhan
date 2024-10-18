@@ -3,17 +3,18 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.utils;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TuhuguancheUtil {
 
     private static final String openapi_url = "http://open.tuhugc.com";
@@ -66,40 +67,57 @@ public class TuhuguancheUtil {
     }
 
 
-    public static Map getDeviceLocation(){
+    public static Map getDeviceLocation() {
+        RedisTemplate redisTemplate = RedisUtil.redis;
+        String carLocationStr = (String) redisTemplate.opsForValue().get("carLocation");
+        if(carLocationStr!=null){
+            return JSON.parseObject(carLocationStr, Map.class);
+        }
+
         String token = getToken();
         Map<String, String> paramMap2 = getCommonParam();
         paramMap2.put("userId", "13521470746");
         JSONObject jsonObject2 = getParam(token, paramMap2, "/v1/vehicle/list");
-        JSONArray result = jsonObject2.getJSONArray("result");
-
+        log.info("======车辆定位：{}======", jsonObject2);
+        JSONArray cars = jsonObject2.getJSONArray("result");
+        List<Map> javaList = cars.toJavaList(Map.class);
+        List<String> imeis = javaList.stream()
+                .map(map -> (String) map.get("imei")) // 提取 "name" 的值
+                .collect(Collectors.toList()); // 收集为 List
+        String imeiString = String.join(",", imeis);
         Map<String, String> paramMap = getCommonParam();
-        paramMap.put("mapType","WGS84");
+        paramMap.put("mapType", "WGS84");
+        paramMap.put("imeis", imeiString);
         paramMap.put("userId", "13521470746");
-        JSONObject jsonObject = getParam(token, paramMap, "/v1/device/location/list");
-        if(0==(Integer)jsonObject.get("code")){
-            JSONArray array = jsonObject.getJSONArray("result");
-
-            for (Object obj : array) {
-                JSONObject item = (JSONObject) obj;
-                Integer status = item.getInteger("status");
-                if(status==0) continue;
-                for (Object o : result) {
-                    JSONObject item2 = (JSONObject) o;
-                    if(item2.get("imei").equals(item.get("imei"))){
-                        item.put("licensePlate",item2.get("licensePlate"));
-                        item.put("vehicleDriver",item2.get("vehicleDriver"));
-                        if(item2.get("vehicleType").equals("商砼车")){
-                            item.put("vehicleType", "混凝土搅拌运输车");
-                        }else {
-                            item.put("vehicleType", item2.get("vehicleType"));
-                        }
-                        break;
+        JSONObject jsonObject = getParam(token, paramMap, "/v1/device/location/get");
+        JSONArray locations = jsonObject.getJSONArray("result");
+        List<JSONObject> list = new ArrayList<>();
+        for (Object carObj : cars) {
+            JSONObject car = (JSONObject) carObj;
+            for (Object locationObj : locations) {
+                JSONObject location = (JSONObject) locationObj;
+                if (car.getString("imei").equals(location.getString("imei"))) {
+                    if (location.getInteger("status") == 0) {
+                        continue;
                     }
+                    location.put("licensePlate", car.get("licensePlate"));
+                    location.put("vehicleDriver", car.get("vehicleDriver"));
+                    if (car.get("vehicleType").equals("商砼车")) {
+                        location.put("vehicleType", "混凝土搅拌运输车");
+                    } else {
+                        location.put("vehicleType", car.get("vehicleType"));
+                    }
+                    list.add(location);
+                    break;
                 }
             }
         }
-        return jsonObject.toJavaObject(Map.class);
+        jsonObject.remove("result");
+        jsonObject.put("result",list);
+
+        redisTemplate.opsForValue().set("carLocation", JSON.toJSONString(jsonObject), 10, TimeUnit.MINUTES);
+        Map javaObject = jsonObject.toJavaObject(Map.class);
+        return javaObject;
     }
 
     public static Map getDeviceHistoryLocation(String imei){
