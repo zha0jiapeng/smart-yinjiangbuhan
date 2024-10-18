@@ -8,7 +8,6 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
@@ -19,6 +18,8 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,6 +54,9 @@ public class DoorEvent {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Resource
     SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
 
@@ -61,12 +65,16 @@ public class DoorEvent {
 
     @Resource
     IDeviceService deviceService;
-    @Scheduled(cron = "0 */10 * * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void execute() {
+        Object doorLastTime = redisTemplate.opsForValue().get("door_last_time");
+        if(doorLastTime==null) {
+            doorLastTime =  DateUtil.offsetMinute(new Date(),-10);
+        }
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
         DateTime date = DateUtil.date();
         String now = DateUtil.formatDateTime(date);
-        Date date1 = DateUtil.offsetMinute(date, -10);
+        Date date1 = DateUtil.parse(doorLastTime.toString());
         String pre = DateUtil.formatDateTime(date1);
         logger.info("=========门禁通行事件===========");
 
@@ -81,6 +89,7 @@ public class DoorEvent {
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
         List<Map<String, Object>> lists = jsonArrayToList(list);
         pushSwzk(lists,true);
+        redisTemplate.opsForValue().set("door_last_time", DateUtil.offsetMinute(date,-10));
     }
 
     @RequestMapping("/door/pushHik")
@@ -185,7 +194,7 @@ public class DoorEvent {
                // Add the valuesMap to the valuesList
                valuesList.add(valuesMap);
                 if(flag)
-                insertInOutLog(door, map, eventTime);
+                    insertInOutLog(door, map, eventTime);
 
 
            }
@@ -198,19 +207,20 @@ public class DoorEvent {
 
     private void insertInOutLog(JSONObject door, Map<String, Object> jsonObject, DateTime eventTime) {
         SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
-        SysWorkPeople workPeople = workPeopleService.getOne(
-                new LambdaQueryWrapper<SysWorkPeople>()
-                        .eq(SysWorkPeople::getIdCard, jsonObject.get("certNo")));
-//        if(workPeople!=null ) {
-//            sysWorkPeopleInoutLog.setSysWorkPeopleId(workPeople.getId());
-//        }
+        Integer certNo = sysWorkPeopleInoutLogMapper.selectCount(
+                new LambdaQueryWrapper<SysWorkPeopleInoutLog>()
+                        .eq(SysWorkPeopleInoutLog::getIdCard, jsonObject.get("certNo").toString())
+                        .eq(SysWorkPeopleInoutLog::getLogTime, DateUtil.formatDateTime(eventTime))
+        );
+        if (certNo>1){
+            return;
+        }
         String sn = door.get("devSerialNum").toString();
         sysWorkPeopleInoutLog.setSn(sn);
         sysWorkPeopleInoutLog.setIdCard(jsonObject.get("certNo").toString());
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inAndOutType").toString()));
         sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
         sysWorkPeopleInoutLog.setName(jsonObject.get("personName").toString());
-        //sysWorkPeopleInoutLog.setPhone(jsonObject.get("telephone").toString());
         sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207"+ jsonObject.get("picUri").toString());
         sysWorkPeopleInoutLog.setCreatedDate(new Date());
         sysWorkPeopleInoutLog.setModifyDate(new Date());
