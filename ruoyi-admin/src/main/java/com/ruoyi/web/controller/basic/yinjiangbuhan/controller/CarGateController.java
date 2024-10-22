@@ -46,6 +46,12 @@ public class CarGateController {
         Object type = request.get("type");
         if(!"online".equals(type.toString())) return null;
 
+//        carAccessService.count(new LambdaQueryWrapper<CarAccess>()
+//                .eq(CarAccess::getCarCode,request.get("plate_num").toString())
+//                .eq(CarAccess::getCarInDate,)
+//
+//        );
+
         String picture = request.get("picture").toString().replaceAll("\\-", "\\+")
                 .replaceAll("\\_", "\\/").replaceAll("\\.", "\\=");
         InputStream inputStream = minioUtils.base64ToInputStream(picture);
@@ -53,6 +59,7 @@ public class CarGateController {
         minioUtils.uploadFile(minioConfig.getCarAccessBucketName(), filename, inputStream);
         //String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-access", filename);
         String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getCarAccessBucketName()+"/"+filename;
+
 
         CarAccess carAccess = new CarAccess();
         carAccess.setCarCode(request.get("plate_num").toString());

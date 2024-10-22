@@ -87,6 +87,7 @@ public class DoorEvent {
         String doorcount = doorFunctionApi.events(eventsRequest);//查询门禁事件V2
         JSONObject jsonObject = JSONObject.parseObject(doorcount);
         JSONArray list = (JSONArray) ((JSONObject) jsonObject.get("data")).get("list");
+        if(list.size()==0) return;
         List<Map<String, Object>> lists = jsonArrayToList(list);
         pushSwzk(lists,true);
         redisTemplate.opsForValue().set("door_last_time", DateUtil.offsetMinute(date,-10));
@@ -221,7 +222,9 @@ public class DoorEvent {
         sysWorkPeopleInoutLog.setMode(Integer.parseInt(jsonObject.get("inAndOutType").toString()));
         sysWorkPeopleInoutLog.setLogTime(DateUtil.formatDateTime(eventTime));
         sysWorkPeopleInoutLog.setName(jsonObject.get("personName").toString());
-        sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207"+ jsonObject.get("picUri").toString());
+        if(jsonObject.get("picUri")!=null) {
+            sysWorkPeopleInoutLog.setPhotoUrl("http://192.168.1.207" + jsonObject.get("picUri").toString());
+        }
         sysWorkPeopleInoutLog.setCreatedDate(new Date());
         sysWorkPeopleInoutLog.setModifyDate(new Date());
         sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);
