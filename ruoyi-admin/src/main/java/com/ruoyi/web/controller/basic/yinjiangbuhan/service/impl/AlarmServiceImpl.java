@@ -4,12 +4,6 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Alarm;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
@@ -18,6 +12,10 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 报警Service业务层处理
@@ -68,17 +66,19 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
             finalQuery.eq("alarm_point", subAlarm.getAlarmPoint());
             finalQuery.eq("alarm_time", subAlarm.getAlarmTime());
             List<Alarm> alarmValueList = alarmMapper.selectList(finalQuery);
-            Alarm alarmValue = alarmValueList.get(0);
-            // 获取设备信息
-            Device device = deviceService.getById(alarmValue.getAlarmPoint());
+            if(alarmValueList.size()>0) {
+                Alarm alarmValue = alarmValueList.get(0);
+                // 获取设备信息
+                Device device = deviceService.getById(alarmValue.getAlarmPoint());
 
-            // 将设备信息和报警信息组合成 JSON 对象
-            JSONObject jsonObject = (JSONObject) JSON.toJSON(device);
-            jsonObject.put("alarmType", alarmValue.getAlarmType());
-            jsonObject.put("alarmTime", alarmValue.getAlarmTime());
-            jsonObject.put("id", jsonObject.get("id").toString());
-
-            return jsonObject;
+                // 将设备信息和报警信息组合成 JSON 对象
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(device);
+                jsonObject.put("alarmType", alarmValue.getAlarmType());
+                jsonObject.put("alarmTime", alarmValue.getAlarmTime());
+                jsonObject.put("id", jsonObject.get("id").toString());
+                return jsonObject;
+            }
+            return null;
         }).collect(Collectors.toList());
 
         return devices;

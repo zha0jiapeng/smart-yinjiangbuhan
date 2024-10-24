@@ -241,7 +241,7 @@ public class RainController extends BaseController {
         rain.setCurRain(String.valueOf(curRain));
 
         com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
-        object.put("deviceType", "2001000008");////设备类型，见1.1章节
+        object.put("deviceType", "2001000032");////设备类型，见1.1章节
         object.put("SN", "40331531");//设备SN号,必填
         object.put("dataType", "80000");//固定值
         object.put("bidCode", "YJBH-SSZGX_BD-SG-205");//标段编码
@@ -341,8 +341,9 @@ public class RainController extends BaseController {
 
         com.alibaba.fastjson.JSONObject valuesJSONservices = new com.alibaba.fastjson.JSONObject();
         valuesJSON.put("services", valuesJSONservices);
-
-        valuesJSON.put("events", valuesJSONEventsMonitorData);
+        Map<String, Object> monitor = new HashMap<>();
+        monitor.put("monitorData",valuesJSONEventsMonitorData);
+        valuesJSON.put("events", monitor);
         values.add(valuesJSON);
         object.put("values", values);
         Map<String, Object> map = jsonObjectToMap(object);

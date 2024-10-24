@@ -9,8 +9,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.service.SysWorkPeopleService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressLogService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +38,11 @@ public class PeopleLocationController {
     @Resource
     SysWorkPeopleService sysWorkPeopleService;
 
+    @Autowired
+    private ISysConstructionProgressLogService sysConstructionProgressLogService;
+
+    @Autowired
+    private IAlarmService alarmService;
 
     @PostMapping("/inTunnelLocation")
     public Map<String,Object> peopleLocation(@RequestBody Map request){
@@ -70,7 +78,7 @@ public class PeopleLocationController {
 
 
 
-    @Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(fixedRate = 2000)
     private void pushSwzkIn() {
         log.info("=========人员定位推送=============");
         String now = DateUtil.now();
@@ -81,6 +89,34 @@ public class PeopleLocationController {
         Map parse = JSONObject.parseObject(body, Map.class);
         List<Map<String, Object>> datee = (List<Map<String, Object>>) parse.get("data");
 
+        //电子围栏
+//        List<Map<String, Object>> sum = sysConstructionProgressLogService.getSum(1, null);
+//        BigDecimal zhangzimian = BigDecimal.ZERO;
+//        for (Map<String, Object> entry : sum) {
+//            zhangzimian = (BigDecimal) entry.get("total_excavation");
+//        }
+//        int peopleNum = 0;
+//        BigDecimal start = zhangzimian.add(new BigDecimal(-5)).setScale(2, RoundingMode.HALF_UP);
+//        log.info("掌子面聚集人数判断 开始:{},结束:{}",start, zhangzimian);
+//        for (Map<String, Object> map : datee) {
+//            BigDecimal resultX = new BigDecimal(2939).add(new BigDecimal(map.get("result_x").toString()));
+//            if(resultX.compareTo(start)>0){
+//                peopleNum++;
+//                log.info("掌子面聚集人数判断 {},距洞口距离:{},peopleNum:{}",((Map<String, Object>) map.get("user_info")).get("user_name").toString(), resultX,peopleNum);
+//            }else {
+//                log.info("掌子面聚集人数判断 {},距洞口距离:{}", ((Map<String, Object>) map.get("user_info")).get("user_name").toString(), resultX);
+//            }
+//        }
+//        if(peopleNum>9){
+//            //TODO 报警
+//            Alarm alarm = new Alarm();
+//            alarm.setAlarmTypeId(11l);
+//            alarm.setAlarmType("人员聚集报警");
+//            alarm.setAlarmTime(DateUtil.now());
+//            alarm.setAlarmStatus(0);
+//            alarm.setYn(1l);
+//            alarmService.insertAlarm(alarm);
+//        }
 
 
         // 创建主数据结构
@@ -159,7 +195,7 @@ public class PeopleLocationController {
     }
 
 
-    //@Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzkOut() {
         String now = DateUtil.now();
         HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")

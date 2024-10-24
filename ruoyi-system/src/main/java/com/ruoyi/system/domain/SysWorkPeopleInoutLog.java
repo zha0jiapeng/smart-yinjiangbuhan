@@ -20,6 +20,8 @@ public class SysWorkPeopleInoutLog extends BaseDomain {
     private String sn;
     @TableField(exist = false)
     private String sns;
+    @TableField(exist = false)
+    private String workType;
     private Integer mode;
     private String logTime;
     private String idCard;

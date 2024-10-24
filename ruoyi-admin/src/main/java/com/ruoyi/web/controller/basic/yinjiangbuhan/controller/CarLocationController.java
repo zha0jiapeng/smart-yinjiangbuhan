@@ -2,9 +2,6 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 
 import cn.hutool.core.date.DateUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.TuhuguancheUtil;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,12 +28,7 @@ public class CarLocationController {
 
     @RequestMapping("/location")
     public Map carLocation() {
-        String carLocationStr = (String) redisTemplate.opsForValue().get("carLocation");
-        if (carLocationStr == null){
-            return TuhuguancheUtil.getDeviceLocation();
-        }else{
-            return JSON.parseObject(carLocationStr, Map.class);
-        }
+       return TuhuguancheUtil.getDeviceLocation();
     }
 
     @GetMapping("/historyLocation")
@@ -47,11 +39,11 @@ public class CarLocationController {
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzk() {
         Map deviceLocation = TuhuguancheUtil.getDeviceLocation();
-        redisTemplate.opsForValue().set("carLocation", JSON.toJSONString(deviceLocation));
+      //  redisTemplate.opsForValue().set("carLocation", JSON.toJSONString(deviceLocation));
         List<Map<String, Object>> valuesList = new ArrayList<>();
-        JSONArray objects = (JSONArray)deviceLocation.get("result");
-        for (Object iobj : objects) {
-            JSONObject itemMap = (JSONObject) iobj;
+        List list = (List)deviceLocation.get("result");
+        for (Object iobj : list) {
+            com.alibaba.fastjson.JSONObject itemMap = (com.alibaba.fastjson.JSONObject) iobj;
             Map<String, Object> events = new HashMap<>();
             Map<String, Object> pass = new HashMap<>();
             pass.put("eventType", 1);

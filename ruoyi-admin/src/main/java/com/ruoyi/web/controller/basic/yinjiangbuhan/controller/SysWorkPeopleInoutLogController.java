@@ -1,10 +1,13 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.YnEnum;
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.domain.WorkDateStorage;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author hu_p
@@ -117,9 +121,18 @@ public class SysWorkPeopleInoutLogController extends BaseController {
         startPage();
         final QueryWrapper<SysWorkPeopleInoutLog> query = new QueryWrapper<>(log);
         query.in(StringUtil.areNotEmpty(log.getSns()),"sn", new ArrayList<>(Arrays.asList(log.getSns().split("\\,"))));
+        query.ge("log_time", DateUtil.offsetDay(new Date(),-7));
         query.orderByDesc("log_time");
-        return getDataTable(sysWorkPeopleInoutLogMapper.selectList(query));
+        List<SysWorkPeopleInoutLog> sysWorkPeopleInoutLogs = sysWorkPeopleInoutLogMapper.selectList(query);
+        for (SysWorkPeopleInoutLog sysWorkPeopleInoutLog : sysWorkPeopleInoutLogs) {
+            SysWorkPeople one = sysWorkPeopleService.getOne(
+                    new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getIdCard, sysWorkPeopleInoutLog.getIdCard()),false);
+            if(one!=null) sysWorkPeopleInoutLog.setWorkType(one.getWorkType());
+        }
+        return getDataTable(sysWorkPeopleInoutLogs);
     }
+
+
 
 
 }
