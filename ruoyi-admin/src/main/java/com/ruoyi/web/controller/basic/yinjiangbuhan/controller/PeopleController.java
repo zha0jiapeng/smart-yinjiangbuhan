@@ -10,7 +10,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson2.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -20,6 +19,7 @@ import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.Staff;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.listen.PeopleCheckImportListen;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.listen.PeopleImportListen;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.core.config.MinioConfig;
@@ -39,11 +39,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/people")
 @Slf4j
 public class PeopleController {
-    @Resource
-    SwzkHttpUtils swzkHttpUtils;
 
     @Resource
     MinioUtils minioUtil;
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
 
     @Resource
     MinioConfig minioConfig;
@@ -57,16 +57,17 @@ public class PeopleController {
     @RequestMapping("/import")
     public Map<String,Object> excelImport(@RequestParam("file") MultipartFile file ){
         try {
-            PeopleImportListen listener = new PeopleImportListen();
-            EasyExcel.read(file.getInputStream(), Staff.class, listener).sheet().doRead();
+            //CHECK
+            EasyExcel.read(file.getInputStream(), Staff.class, new PeopleCheckImportListen()).sheet().doRead();
 
-            // Read the Excel file
-            List<Staff> staffList = EasyExcel.read(file.getInputStream())
-                    .head(Staff.class)
-                    .sheet()
-                    .doReadSync();
-            savePeople(staffList);
-            pushSwzk(staffList);
+            EasyExcel.read(file.getInputStream(), Staff.class, new PeopleImportListen(workPeopleService)).sheet().doRead();
+//            // Read the Excel file
+//            List<Staff> staffList = EasyExcel.read(file.getInputStream())
+//                    .head(Staff.class)
+//                    .sheet()
+//                    .doReadSync();
+//            savePeople(staffList);
+//            pushSwzk(staffList);
 
             return AjaxResult.success("导入成功");
         } catch (IOException e) {
@@ -330,7 +331,7 @@ public class PeopleController {
             String name = userInfo.getStr("user_name");
             String regex = "^\\d{6}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])\\d{3}(\\d|X|x)$";
             boolean isValid = ReUtil.isMatch(regex, number);
-            boolean isValid2 = name.length()>4;
+            boolean isValid2 = name.length()<=4;
             if(isValid && isValid2) {
                 names.add(name);
             }
@@ -341,8 +342,12 @@ public class PeopleController {
                 .collect(Collectors.toList());
         List<String> difference = new ArrayList<>(namesList);
         difference.removeAll(names); // 从 listA 中移除所有存在于 listB 的元素
+        log.info("namesList:{}",namesList);
+        log.info("names:{}",names);
+        log.info("difference:{}",difference);
         Integer onsitePeopleCount = list.size();
-        BigDecimal divide = new BigDecimal(difference.size()).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
+        log.info("onsitePeopleCount:{}",onsitePeopleCount);
+        BigDecimal divide = new BigDecimal(onsitePeopleCount - difference.size()).divide(new BigDecimal(onsitePeopleCount), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP);
         response.put("wear_rate",divide.compareTo(new BigDecimal(100))>0?100:divide);
         response.put("dis_wear_people",difference);
         return AjaxResult.success(response);
@@ -351,106 +356,6 @@ public class PeopleController {
 
 
 
-    private void savePeople(List<Staff> staffList) {
-        List<SysWorkPeople> list = new ArrayList<>();
-        for (Staff staff : staffList) {
-            SysWorkPeople workPeople = workPeopleService.getOne(
-                    new LambdaQueryWrapper<SysWorkPeople>()
-                            .eq(SysWorkPeople::getIdCard, staff.getIdCardNo())
-                    , false);
 
-            if(workPeople == null) {
-                workPeople = new SysWorkPeople();
-                workPeople.setCreatedDate(new Date());
-            }else{
-                workPeople.setModifyDate(new Date());
-            }
-            log.info("staff.getStaffName:{},{}",staff.getStaffName(),staff.getBimStaffType());
-            workPeople.setName(staff.getStaffName());
-            workPeople.setSex(staff.getSex().equals("男")?1:0);
-            workPeople.setPhone(staff.getPhone());
-            workPeople.setIdCard(staff.getIdCardNo());
-            workPeople.setWorkType(staff.getWorkerType());
-            workPeople.setCompany(staff.getLaborSubCom());
-            workPeople.setKeyPersonnelFlag(staff.getKeyPersonnelFlag().equals("是")?1:0);
-            workPeople.setSpecialWorkerFlag(staff.getSpecialWorker().equals("是")?1:0);
-
-            switch (staff.getBimStaffType()){
-                case "建设单位" : workPeople.setPersonnelConfigType(1); break;
-                case "设计单位" : workPeople.setPersonnelConfigType(2); break;
-                case "监理单位" : workPeople.setPersonnelConfigType(3); break;
-                case "施工单位" : workPeople.setPersonnelConfigType(4); break;
-                default:
-            }
-            workPeople.setYn(1);
-            list.add(workPeople);
-        }
-        workPeopleService.saveOrUpdateBatch(list);
-    }
-
-
-
-
-    public void pushSwzk(List<Staff> staffList) {
-        // 顶层结构
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("deviceType", "2001000101");
-        dataMap.put("SN", "DB0727167DB22268E055000000000005");
-        dataMap.put("dataType", "200300027");
-        dataMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
-        dataMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
-        dataMap.put("workSurface", "");
-        dataMap.put("deviceName", "施工四标智慧工地系统");
-        dataMap.put("managementDept", "QY-NSDBJT-JHSW_JGB1");
-
-        // values 数组
-        List<Map<String, Object>> valuesList = new ArrayList<>();
-
-        // values 内的单个元素
-        Map<String, Object> valuesItem = new HashMap<>();
-        valuesItem.put("reportTs", DateUtil.current());
-
-        // properties 结构
-        Map<String, Object> propertiesMap = new HashMap<>();
-
-//        // staff 内的单个元素
-//        Map<String, Object> staffItem = new HashMap<>();
-//        staffItem.put("workerType", "修刀工");
-//        staffItem.put("workStatus", "已进场");
-//        staffItem.put("nation", "汉族");
-//        staffItem.put("idCardNo", "453002190010234315");
-//        staffItem.put("sex", "男");
-//        staffItem.put("adress", "深圳市福田区下梅林");
-//        staffItem.put("comeOut", "");
-//        staffItem.put("staffType", "管理人员");
-//        staffItem.put("orgId", "土建施工A2标");
-//        staffItem.put("emergencyName", "李四");
-//        staffItem.put("idExpireDate", "2023-01-01");
-//        staffItem.put("phone", "13100000000");
-//        staffItem.put("comeIn", "2020-08-07");
-//        staffItem.put("specialWorker", "否");
-//        staffItem.put("staffName", "张三");
-//        staffItem.put("laborSubCom", "深圳市建造工科技有限公司");
-//        staffItem.put("emergencyPhone", "13100000001");
-//        staffItem.put("accessLevel", "二级");
-//        staffItem.put("photoBase64", "xxxxx");
-//
-//        // 将 staffItem 加入到 staffList
-//        staffList.add(staffItem);
-
-        // 将 staffList 加入到 propertiesMap
-        propertiesMap.put("staff", staffList);
-
-        // 将 propertiesMap 加入到 valuesItem
-        valuesItem.put("properties", propertiesMap);
-
-        // 将 valuesItem 加入到 valuesList
-        valuesList.add(valuesItem);
-
-        // 将 valuesList 加入到顶层结构
-        dataMap.put("values", valuesList);
-
-        swzkHttpUtils.pushIOT(dataMap);
-    }
 
 }

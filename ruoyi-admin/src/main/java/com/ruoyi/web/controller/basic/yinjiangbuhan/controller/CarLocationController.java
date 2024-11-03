@@ -90,19 +90,17 @@ public class CarLocationController {
             values.put("events", events);
             values.put("services", new HashMap<>());
             valuesList.add(values);
+            // 创建最终的 JSON 数据
+            Map<String, Object> jsonData = new HashMap<>();
+            jsonData.put("deviceType", "2001000014");
+            jsonData.put("SN", itemMap.get("imei"));
+            jsonData.put("dataType", "200300017");
+            jsonData.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+            jsonData.put("deviceName", "车辆网关");
+
+            jsonData.put("values", valuesList);
+            swzkHttpUtils.pushIOT(jsonData);
         }
-
-
-        // 创建最终的 JSON 数据
-        Map<String, Object> jsonData = new HashMap<>();
-        jsonData.put("deviceType", "2001000014");
-        jsonData.put("SN", "DSC1010000000YJB001");
-        jsonData.put("dataType", "200300017");
-        jsonData.put("workAreaCode", "YJBH-SSZGX_GQ-08");
-        jsonData.put("deviceName", "车辆网关");
-
-        jsonData.put("values", valuesList);
-        swzkHttpUtils.pushIOT(jsonData);
 
 
     }

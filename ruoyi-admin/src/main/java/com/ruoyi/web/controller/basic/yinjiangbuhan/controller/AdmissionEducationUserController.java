@@ -58,7 +58,8 @@ public class AdmissionEducationUserController extends BaseController
         int countTotal = workPeopleService.count(
                 new LambdaQueryWrapper<SysWorkPeople>()
                         .eq(SysWorkPeople::getYn,1));
-        response.put("threeLevelEducation",new BigDecimal(count3).divide(new BigDecimal(countTotal),2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0,RoundingMode.HALF_UP));
+        BigDecimal bigDecimal = new BigDecimal(count3).divide(new BigDecimal(countTotal), 2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(0, RoundingMode.HALF_UP);
+        response.put("threeLevelEducation",bigDecimal.compareTo(new BigDecimal(100))>100?100:bigDecimal);
         return AjaxResult.success(response);
     }
 

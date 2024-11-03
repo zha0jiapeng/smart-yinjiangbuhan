@@ -98,6 +98,7 @@ public class PeopleLocationController {
         String body = execute.body();
         Map parse = JSONObject.parseObject(body, Map.class);
         List<Map<String, Object>> datee = (List<Map<String, Object>>) parse.get("data");
+
         //电子围栏
 //        List<Map<String, Object>> sum = sysConstructionProgressLogService.getSum(1, null);
 //        BigDecimal zhangzimian = BigDecimal.ZERO;
