@@ -6,8 +6,11 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ruoyi.system.domain.SysWorkPeople;
+import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
+import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
 import com.ruoyi.system.service.SysWorkPeopleService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IAlarmService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProgressLogService;
@@ -32,11 +35,18 @@ import java.util.Map;
 @Slf4j
 public class PeopleLocationController {
 
+
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
     @Resource
     SysWorkPeopleService sysWorkPeopleService;
+
+    @Autowired
+    private PeopleController peopleController;
+
+    @Autowired
+    private SysWorkPeopleInoutLogMapper sysWorkPeopleInoutLogMapper;
 
     @Autowired
     private ISysConstructionProgressLogService sysConstructionProgressLogService;
@@ -132,6 +142,8 @@ public class PeopleLocationController {
 
             SysWorkPeople one = sysWorkPeopleService.getOne(new LambdaUpdateWrapper<SysWorkPeople>().eq(SysWorkPeople::getIdCard, ((Map<String, Object>) itemMap.get("user_info")).get("number")));
 
+
+
             // 创建 values 列表
             Map<String, Object> valuesObj = new HashMap<>();
             valuesObj.put("reportTs", DateUtil.current());
@@ -169,7 +181,26 @@ public class PeopleLocationController {
             propertiesObj.put("humanY", itemMap.get("result_y"));
             propertiesObj.put("humanZ", itemMap.get("result_z"));
             propertiesObj.put("stationDistance",0);
-            propertiesObj.put("holeDistance", new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString())));
+            //新逻辑 实名制通道 到 洞口距离 推正数 20m
+            BigDecimal holeDistance = new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString()));
+            if(holeDistance.compareTo(new BigDecimal(-20))>0){
+                holeDistance = holeDistance.abs();
+            }
+
+            //洞口距离负数的时候 如果没出洞 手动出洞
+            if(holeDistance.compareTo(BigDecimal.ZERO)<0){
+                if(one!=null) {
+                    LambdaQueryWrapper<SysWorkPeopleInoutLog> queryMapper = new LambdaQueryWrapper<>();
+                    queryMapper.eq(SysWorkPeopleInoutLog::getIdCard,one.getIdCard());
+                    queryMapper.orderByDesc(SysWorkPeopleInoutLog::getLogTime);
+                    queryMapper.last("limit 1");
+                    SysWorkPeopleInoutLog sysWorkPeopleInoutLog = sysWorkPeopleInoutLogMapper.selectOne(queryMapper);
+                    if(sysWorkPeopleInoutLog!=null && sysWorkPeopleInoutLog.getMode()==1) {
+                        peopleController.simulationOut(one.getId(),"automatic");
+                    }
+                }
+            }
+            propertiesObj.put("holeDistance", holeDistance);
             Object idcard = ((Map<String, Object>) itemMap.get("user_info")).get("number");
             if(idcard.toString().startsWith("GAS") || idcard.toString().startsWith("CAR") ){
                 propertiesObj.put("type", "06");

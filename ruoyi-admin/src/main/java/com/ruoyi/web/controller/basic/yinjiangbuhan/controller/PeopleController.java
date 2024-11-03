@@ -88,7 +88,7 @@ public class PeopleController {
     }
 
     @GetMapping("/simulationOut")
-    private AjaxResult pushSwzk(Integer peopleId) {
+    public AjaxResult simulationOut(Integer peopleId,@RequestParam(required = false)String type) {
         String now = DateUtil.now();
         SysWorkPeople byId = workPeopleService.getById(peopleId);
         if(byId==null) return AjaxResult.error("找不到人员");
@@ -146,11 +146,14 @@ public class PeopleController {
         mainMap.put("values", valuesList);
         log.info("模拟门禁推送：{}", JSON.toJSONString(mainMap));
         swzkHttpUtils.pushIOT(mainMap);
-        insertInOutLog(now,"DS-K1T670M20231222V031801CHFH5917119",byId);
+        if(type==null){
+            type = "simulation";
+        }
+        insertInOutLog(now,"DS-K1T670M20231222V031801CHFH5917119", byId, type);
         return AjaxResult.success();
     }
 
-    private void insertInOutLog(String now,String sn,SysWorkPeople people) {
+    private void insertInOutLog(String now,String sn,SysWorkPeople people,String type) {
         SysWorkPeopleInoutLog sysWorkPeopleInoutLog = new SysWorkPeopleInoutLog();
         sysWorkPeopleInoutLog.setSn(sn);
         sysWorkPeopleInoutLog.setIdCard(people.getIdCard());
@@ -162,7 +165,7 @@ public class PeopleController {
         sysWorkPeopleInoutLog.setPhotoUrl(null);
         sysWorkPeopleInoutLog.setCreatedDate(new Date());
         sysWorkPeopleInoutLog.setModifyDate(new Date());
-        sysWorkPeopleInoutLog.setCreatedBy("simulation");
+        sysWorkPeopleInoutLog.setCreatedBy(type);
         sysWorkPeopleInoutLogMapper.insert(sysWorkPeopleInoutLog);
     }
 
