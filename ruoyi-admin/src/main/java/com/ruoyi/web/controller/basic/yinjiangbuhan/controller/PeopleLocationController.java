@@ -182,9 +182,9 @@ public class PeopleLocationController {
             propertiesObj.put("humanY", itemMap.get("result_y"));
             propertiesObj.put("humanZ", itemMap.get("result_z"));
             propertiesObj.put("stationDistance",0);
-            //新逻辑 实名制通道 到 洞口距离 推正数 20m
+            //新逻辑 实名制通道 到 洞口距离 推正数 30m
             BigDecimal holeDistance = new BigDecimal(2939).add(new BigDecimal(itemMap.get("result_x").toString()));
-            if(holeDistance.compareTo(new BigDecimal(-20))>0){
+            if(holeDistance.compareTo(new BigDecimal(-30))>0){
                 holeDistance = holeDistance.abs();
             }
 

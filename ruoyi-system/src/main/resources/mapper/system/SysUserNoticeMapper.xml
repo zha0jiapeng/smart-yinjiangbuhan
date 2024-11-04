@@ -55,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             yn = 1
         </where>
+        order by create_time desc
     </select>
 
     <select id="selectUnReadList" parameterType="Long" resultMap="SysUserNoticeResult">
