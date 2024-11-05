@@ -40,9 +40,9 @@ public class CarLocationController {
     private void pushSwzk() {
         Map deviceLocation = TuhuguancheUtil.getDeviceLocation();
       //  redisTemplate.opsForValue().set("carLocation", JSON.toJSONString(deviceLocation));
-        List<Map<String, Object>> valuesList = new ArrayList<>();
         List list = (List)deviceLocation.get("result");
         for (Object iobj : list) {
+            List<Map<String, Object>> valuesList = new ArrayList<>();
             com.alibaba.fastjson.JSONObject itemMap = (com.alibaba.fastjson.JSONObject) iobj;
             Map<String, Object> events = new HashMap<>();
             Map<String, Object> pass = new HashMap<>();
