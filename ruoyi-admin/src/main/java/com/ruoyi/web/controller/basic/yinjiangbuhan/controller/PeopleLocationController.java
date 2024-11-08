@@ -206,7 +206,8 @@ public class PeopleLocationController {
             if(idcard.toString().startsWith("GAS") || idcard.toString().startsWith("CAR") ){
                 propertiesObj.put("type", "06");
             }
-            propertiesObj.put("idCardNumber", idcard);
+            if(idcard==null) continue;
+            propertiesObj.put("idCardNumber", idcard.toString().trim().toLowerCase());
 //                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
 //                if(one!=null)
 //                    propertiesObj.put("idCardNumber", one.getIdCard());

@@ -143,6 +143,13 @@ public class DoorEvent {
                    mainMap.put("SN", one.getModifyBy());
                }
            }
+           else{
+               Integer cameraType = one.getCameraType();
+               if(cameraType == 1){
+
+               }
+           }
+           
            mainMap.put("dataType", "200300003");
            mainMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
            mainMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
@@ -182,7 +189,7 @@ public class DoorEvent {
                passMap.put("eventType", 1);
                passMap.put("eventTs", eventTime.getTime());
                passMap.put("describe", "");
-               passMap.put("idCardNumber", map.get("certNo"));
+               passMap.put("idCardNumber", map.get("certNo").toString().trim().toLowerCase());
                passMap.put("name", map.get("personName"));
                passMap.put("passTime", DateUtil.formatDateTime(eventTime));
                passMap.put("passDirection",map.get("inAndOutType").toString().equals("1") ? "02" : "01");
