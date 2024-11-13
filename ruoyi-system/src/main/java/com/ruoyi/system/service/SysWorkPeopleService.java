@@ -9,4 +9,5 @@ public interface SysWorkPeopleService extends IService<SysWorkPeople> {
 
     void updWorkPeopleDeparture(SysWorkPeople sysWorkPeople);
 
+    SysWorkPeople getOneByIdCardInRedis(String idCard);
 }

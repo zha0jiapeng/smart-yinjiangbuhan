@@ -132,7 +132,7 @@ public class PeopleController {
         passMap.put("eventType", 1);
         passMap.put("eventTs", now);
         passMap.put("describe", "");
-        passMap.put("idCardNumber", byId.getIdCard());
+        passMap.put("idCardNumber", byId.getIdCard().trim().toUpperCase());
         passMap.put("name", byId.getName());
         passMap.put("passTime", now);
         passMap.put("passDirection", "01");

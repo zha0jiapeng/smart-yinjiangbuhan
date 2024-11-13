@@ -189,7 +189,7 @@ public class DoorEvent {
                passMap.put("eventType", 1);
                passMap.put("eventTs", eventTime.getTime());
                passMap.put("describe", "");
-               passMap.put("idCardNumber", map.get("certNo").toString().trim().toLowerCase());
+               passMap.put("idCardNumber", map.get("certNo").toString().trim().toUpperCase());
                passMap.put("name", map.get("personName"));
                passMap.put("passTime", DateUtil.formatDateTime(eventTime));
                passMap.put("passDirection",map.get("inAndOutType").toString().equals("1") ? "02" : "01");

@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.listen;
 
+import cn.hutool.core.util.ReUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.ruoyi.common.utils.StringUtils;
@@ -17,7 +18,14 @@ public class PeopleCheckImportListen extends AnalysisEventListener<Staff> {
         // 非空校验
         if (StringUtils.isEmpty(data.getIdCardNo())) {
             errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的身份证号不能为空");
+        }else {
+            String idCardRegex = "(^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}(\\d|X|x)$)|(^[1-9]\\d{7}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}$)";
+            boolean isValid = ReUtil.isMatch(idCardRegex, data.getIdCardNo().trim().toUpperCase());
+            if(!isValid){
+                errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的身份证号不符合格式");
+            }
         }
+
         if (StringUtils.isEmpty(data.getBimStaffType())) {
             errorMessages.add("第 " + context.readRowHolder().getRowIndex() + " 行的bim人员类型不能为空");
         }

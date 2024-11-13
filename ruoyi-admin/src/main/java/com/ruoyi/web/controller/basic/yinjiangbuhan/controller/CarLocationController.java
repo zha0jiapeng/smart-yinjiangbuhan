@@ -4,7 +4,6 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 import cn.hutool.core.date.DateUtil;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.TuhuguancheUtil;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/carLocation")
 public class CarLocationController {
-
-    @Resource
-    private RedisTemplate redisTemplate;
 
     @Resource
     SwzkHttpUtils swzkHttpUtils;

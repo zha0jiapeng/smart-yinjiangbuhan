@@ -7,7 +7,7 @@ import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysWorkPeople;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
@@ -140,9 +140,12 @@ public class PeopleLocationController {
         data.put("deviceName", "人员定位基站");
         List<Map<String, Object>> valuesList = new ArrayList<>();
         for (Map<String, Object> itemMap : datee) {
-
-            SysWorkPeople one = sysWorkPeopleService.getOne(new LambdaUpdateWrapper<SysWorkPeople>().eq(SysWorkPeople::getIdCard, ((Map<String, Object>) itemMap.get("user_info")).get("number")));
-
+            Object idcard = ((Map<String, Object>) itemMap.get("user_info")).get("number");
+            if(idcard==null) continue;
+            SysWorkPeople one = null;
+            if(!StringUtils.isEmpty(idcard.toString())) {
+                one = sysWorkPeopleService.getOneByIdCardInRedis(idcard.toString().trim().toUpperCase());
+            }
 
 
             // 创建 values 列表
@@ -192,7 +195,7 @@ public class PeopleLocationController {
             if(holeDistance.compareTo(BigDecimal.ZERO)<0){
                 if(one!=null) {
                     LambdaQueryWrapper<SysWorkPeopleInoutLog> queryMapper = new LambdaQueryWrapper<>();
-                    queryMapper.eq(SysWorkPeopleInoutLog::getIdCard,one.getIdCard());
+                    queryMapper.eq(SysWorkPeopleInoutLog::getIdCard,one.getIdCard().trim().toUpperCase());
                     queryMapper.orderByDesc(SysWorkPeopleInoutLog::getLogTime);
                     queryMapper.last("limit 1");
                     SysWorkPeopleInoutLog sysWorkPeopleInoutLog = sysWorkPeopleInoutLogMapper.selectOne(queryMapper);
@@ -202,12 +205,11 @@ public class PeopleLocationController {
                 }
             }
             propertiesObj.put("holeDistance", holeDistance);
-            Object idcard = ((Map<String, Object>) itemMap.get("user_info")).get("number");
             if(idcard.toString().startsWith("GAS") || idcard.toString().startsWith("CAR") ){
                 propertiesObj.put("type", "06");
             }
             if(idcard==null) continue;
-            propertiesObj.put("idCardNumber", idcard.toString().trim().toLowerCase());
+            propertiesObj.put("idCardNumber", idcard.toString().trim().toUpperCase());
 //                SysWorkPeople one = workPeopleService.getOne(new LambdaQueryWrapper<SysWorkPeople>().eq(SysWorkPeople::getName, ((Map<String, Object>) itemMap.get("user_info")).get("user_name")), false);
 //                if(one!=null)
 //                    propertiesObj.put("idCardNumber", one.getIdCard());
