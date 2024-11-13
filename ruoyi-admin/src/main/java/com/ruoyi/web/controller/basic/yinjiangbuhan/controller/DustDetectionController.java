@@ -2,7 +2,11 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.system.domain.basic.IotTsp;
@@ -59,9 +63,31 @@ public class DustDetectionController {
         iotTsp.setPressure(dustDetectionData.getAtm().toString());
         iotTsp.setWindSpeed(dustDetectionData.getWs().toString());
         iotTsp.setCreatedDate(DateUtil.parse(dustDetectionData.getDatatime()));
+        iotTsp.setWeather(getWeather());
         iotTspService.save(iotTsp);
         return AjaxResult.success();
     }
+
+    private String getWeather() {
+        String url = "https://restapi.amap.com/v3/weather/weatherInfo" +
+                "?key=353bfa9ce5dab88691f00d2d7252df4b" +
+                "&city=420626" +
+                "&extensions=base";
+        HttpResponse execute = HttpRequest.get(url).execute();
+        String body = execute.body();
+        JSONObject jsonObject = JSON.parseObject(body);
+        System.out.println(body);
+        if( jsonObject.getInteger("status") == 1){
+            JSONArray lives = jsonObject.getJSONArray("lives");
+            if(lives.size()>0){
+                JSONObject o = (JSONObject) lives.get(0);
+                String weather = o.getString("weather");
+                return weather;
+            }
+        }
+        return null;
+    }
+
 
     public String getWindDirection(int degree) {
         if ((degree >= 337.5 && degree <= 360) || (degree >= 0 && degree < 22.5)) {
