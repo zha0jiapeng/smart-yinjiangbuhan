@@ -12,10 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -177,6 +174,7 @@ public class TuhuguancheUtil {
             JSONObject mergedJsonObject = new JSONObject(mergedRecord);
             resultArray.add(mergedJsonObject);
         }
+        resultArray.sort(Comparator.comparing(obj -> LocalDateTime.parse(((JSONObject) obj).getString("gpsTime"), formatter)));
 
         return resultArray;
     }
