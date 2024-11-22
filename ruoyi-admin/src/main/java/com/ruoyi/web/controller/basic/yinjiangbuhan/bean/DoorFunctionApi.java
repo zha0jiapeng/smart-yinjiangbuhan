@@ -23,17 +23,30 @@ public class DoorFunctionApi {
      */
     private static final String ARTEMIS_PATH = "/artemis";
     //门禁点反控
-    public  String doControl(DoControlRequest doControlRequest ){
-        String doControlDataApi = ARTEMIS_PATH +"/api/acs/v1/door/doControl";
+    public  String getCameraList(Map<String,Object> map ){
+        String doControlDataApi = ARTEMIS_PATH +"/api/resource/v2/camera/search";
         Map<String,String> path = new HashMap<String,String>(2){
             {
                 put("https://",doControlDataApi);
             }
         };
-        String body= JSON.toJSONString(doControlRequest);
+        String body= JSON.toJSONString(map);
         String result = ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
         return result;
     }
+    public  String previewURLs(Map<String,Object> request ){
+        //String doControlDataApi = ARTEMIS_PATH +"/api/video/v2/cameras/previewURLs";
+        String doControlDataApi = ARTEMIS_PATH +"/api/vnsc/mls/v1/preview/openApi/getPreviewParam";
+        Map<String,String> path = new HashMap<String,String>(){
+            {
+                put("https://",doControlDataApi);
+            }
+        };
+        String body= JSON.toJSONString(request);
+        String result = ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
+        return result;
+    }
+
 
 
     //查询门禁点事件v2

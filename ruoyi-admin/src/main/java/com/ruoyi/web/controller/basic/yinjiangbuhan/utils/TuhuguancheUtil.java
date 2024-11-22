@@ -10,7 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -128,7 +133,52 @@ public class TuhuguancheUtil {
         paramMap.put("userId", "13521470746");
         paramMap.put("imei", imei);
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/track/list");
-        return jsonObject.toJavaObject(Map.class);
+        JSONArray result = jsonObject.getJSONArray("result");
+        JSONArray maps = groupGpsDataByMinute(result);
+        JSONObject resultt = new JSONObject();
+        resultt.put("result",maps);
+        return resultt.toJavaObject(Map.class);
+    }
+    private static JSONArray groupGpsDataByMinute(JSONArray jsonArray) {
+        // 时间格式化器
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 转换 JSONArray 为 List<Map<String, Object>>，便于操作
+        List<Map<String, Object>> gpsData = new ArrayList<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Map<String, Object> map = new HashMap<>();
+            map.put("gpsTime", jsonObject.getString("gpsTime"));
+            map.put("lng", jsonObject.getDouble("lng"));
+            map.put("lat", jsonObject.getDouble("lat"));
+            map.put("gpsSpeed", jsonObject.getInteger("gpsSpeed"));
+            gpsData.add(map);
+        }
+
+        // 按分钟分组
+        Map<String, List<Map<String, Object>>> groupedByMinute = gpsData.stream()
+                .collect(Collectors.groupingBy(record -> {
+                    String gpsTime = (String) record.get("gpsTime");
+                    LocalDateTime time = LocalDateTime.parse(gpsTime, formatter);
+                    return time.withSecond(0).format(formatter); // 格式化为 "yyyy-MM-dd HH:mm:00"
+                }));
+
+        // 合并每分钟的数据
+        JSONArray resultArray = new JSONArray();
+        for (Map.Entry<String, List<Map<String, Object>>> entry : groupedByMinute.entrySet()) {
+            String minute = entry.getKey();
+            List<Map<String, Object>> records = entry.getValue();
+
+            // 合并逻辑：这里以取第一个记录为示例
+            Map<String, Object> mergedRecord = new HashMap<>(records.get(0));
+            mergedRecord.put("gpsTime", minute); // 使用格式化后的时间
+
+            // 转换 Map 为 JSONObject
+            JSONObject mergedJsonObject = new JSONObject(mergedRecord);
+            resultArray.add(mergedJsonObject);
+        }
+
+        return resultArray;
     }
 
     private static JSONObject getParam (String token, Map<String, String>paramMap,String url){
