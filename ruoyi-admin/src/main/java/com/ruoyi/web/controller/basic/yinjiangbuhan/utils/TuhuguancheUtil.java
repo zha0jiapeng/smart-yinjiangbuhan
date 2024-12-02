@@ -130,10 +130,36 @@ public class TuhuguancheUtil {
         paramMap.put("userId", "13521470746");
         paramMap.put("imei", imei);
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/track/list");
-        JSONArray result = jsonObject.getJSONArray("result");
-        JSONArray maps = groupGpsDataByMinute(result);
+        JSONArray jsonArray = jsonObject.getJSONArray("result");
+        // 用于存储每分钟的第一个数据
+        Map<String, JSONObject> minuteDataMap = new LinkedHashMap<>();
+
+        // 遍历每个 JSON 对象
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject gpsData = jsonArray.getJSONObject(i);
+
+            // 获取 gpsTime 字段并提取年月日小时分钟（不包括秒）
+            String gpsTime = gpsData.getString("gpsTime");
+            String minuteKey = gpsTime.substring(0, 16); // 格式：yyyy-MM-dd HH:mm
+
+            // 如果这个分钟的数据还没有保存过，则保存该数据
+            if (!minuteDataMap.containsKey(minuteKey)) {
+                minuteDataMap.put(minuteKey, gpsData);
+            }
+        }
+
+        // 创建一个新的 JSONArray 来存储每分钟的第一个数据
+        JSONArray resultJSONArray = new JSONArray();
+
+        // 将每分钟的第一个数据添加到新的 JSONArray 中
+        for (Map.Entry<String, JSONObject> entry : minuteDataMap.entrySet()) {
+            JSONObject gpsData = entry.getValue();
+            resultJSONArray.add(gpsData);
+        }
+
+
         JSONObject resultt = new JSONObject();
-        resultt.put("result",maps);
+        resultt.put("result",resultJSONArray);
         return resultt.toJavaObject(Map.class);
     }
     private static JSONArray groupGpsDataByMinute(JSONArray jsonArray) {

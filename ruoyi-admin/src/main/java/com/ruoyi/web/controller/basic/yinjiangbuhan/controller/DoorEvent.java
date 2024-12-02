@@ -221,7 +221,7 @@ public class DoorEvent {
                         .eq(SysWorkPeopleInoutLog::getIdCard, jsonObject.get("certNo").toString())
                         .eq(SysWorkPeopleInoutLog::getLogTime, DateUtil.formatDateTime(eventTime))
         );
-        if (certNo>1){
+        if (certNo>=1){
             return;
         }
         String sn = door.get("devSerialNum").toString();

@@ -17,6 +17,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysConstructionProg
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -228,7 +229,7 @@ public class PeopleLocationController {
     }
 
 
-    //@Scheduled(cron = "0 */1 * * * *")
+    @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzkOut() {
         String now = DateUtil.now();
         HttpResponse execute = HttpRequest.post("http://192.168.1.206:9501/push/list")
