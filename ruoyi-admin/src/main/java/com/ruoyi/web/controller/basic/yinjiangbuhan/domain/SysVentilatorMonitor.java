@@ -37,7 +37,7 @@ public class SysVentilatorMonitor extends BaseEntity
     @TableField(exist = false)
     private String isOpenStr;
 
-    private Integer isOpen;
+    private Boolean isOpen;
 
     /** 通风机功率 */
     @ExcelProperty("功率（%）")

@@ -40,7 +40,7 @@ public class SysVentilatorMonitorController extends BaseController
                     .sheet()
                     .doReadSync();
             for (SysVentilatorMonitor sysVentilatorMonitor : sysVentilatorMonitors) {
-                sysVentilatorMonitor.setIsOpen(sysVentilatorMonitor.getIsOpenStr().equals("开启")?1:0);
+                //sysVentilatorMonitor.setIsOpen(sysVentilatorMonitor.getIsOpenStr().equals("开启")?1:0);
             }
             sysVentilatorMonitorService.saveBatch(sysVentilatorMonitors);
             return AjaxResult.success("导入成功");

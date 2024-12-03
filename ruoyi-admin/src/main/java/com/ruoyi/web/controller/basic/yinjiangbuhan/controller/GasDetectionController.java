@@ -13,7 +13,6 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,7 +71,7 @@ public class GasDetectionController {
     @Autowired
     RedisCache redisCache;
 
-    @Scheduled(cron = "0 */1 * * * *")
+  //  @Scheduled(cron = "0 */1 * * * *")
     private void pushSwzk() {
         List<Device> gasdetector = deviceService.list(new LambdaUpdateWrapper<Device>().eq(Device::getDeviceType, "GASDETECTOR"));
         for (Device device : gasdetector) {

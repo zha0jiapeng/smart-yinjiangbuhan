@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 @TableName("Iot_tbm")
 public class IotTbm extends BaseDomain {
 
+    private String deviceCode;
+
     private String cutterTorque;
 
     private String cutterRev;
