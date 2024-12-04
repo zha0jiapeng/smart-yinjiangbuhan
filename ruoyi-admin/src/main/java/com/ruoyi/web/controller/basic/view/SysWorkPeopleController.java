@@ -208,6 +208,11 @@ public class SysWorkPeopleController extends BaseController {
         sysWorkPeopleService.removeById(id);
         return Result.OK("删除成功!");
     }
+    @DeleteMapping("/batch")
+    public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+        sysWorkPeopleService.removeByIds(new ArrayList<>(Arrays.asList(ids.split("\\,"))));
+        return Result.OK("删除成功!");
+    }
 
     @Log(title = "现场工人信息", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
