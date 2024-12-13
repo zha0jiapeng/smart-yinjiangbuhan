@@ -200,6 +200,7 @@ public class TBMController {
 
 
     private void saveVentilator(Map<String, Map<String, Object>> resultMap) {
+        String now = DateUtil.now();
         SysVentilatorMonitor ventilatorMonitor = new SysVentilatorMonitor();
         ventilatorMonitor.setSn("tbm6_ventilator");
         ventilatorMonitor.setDeviceId(91L);
@@ -217,6 +218,64 @@ public class TBMController {
         ventilatorMonitor.setAirSupply(new BigDecimal(funAirOutput));
         ventilatorMonitor.setCreatedDate(new Date());
         sysVentilatorMonitorService.save(ventilatorMonitor);
+
+        // 最外层 Map
+        Map<String, Object> data = new HashMap<>();
+
+        // 填充基本信息
+        data.put("deviceType", "2001000050");
+        data.put("SN", "tbm6_ventilator");
+        data.put("dataType", "200300020");
+        data.put("bidCode", "YJBH-SSZGX_BD-SG-201");
+        data.put("workAreaCode", "YJBH-SSZGX_GQ-01");
+        data.put("deviceName", "通风机监测设备名称");
+
+        // values 列表
+        List<Map<String, Object>> valuesList = new ArrayList<>();
+        Map<String, Object> valueItem = new HashMap<>();
+
+        // reportTs
+        valueItem.put("reportTs", 1572702827618L);
+
+        // profile 子对象
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("appType", "ventilator");
+        profile.put("modelId", "2090");
+        profile.put("poiCode", "w0823001");
+        profile.put("name", "TBM6通风机");
+        profile.put("model", "测试型号");
+        profile.put("manufacture", "中铁装备制造有限公司");
+        profile.put("owner", "江汉水网公司");
+        profile.put("makeDate", "2020-05-22");
+        profile.put("validYear", "2050-05-22");
+        profile.put("installPosition", "出口段隧洞口100米处");
+        profile.put("x", 0);
+        profile.put("y", 0);
+        profile.put("z", 0);
+        valueItem.put("profile", profile);
+
+        // properties 子对象
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("monitorTime", now);
+        properties.put("is_on", ventilatorMonitor.getIsOpen()?1:0);
+        properties.put("power", ventilatorMonitor.getPower());
+        properties.put("diameter", new BigDecimal(ventilatorMonitor.getDiameter()).divide(new BigDecimal(1000),0,BigDecimal.ROUND_HALF_UP));
+        properties.put("rotate_speed", ventilatorMonitor.getSpeed());
+        properties.put("air_output", ventilatorMonitor.getAirSupply());
+        properties.put("wind_pressure", ventilatorMonitor.getWindPresssure());
+        valueItem.put("properties", properties);
+
+        // events 和 services
+        valueItem.put("events", new HashMap<>());
+        valueItem.put("services", new HashMap<>());
+
+        // 添加到 values 列表
+        valuesList.add(valueItem);
+
+        // 将 values 列表加入最外层 Map
+        data.put("values", valuesList);
+        swzkHttpUtils.pushIOT(data);
+
     }
 
     @Autowired

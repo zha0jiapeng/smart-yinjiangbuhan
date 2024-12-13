@@ -88,7 +88,7 @@ public class PeopleLocationController {
 
 
 
-    //@Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 2000)
     private void pushSwzkIn() {
         log.info("=========人员定位推送=============");
         String now = DateUtil.now();

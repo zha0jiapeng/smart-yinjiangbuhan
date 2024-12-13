@@ -37,6 +37,17 @@ public class BanhezhanController {
         return map;
     }
 
+    @PostMapping("/pullDibangData")
+    public Map<String,Object> pullDibangData(@RequestBody Map<String,Object> request) {
+        redisTemplate.opsForValue().set("banhezhan_request",JSON.toJSONString(request));
+        log.info("swzk pullDibangData push request:{}",JSON.toJSONString(request));
+        String returnMsg = swzkHttpUtils.pushIOT(request);
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",200);
+        map.put("msg","Data sent successfully !");
+        return map;
+    }
+
     @RequestMapping("/getData")
     public Object getData() {
         Object banhezhanRequest = redisTemplate.opsForValue().get("banhezhan_request");

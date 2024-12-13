@@ -61,13 +61,7 @@ public class PeopleController {
             EasyExcel.read(file.getInputStream(), Staff.class, new PeopleCheckImportListen()).sheet().doRead();
 
             EasyExcel.read(file.getInputStream(), Staff.class, new PeopleImportListen(workPeopleService)).sheet().doRead();
-//            // Read the Excel file
-//            List<Staff> staffList = EasyExcel.read(file.getInputStream())
-//                    .head(Staff.class)
-//                    .sheet()
-//                    .doReadSync();
-//            savePeople(staffList);
-//            pushSwzk(staffList);
+
 
             return AjaxResult.success("导入成功");
         } catch (IOException e) {

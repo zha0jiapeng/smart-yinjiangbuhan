@@ -139,10 +139,10 @@ public class DoorEvent {
            mainMap.put("SN", sn);
            Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn), false);
            if(one!=null){
-               Integer cameraType = one.getCameraType();
-               if(cameraType == 1){
-                   continue;
-               }
+//               Integer cameraType = one.getCameraType();
+//               if(cameraType == 1){
+//                   continue;
+//               }
                if(StringUtils.isNotEmpty(one.getModifyBy())){
                    mainMap.put("SN", one.getModifyBy());
                }
