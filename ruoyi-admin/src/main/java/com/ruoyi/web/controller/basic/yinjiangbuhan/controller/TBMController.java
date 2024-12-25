@@ -154,7 +154,7 @@ public class TBMController {
         item.put("ch4", resultMap.get("mainCH4").get("val"));
         item.put("co", resultMap.get("mainCO").get("val"));
         item.put("h2s", resultMap.get("mainH2S").get("val"));
-        push(item,"主机","tbm_main");
+        push(item,"主机","tbm6_main");
     }
 
     private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap) {
@@ -162,7 +162,7 @@ public class TBMController {
         item.put("ch4", resultMap.get("trailerCH4").get("val"));
         item.put("co", resultMap.get("trailerCO").get("val"));
         item.put("h2s", resultMap.get("trailerH2S").get("val"));
-        push(item,"拖车尾部","tbm_trailer");
+        push(item,"拖车尾部","tbm6_trailer");
     }
     private void push(Map<String, Object> item,String name,String sn) {
         List<Object> valus = new ArrayList<>();
