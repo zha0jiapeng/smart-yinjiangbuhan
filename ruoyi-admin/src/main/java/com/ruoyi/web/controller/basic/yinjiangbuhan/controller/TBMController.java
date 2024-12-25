@@ -121,9 +121,14 @@ public class TBMController {
         tbmService.save(tbm);
 
 
-
         //气体检测
         pushGasMonitor(resultMap);
+
+        //气体检测
+        pushGasMonitor2(resultMap);
+
+        //气体检测
+        pushGasMonitor3(resultMap);
 
         //风机
         saveVentilator(resultMap);
@@ -138,19 +143,31 @@ public class TBMController {
         item.put("h2s", resultMap.get("mainBeltH2S").get("val"));
         item.put("co2", resultMap.get("mainBeltCO2").get("val"));
         item.put("so2", resultMap.get("mainBeltSO2").get("val"));
-        //item.put("nh3", (Double)resultMap.get("mainBeltO2").get("val")));
         item.put("no2", resultMap.get("mainBeltNO2").get("val"));
         item.put("no", resultMap.get("mainBeltNO").get("val"));
         item.put("cl2", resultMap.get("mainBeltCL2").get("val"));
-
-
-        push(item);
-
+        push(item,"主皮带区","tbm6_mainBelt");
     }
-    private void push(Map<String, Object> item) {
+
+    private void pushGasMonitor2(Map<String, Map<String, Object>> resultMap) {
+        Map<String, Object> item = new HashMap<>();
+        item.put("ch4", resultMap.get("mainCH4").get("val"));
+        item.put("co", resultMap.get("mainCO").get("val"));
+        item.put("h2s", resultMap.get("mainH2S").get("val"));
+        push(item,"主机","tbm_main");
+    }
+
+    private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap,String name) {
+        Map<String, Object> item = new HashMap<>();
+        item.put("ch4", resultMap.get("trailerCH4").get("val"));
+        item.put("co", resultMap.get("trailerCO").get("val"));
+        item.put("h2s", resultMap.get("trailerH2S").get("val"));
+        push(item,"拖车尾部","tbm_trailer");
+    }
+    private void push(Map<String, Object> item,String name,String sn) {
         List<Object> valus = new ArrayList<>();
         Map<String, Object> swzkParam = new HashMap<String, Object>();
-        swzkParam.put("SN", "tbm6_mainBelt");
+        swzkParam.put("SN", sn);
         swzkParam.put("dataType","200300025"); //有毒有害气体
         swzkParam.put("deviceType","2001000060"); //有毒有害气体
         swzkParam.put("workAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
@@ -160,14 +177,14 @@ public class TBMController {
         profile.put("appType","environment");
         profile.put("modelId","2055");
         profile.put("poiCode","w0907001");
-        profile.put("name", "主皮带机气体检测");
+        profile.put("name", name);
         profile.put("model","");
         profile.put("manufacture","");
         profile.put("owner","");
         profile.put("makeDate","2024-06-25");
         profile.put("validYear","2024-06-25");
         profile.put("status","01");
-        profile.put("installPosition","TBM6主皮带机");
+        profile.put("installPosition",name);
         profile.put("x","0");
         profile.put("y","0");
         profile.put("z","0");
@@ -176,7 +193,7 @@ public class TBMController {
         properties.put("monitorTime",DateUtil.now());
 
         properties.put("CO",item.get("co"));
-        properties.put("CO2",new BigDecimal(item.get("co2").toString()).multiply(new BigDecimal(10000)).setScale(0,BigDecimal.ROUND_HALF_UP));
+        if (item.get("co2")!=null) properties.put("CO2",new BigDecimal(item.get("co2").toString()).multiply(new BigDecimal(10000)).setScale(0,BigDecimal.ROUND_HALF_UP));
         properties.put("SO2",item.get("so2"));
         properties.put("SO", item.get("so"));
         properties.put("CH4", item.get("ch4"));
@@ -208,14 +225,10 @@ public class TBMController {
         Integer funIsOn1 = (Integer) resultMap.get("funIsOn1").get("val");
         Integer funIsOn2 = (Integer) resultMap.get("funIsOn2").get("val");
         ventilatorMonitor.setIsOpen(funIsOn1==1 || funIsOn2==1);
-        Integer funPower1 = (Integer) resultMap.get("funPower1").get("val");
-
-        ventilatorMonitor.setPower(new BigDecimal(funPower1));
+        ventilatorMonitor.setPower(new BigDecimal(resultMap.get("funPower1").get("val").toString()));
         ventilatorMonitor.setDiameter(1250L);
-        Integer funRotateSpeed1 = (Integer) resultMap.get("funRotateSpeed1").get("val");
-        ventilatorMonitor.setSpeed(new BigDecimal(funRotateSpeed1));
-        Integer funAirOutput = (Integer) resultMap.get("funAirOutput").get("val");
-        ventilatorMonitor.setAirSupply(new BigDecimal(funAirOutput));
+        ventilatorMonitor.setSpeed(new BigDecimal(resultMap.get("funRotateSpeed1").get("val").toString()));
+        ventilatorMonitor.setAirSupply(new BigDecimal( resultMap.get("funAirOutput").get("val").toString()));
         ventilatorMonitor.setCreatedDate(new Date());
         sysVentilatorMonitorService.save(ventilatorMonitor);
 
