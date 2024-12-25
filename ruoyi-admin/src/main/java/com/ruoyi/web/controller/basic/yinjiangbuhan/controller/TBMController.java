@@ -157,7 +157,7 @@ public class TBMController {
         push(item,"主机","tbm_main");
     }
 
-    private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap,String name) {
+    private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
         item.put("ch4", resultMap.get("trailerCH4").get("val"));
         item.put("co", resultMap.get("trailerCO").get("val"));
