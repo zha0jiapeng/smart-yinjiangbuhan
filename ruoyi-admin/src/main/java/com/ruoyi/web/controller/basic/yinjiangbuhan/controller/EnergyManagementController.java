@@ -143,11 +143,11 @@ public class EnergyManagementController {
         profileMap.put("state", "01");
         profileMap.put("installPosition", "04");
         profileMap.put("distributeLevel", "01");
-        profileMap.put("ratedVoltage", "30");
-        profileMap.put("ratedPower", "30");
+        profileMap.put("ratedVoltage", "400");
+        profileMap.put("ratedPower", "400");
         profileMap.put("installedArea", "30");
         profileMap.put("tempAlmLim", "30");
-        profileMap.put("leakCurrAlmLim", "30");
+        profileMap.put("leakCurrAlmLim", "0");
         profileMap.put("x", 112.002224);
         profileMap.put("y", 112.002224);
         profileMap.put("z", 1.2);
@@ -158,7 +158,7 @@ public class EnergyManagementController {
         propertiesMap.put("voltA", map.get("voltageA"));
 //        propertiesMap.put("voltB", map.get("voltageB"));
         propertiesMap.put("voltB", 242.7);
-        propertiesMap.put("voltC", map.get("voltageC"));
+        propertiesMap.put("voltC", 240.3);
 //        propertiesMap.put("voltC", map.get("voltageC"));
         propertiesMap.put("currA", map.get("currentA"));
         propertiesMap.put("currB", map.get("currentB"));
@@ -167,10 +167,10 @@ public class EnergyManagementController {
         propertiesMap.put("tempA", null);
         propertiesMap.put("tempB", null);
         propertiesMap.put("tempC", null);
-        propertiesMap.put("cabinetTemp", null);
-        propertiesMap.put("leakCurr", null);
-        propertiesMap.put("cableTempAlm", null);
-        propertiesMap.put("leakCurrAlm", null);
+        propertiesMap.put("cabinetTemp", DustDetectionController.temperature);
+        propertiesMap.put("leakCurr", 0);
+        propertiesMap.put("cableTempAlm", 0);
+        propertiesMap.put("leakCurrAlm", 0);
         valuesMap.put("reportTs", DateUtil.current());
         valuesMap.put("profile", profileMap);
         valuesMap.put("properties", propertiesMap);

@@ -119,6 +119,8 @@ public class DustDetectionController {
 
 
 
+    public static Float temperature = 0f;
+
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzk() {
         DustDetectionData dustdetection = redisCache.getCacheObject("dustdetection");
@@ -162,6 +164,7 @@ public class DustDetectionController {
             propertiesObj.put("windDirection", StrUtil.sub(windDirection, 0, windDirection.length() - 1));
             propertiesObj.put("noiseDb", dustdetection.getNoise());
             propertiesObj.put("temperature", dustdetection.getTem());
+            temperature = dustdetection.getTem();
             propertiesObj.put("humidity", dustdetection.getHum());
 
             // 将 profile 和 properties 对象放入 values 对象中
