@@ -156,8 +156,10 @@ public class EnergyManagementController {
         Map<String, Object> propertiesMap = new HashMap<>();
         propertiesMap.put("monitorTime", DateUtil.now());
         propertiesMap.put("voltA", map.get("voltageA"));
-        propertiesMap.put("voltB", map.get("voltageB"));
+//        propertiesMap.put("voltB", map.get("voltageB"));
+        propertiesMap.put("voltB", 242.7);
         propertiesMap.put("voltC", map.get("voltageC"));
+//        propertiesMap.put("voltC", map.get("voltageC"));
         propertiesMap.put("currA", map.get("currentA"));
         propertiesMap.put("currB", map.get("currentB"));
         propertiesMap.put("currC", map.get("currentC"));

@@ -32,6 +32,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -53,37 +55,36 @@ public class TBMController {
     private ISysVentilatorMonitorService sysVentilatorMonitorService;
 
     @RequestMapping("/getTbm6")
-    public AjaxResult getTbm6(){
+    public AjaxResult getTbm6() {
         IotTbm tbm = tbmService.getOne(new LambdaQueryWrapper<IotTbm>().eq(IotTbm::getDeviceCode, "CREC1463").orderByDesc(IotTbm::getCreatedDate), false);
         return AjaxResult.success(tbm);
     }
 
     @RequestMapping("/getTbm5")
-    public AjaxResult getTbm5(){
+    public AjaxResult getTbm5() {
         IotTbm tbm = tbmService.getOne(new LambdaQueryWrapper<IotTbm>().eq(IotTbm::getDeviceCode, "CREC1463").orderByDesc(IotTbm::getCreatedDate), false);
         return AjaxResult.success(tbm);
     }
 
     @RequestMapping("/getBigScreen")
     public AjaxResult get() {
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         String token = getToken();
         String url = "https://tmain.tbmcloud.com.cn/#/screen";
-        map.put("url",url);
-        map.put("vue_tbmcloud_template_token",token);
+        map.put("url", url);
+        map.put("vue_tbmcloud_template_token", token);
         return AjaxResult.success(map);
     }
-
 
 
     private static final String url = "https://trans.tbmcloud.com.cn/trans/transGetRealData/ex/getMappingData";
 
     @Scheduled(cron = "0 */1 * * * ?")
     public void execute() {
-        Map<String,Object> request = new HashMap<>();
-        request.put("secretKey","z7kZ9eEsFXfIEDsCXfNCrI2coYPYkIawOWIScmi0gC1ywtVm0uKCmQgye+xuRnnWhhAjAs3AUe6F547z1FgkbQ==");
-        request.put("tbmCode","CREC1463");
-        request.put("name","shibajukjb");
+        Map<String, Object> request = new HashMap<>();
+        request.put("secretKey", "z7kZ9eEsFXfIEDsCXfNCrI2coYPYkIawOWIScmi0gC1ywtVm0uKCmQgye+xuRnnWhhAjAs3AUe6F547z1FgkbQ==");
+        request.put("tbmCode", "CREC1463");
+        request.put("name", "shibajukjb");
         HttpResponse execute = HttpRequest.post(url)
                 .body(JSONObject.toJSONString(request))
                 .execute();
@@ -95,8 +96,7 @@ public class TBMController {
     }
 
 
-
-    public void zuzhuang(JSONObject jsonObject){
+    public void zuzhuang(JSONObject jsonObject) {
 
         String timeStr = jsonObject.getString("time_str");
         String tbmCode = jsonObject.getString("tbmCode");
@@ -132,11 +132,13 @@ public class TBMController {
 
         //风机
         saveVentilator(resultMap);
+
+
     }
 
     private void pushGasMonitor(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
-       // item.put("dust", dust.doubleValue());
+        // item.put("dust", dust.doubleValue());
         item.put("o2", resultMap.get("mainBeltO2").get("val"));
         item.put("ch4", resultMap.get("mainBeltCH4").get("val"));
         item.put("co", resultMap.get("mainBeltCO").get("val"));
@@ -146,7 +148,7 @@ public class TBMController {
         item.put("no2", resultMap.get("mainBeltNO2").get("val"));
         item.put("no", resultMap.get("mainBeltNO").get("val"));
         item.put("cl2", resultMap.get("mainBeltCL2").get("val"));
-        push(item,"主皮带区","tbm6_mainBelt");
+        push(item, "主皮带区", "tbm6_mainBelt");
     }
 
     private void pushGasMonitor2(Map<String, Map<String, Object>> resultMap) {
@@ -154,7 +156,7 @@ public class TBMController {
         item.put("ch4", resultMap.get("mainCH4").get("val"));
         item.put("co", resultMap.get("mainCO").get("val"));
         item.put("h2s", resultMap.get("mainH2S").get("val"));
-        push(item,"主机","tbm6_main");
+        push(item, "主机", "tbm6_main");
     }
 
     private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap) {
@@ -162,55 +164,57 @@ public class TBMController {
         item.put("ch4", resultMap.get("trailerCH4").get("val"));
         item.put("co", resultMap.get("trailerCO").get("val"));
         item.put("h2s", resultMap.get("trailerH2S").get("val"));
-        push(item,"拖车尾部","tbm6_trailer");
+        push(item, "拖车尾部", "tbm6_trailer");
     }
-    private void push(Map<String, Object> item,String name,String sn) {
+
+    private void push(Map<String, Object> item, String name, String sn) {
         List<Object> valus = new ArrayList<>();
         Map<String, Object> swzkParam = new HashMap<String, Object>();
         swzkParam.put("SN", sn);
-        swzkParam.put("dataType","200300025"); //有毒有害气体
-        swzkParam.put("deviceType","2001000060"); //有毒有害气体
-        swzkParam.put("workAreaCode","YJBH-SSZGX_GQ-08"); //鸡冠河
-        Map<String,Object> map = new HashMap<>();
-        Map<String,Object> profile = new HashMap<>();
+        swzkParam.put("dataType", "200300025"); //有毒有害气体
+        swzkParam.put("deviceType", "2001000060"); //有毒有害气体
+        swzkParam.put("workAreaCode", "YJBH-SSZGX_GQ-08"); //鸡冠河
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> profile = new HashMap<>();
         map.put("reportTs", DateUtil.currentSeconds());
-        profile.put("appType","environment");
-        profile.put("modelId","2055");
-        profile.put("poiCode","w0907001");
+        profile.put("appType", "environment");
+        profile.put("modelId", "2055");
+        profile.put("poiCode", "w0907001");
         profile.put("name", name);
-        profile.put("model","");
-        profile.put("manufacture","");
-        profile.put("owner","");
-        profile.put("makeDate","2024-06-25");
-        profile.put("validYear","2024-06-25");
-        profile.put("status","01");
-        profile.put("installPosition",name);
-        profile.put("x","0");
-        profile.put("y","0");
-        profile.put("z","0");
+        profile.put("model", "");
+        profile.put("manufacture", "");
+        profile.put("owner", "");
+        profile.put("makeDate", "2024-06-25");
+        profile.put("validYear", "2024-06-25");
+        profile.put("status", "01");
+        profile.put("installPosition", name);
+        profile.put("x", "0");
+        profile.put("y", "0");
+        profile.put("z", "0");
         map.put("profile", profile);
-        Map<String,Object> properties = new HashMap<>();
-        properties.put("monitorTime",DateUtil.now());
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("monitorTime", DateUtil.now());
 
-        properties.put("CO",item.get("co"));
-        if (item.get("co2")!=null) properties.put("CO2",new BigDecimal(item.get("co2").toString()).multiply(new BigDecimal(10000)).setScale(0,BigDecimal.ROUND_HALF_UP));
-        properties.put("SO2",item.get("so2"));
+        properties.put("CO", item.get("co"));
+        if (item.get("co2") != null)
+            properties.put("CO2", new BigDecimal(item.get("co2").toString()).multiply(new BigDecimal(10000)).setScale(0, BigDecimal.ROUND_HALF_UP));
+        properties.put("SO2", item.get("so2"));
         properties.put("SO", item.get("so"));
         properties.put("CH4", item.get("ch4"));
-        properties.put("O2",item.get("o2"));
-        properties.put("S2H",item.get("h2s"));
-        properties.put("TEMPERATURE",item.get("temp"));
-        properties.put("HUMIDNESS",item.get("humi"));
-        properties.put("location","1");
-        properties.put("x","0");
-        properties.put("y","0");
-        properties.put("z","0");
-        map.put("properties",properties);
-        map.put("events",new Object());
-        map.put("services",new Object());
+        properties.put("O2", item.get("o2"));
+        properties.put("S2H", item.get("h2s"));
+        properties.put("TEMPERATURE", item.get("temp"));
+        properties.put("HUMIDNESS", item.get("humi"));
+        properties.put("location", "1");
+        properties.put("x", "0");
+        properties.put("y", "0");
+        properties.put("z", "0");
+        map.put("properties", properties);
+        map.put("events", new Object());
+        map.put("services", new Object());
 
         valus.add(map);
-        swzkParam.put("values",valus);
+        swzkParam.put("values", valus);
 
         swzkHttpUtils.pushIOT(swzkParam);
     }
@@ -224,11 +228,11 @@ public class TBMController {
         ventilatorMonitor.setYn(1L);
         Integer funIsOn1 = (Integer) resultMap.get("funIsOn1").get("val");
         Integer funIsOn2 = (Integer) resultMap.get("funIsOn2").get("val");
-        ventilatorMonitor.setIsOpen(funIsOn1==1 || funIsOn2==1);
+        ventilatorMonitor.setIsOpen(funIsOn1 == 1 || funIsOn2 == 1);
         ventilatorMonitor.setPower(new BigDecimal(resultMap.get("funPower1").get("val").toString()));
         ventilatorMonitor.setDiameter(1250L);
         ventilatorMonitor.setSpeed(new BigDecimal(resultMap.get("funRotateSpeed1").get("val").toString()));
-        ventilatorMonitor.setAirSupply(new BigDecimal( resultMap.get("funAirOutput").get("val").toString()));
+        ventilatorMonitor.setAirSupply(new BigDecimal(resultMap.get("funAirOutput").get("val").toString()));
         ventilatorMonitor.setCreatedDate(new Date());
         sysVentilatorMonitorService.save(ventilatorMonitor);
 
@@ -270,12 +274,41 @@ public class TBMController {
         // properties 子对象
         Map<String, Object> properties = new HashMap<>();
         properties.put("monitorTime", now);
-        properties.put("is_on", ventilatorMonitor.getIsOpen()?1:0);
+        properties.put("is_on", ventilatorMonitor.getIsOpen() ? 1 : 0);
         properties.put("power", ventilatorMonitor.getPower());
-        properties.put("diameter", new BigDecimal(ventilatorMonitor.getDiameter()).divide(new BigDecimal(1000),0,BigDecimal.ROUND_HALF_UP));
+        properties.put("diameter", new BigDecimal(ventilatorMonitor.getDiameter()).divide(new BigDecimal(1000), 0, BigDecimal.ROUND_HALF_UP));
         properties.put("rotate_speed", ventilatorMonitor.getSpeed());
+        //通风量
         properties.put("air_output", ventilatorMonitor.getAirSupply());
-        properties.put("wind_pressure", ventilatorMonitor.getWindPresssure());
+        //转换成 m3/s
+        BigDecimal airSupply = ventilatorMonitor.getAirSupply();
+        BigDecimal airSupplyDivisor = new BigDecimal(3600);
+        BigDecimal airSupplyResult = airSupply.divide(airSupplyDivisor, MathContext.DECIMAL128);
+        airSupplyResult = airSupplyResult.setScale(4, RoundingMode.HALF_UP);
+        //实际功率
+        BigDecimal powerResult = ventilatorMonitor.getPower();
+        // μ_1 和 μ_2 的值
+        BigDecimal mu1 = new BigDecimal("0.98");
+        BigDecimal mu2 = new BigDecimal("0.97");
+        // K 的值
+        BigDecimal k = new BigDecimal("1.2");
+        // 公式中的 1000 和 0.01
+        BigDecimal constant1000 = new BigDecimal(1000);
+        BigDecimal constant0_01 = new BigDecimal("0.01");
+
+        // 按照公式计算 P
+        BigDecimal numerator = powerResult.multiply(new BigDecimal(3600))
+                .multiply(mu1)
+                .multiply(mu2)
+                .multiply(constant1000);
+
+        BigDecimal denominator = k.multiply(airSupplyResult).multiply(constant0_01);
+
+        BigDecimal p = numerator.divide(denominator, MathContext.DECIMAL128);
+        p = p.multiply(new BigDecimal("0.0001")).setScale(2, RoundingMode.HALF_UP);
+
+
+        properties.put("wind_pressure", p);
         valueItem.put("properties", properties);
 
         // events 和 services
@@ -313,25 +346,25 @@ public class TBMController {
                 ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                 BufferedImage image = ImageIO.read(bis);
                 bis.close();
-                File outputFile = new File(rootPath+"/tbm6_captcha.png");
+                File outputFile = new File(rootPath + "/tbm6_captcha.png");
                 ImageIO.write(image, "png", outputFile);
 
                 String captcha = callPaddleOCR(rootPath + "/tbm6_captcha.png");
                 captcha = captcha.substring(captcha.lastIndexOf("\n")).trim();
-                log.info("======output:{}=======",captcha);
+                log.info("======output:{}=======", captcha);
 
-                if(!captcha.contains("=")){
+                if (!captcha.contains("=")) {
                     getCaptcha();
                 }
                 String[] split = captcha.split("\\=");
-                captcha = split[0]+"=?";
-                if( !captcha.contains("+")&&!captcha.contains("-")&&!captcha.contains("*")&&!captcha.contains("/")){
+                captcha = split[0] + "=?";
+                if (!captcha.contains("+") && !captcha.contains("-") && !captcha.contains("*") && !captcha.contains("/")) {
                     getCaptcha();
                 }
-               // log.info("captcha: {}", captcha);
+                // log.info("captcha: {}", captcha);
                 int calculate = calculate(captcha);
-                log.info("======calculate:{}=======",calculate);
-                return calculate +","+uuid;
+                log.info("======calculate:{}=======", calculate);
+                return calculate + "," + uuid;
             } catch (Exception e) {
                 //log.warn(e.getMessage(), e);
             }
@@ -367,51 +400,51 @@ public class TBMController {
     }
 
 
-        /**
-         * 计算数学表达式并返回结果
-         *
-         * @param expression 数学表达式，例如 "9 - 3 = ?"
-         * @return 计算结果
-         * @throws IllegalArgumentException 如果表达式格式不正确
-         */
-        public static int calculate(String expression) throws IllegalArgumentException {
-            // 去掉空格
-            expression = expression.replaceAll("\\s", "");
+    /**
+     * 计算数学表达式并返回结果
+     *
+     * @param expression 数学表达式，例如 "9 - 3 = ?"
+     * @return 计算结果
+     * @throws IllegalArgumentException 如果表达式格式不正确
+     */
+    public static int calculate(String expression) throws IllegalArgumentException {
+        // 去掉空格
+        expression = expression.replaceAll("\\s", "");
 
-            // 检查表达式是否符合格式：A 操作符 B = ?
-            if (!expression.matches("\\d+[\\+\\-\\*/]\\d+=\\?")) {
-                throw new IllegalArgumentException("Invalid expression format. Expected format: 'A + B = ?'");
-            }
-
-            // 分离操作数和操作符
-            String[] parts = expression.split("[\\+\\-\\*/=]");
-            int operand1 = Integer.parseInt(parts[0]); // 第一个操作数
-            int operand2 = Integer.parseInt(parts[1]); // 第二个操作数
-            char operator = expression.charAt(parts[0].length()); // 操作符
-
-            // 根据操作符计算结果
-            int result;
-            switch (operator) {
-                case '+':
-                    result = operand1 + operand2;
-                    break;
-                case '-':
-                    result = operand1 - operand2;
-                    break;
-                case '*':
-                    result = operand1 * operand2;
-                    break;
-                case '/':
-                    if (operand2 == 0) {
-                        throw new IllegalArgumentException("Division by zero is not allowed.");
-                    }
-                    result = operand1 / operand2;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported operator: " + operator);
-            }
-            return result;
+        // 检查表达式是否符合格式：A 操作符 B = ?
+        if (!expression.matches("\\d+[\\+\\-\\*/]\\d+=\\?")) {
+            throw new IllegalArgumentException("Invalid expression format. Expected format: 'A + B = ?'");
         }
+
+        // 分离操作数和操作符
+        String[] parts = expression.split("[\\+\\-\\*/=]");
+        int operand1 = Integer.parseInt(parts[0]); // 第一个操作数
+        int operand2 = Integer.parseInt(parts[1]); // 第二个操作数
+        char operator = expression.charAt(parts[0].length()); // 操作符
+
+        // 根据操作符计算结果
+        int result;
+        switch (operator) {
+            case '+':
+                result = operand1 + operand2;
+                break;
+            case '-':
+                result = operand1 - operand2;
+                break;
+            case '*':
+                result = operand1 * operand2;
+                break;
+            case '/':
+                if (operand2 == 0) {
+                    throw new IllegalArgumentException("Division by zero is not allowed.");
+                }
+                result = operand1 / operand2;
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported operator: " + operator);
+        }
+        return result;
+    }
 
 
     String getToken() {
@@ -440,18 +473,18 @@ public class TBMController {
         String token = "";
         String captcha = getCaptcha();
         String[] split = captcha.split(",");
-        log.info("======split:{},{}=======",split[0],split[1]);
+        log.info("======split:{},{}=======", split[0], split[1]);
         String url = "https://tmain.tbmcloud.com.cn/tbmcenter/sys/loginByCaptcha";
         final HttpRequest req = HttpRequest.post(url);
         req.form("username", "yjbh06");
         req.form("password", "Yjbh06_2024@");
         req.form("uuid", split[1]);
-        req.form("code",split[0]);
+        req.form("code", split[0]);
         HttpResponse execute = req.execute();
         String body = execute.body();
-        log.info("======body:{}=======",body);
+        log.info("======body:{}=======", body);
         token = JSON.parseObject(JSON.parse(body).toString()).getString("token");
-        log.info("======token:{}=======",token);
+        log.info("======token:{}=======", token);
         return token;
     }
 
