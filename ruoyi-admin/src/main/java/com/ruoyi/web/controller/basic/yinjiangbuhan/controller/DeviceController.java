@@ -1,12 +1,15 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,22 @@ public class DeviceController extends BaseController {
             lq.eq(Device::getDeviceArea, device.getDeviceArea());
         }
         Device list = deviceService.getOne(lq, false);
+        if (list.getDeviceType().equals("CAMERA") && list.getSn() != null) {
+            //调用海康接口
+            DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
+            Map<String, Object> rootMap = new HashMap<>();
+            rootMap.put("streamType",1);
+            rootMap.put("protocol","ws");
+            rootMap.put("transmode",1);
+            rootMap.put("cameraIndexCode",list.getSn());
+            rootMap.put("expand","transcode=0");
+            rootMap.put("streamform","ps");
+            JSONObject jsonObject = doorFunctionApi.previewURLS(rootMap);
+            String url = jsonObject.getJSONObject("data").getString("url");
+            JSONObject jsonObject1 = new JSONObject();
+            jsonObject1.put("rtsp",url);
+            list.setConfigJson(jsonObject1.toString());
+        }
         return AjaxResult.success(list);
     }
 

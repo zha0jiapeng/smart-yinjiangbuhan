@@ -13,14 +13,23 @@ import java.util.Map;
 @Component
 public class SwzkHttpUtils {
 
-    public static String pushIOT(Map param){
-        param.put("bidCode","YJBH-SSZGX_BD-SG-205"); //土建4标
-        log.info("push tcp swzk:{}",JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
+    public static String pushIOT(Map param) {
+        param.put("bidCode", "YJBH-SSZGX_BD-SG-205"); //土建4标
+        log.info("push tcp swzk:{}", JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
         //String s = TcpClientService.sendTcpRequest(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue));
         HttpResponse execute = HttpRequest.post("http://58.48.101.155:8089/receive/pushIOT")
-                .body(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue), "application/json").execute();
-        log.info("push tcp swzk response:{}",execute.body());
+                .body(JSON.toJSONString(param, SerializerFeature.WriteMapNullValue), "application/json").execute();
+        log.info("push tcp swzk response:{}", execute.body());
         return execute.body();
+    }
 
+    public static String pushDevIOT(Map param) {
+        param.put("bidCode", "YJBH-SSZGX_BD-SG-205"); //土建4标
+        log.info("push tcp swzk:{}", JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
+        //String s = TcpClientService.sendTcpRequest(JSON.toJSONString(param,SerializerFeature.WriteMapNullValue));
+        HttpResponse execute = HttpRequest.post("http://oa.sntsoft.com:8089/receive/pushIOT")
+                .body(JSON.toJSONString(param, SerializerFeature.WriteMapNullValue), "application/json").execute();
+        log.info("push tcp swzk response:{}", execute.body());
+        return execute.body();
     }
 }

@@ -13,9 +13,14 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.system.domain.IotTbm;
 import com.ruoyi.system.service.IotTbmService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysVentilatorMonitor;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysVentilatorMonitorService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Modbus4jReadUtil;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.ModbusTcpMaster;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.code.DataType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +69,23 @@ public class TBMController {
     public AjaxResult getTbm5() {
         IotTbm tbm = tbmService.getOne(new LambdaQueryWrapper<IotTbm>().eq(IotTbm::getDeviceCode, "CREC1463").orderByDesc(IotTbm::getCreatedDate), false);
         return AjaxResult.success(tbm);
+    }
+
+    @RequestMapping("/list")
+    public AjaxResult list(String sn) {
+        Map<String, Object> item = new HashMap<>();
+        System.out.println("TBMSN："+sn);
+        if ("tbm6_mainBelt".equals(sn)) {
+            System.out.println("TBMSN：：："+tbm6_mainBelt);
+            item = tbm6_mainBelt;
+        } else if ("tbm6_main".equals(sn)) {
+            System.out.println("TBMSN：：："+tbm6_main);
+            item = tbm6_main;
+        } else if ("tbm6_trailer".equals(sn)) {
+            System.out.println("TBMSN：：："+tbm6_trailer);
+            item = tbm6_trailer;
+        }
+        return AjaxResult.success(item);
     }
 
     @RequestMapping("/getBigScreen")
@@ -136,34 +158,58 @@ public class TBMController {
 
     }
 
+    public static Object o2 = 0;
+    public static Object co2 = 0;
+
+    public static Map<String, Object> tbm6_mainBelt = new HashMap<>();
+
     private void pushGasMonitor(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
         // item.put("dust", dust.doubleValue());
         item.put("o2", resultMap.get("mainBeltO2").get("val"));
+        o2 = resultMap.get("mainBeltO2").get("val");
         item.put("ch4", resultMap.get("mainBeltCH4").get("val"));
         item.put("co", resultMap.get("mainBeltCO").get("val"));
         item.put("h2s", resultMap.get("mainBeltH2S").get("val"));
         item.put("co2", resultMap.get("mainBeltCO2").get("val"));
+        co2 = resultMap.get("mainBeltCO2").get("val");
         item.put("so2", resultMap.get("mainBeltSO2").get("val"));
         item.put("no2", resultMap.get("mainBeltNO2").get("val"));
         item.put("no", resultMap.get("mainBeltNO").get("val"));
         item.put("cl2", resultMap.get("mainBeltCL2").get("val"));
+        item.put("temp", DustDetectionController.temperature);
+        item.put("humi", DustDetectionController.humidity);
+        tbm6_mainBelt = item;
         push(item, "主皮带区", "tbm6_mainBelt");
     }
+
+    public static Map<String, Object> tbm6_main = new HashMap<>();
 
     private void pushGasMonitor2(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
         item.put("ch4", resultMap.get("mainCH4").get("val"));
         item.put("co", resultMap.get("mainCO").get("val"));
         item.put("h2s", resultMap.get("mainH2S").get("val"));
+        item.put("o2", o2);
+        item.put("co2", co2);
+        item.put("temp", DustDetectionController.temperature);
+        item.put("humi", DustDetectionController.humidity);
+        tbm6_main = item;
         push(item, "主机", "tbm6_main");
     }
+
+    public static Map<String, Object> tbm6_trailer = new HashMap<>();
 
     private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
         item.put("ch4", resultMap.get("trailerCH4").get("val"));
         item.put("co", resultMap.get("trailerCO").get("val"));
         item.put("h2s", resultMap.get("trailerH2S").get("val"));
+        item.put("o2", o2);
+        item.put("co2", co2);
+        item.put("temp", DustDetectionController.temperature);
+        item.put("humi", DustDetectionController.humidity);
+        tbm6_trailer = item;
         push(item, "拖车尾部", "tbm6_trailer");
     }
 
@@ -280,11 +326,9 @@ public class TBMController {
         properties.put("rotate_speed", ventilatorMonitor.getSpeed());
         //通风量
         properties.put("air_output", ventilatorMonitor.getAirSupply());
-        //转换成 m3/s
+        System.out.println("通风量：" + ventilatorMonitor.getAirSupply());
+        //m3/s
         BigDecimal airSupply = ventilatorMonitor.getAirSupply();
-        BigDecimal airSupplyDivisor = new BigDecimal(3600);
-        BigDecimal airSupplyResult = airSupply.divide(airSupplyDivisor, MathContext.DECIMAL128);
-        airSupplyResult = airSupplyResult.setScale(4, RoundingMode.HALF_UP);
         //实际功率
         BigDecimal powerResult = ventilatorMonitor.getPower();
         // μ_1 和 μ_2 的值
@@ -302,9 +346,11 @@ public class TBMController {
                 .multiply(mu2)
                 .multiply(constant1000);
 
-        BigDecimal denominator = k.multiply(airSupplyResult).multiply(constant0_01);
+
+        BigDecimal denominator = k.multiply(airSupply).multiply(constant0_01);
 
         BigDecimal p = numerator.divide(denominator, MathContext.DECIMAL128);
+        System.out.println("实际功率：" + powerResult + "；p" + p);
         p = p.multiply(new BigDecimal("0.0001")).setScale(2, RoundingMode.HALF_UP);
 
 
@@ -322,6 +368,31 @@ public class TBMController {
         data.put("values", valuesList);
         swzkHttpUtils.pushIOT(data);
 
+    }
+
+    public static void main(String[] args) {
+        BigDecimal powerResult = new BigDecimal(4.6);
+        BigDecimal airSupply = new BigDecimal(119.2842942);
+
+        BigDecimal mu1 = new BigDecimal("0.98");
+        BigDecimal mu2 = new BigDecimal("0.97");
+        BigDecimal k = new BigDecimal("1.2");
+
+        BigDecimal constant1000 = new BigDecimal(1000);
+        BigDecimal constant0_01 = new BigDecimal("0.01");
+
+        // 按照公式计算 P
+        BigDecimal numerator = powerResult.multiply(new BigDecimal(3600))
+                .multiply(mu1)
+                .multiply(mu2)
+                .multiply(constant1000);
+
+
+        BigDecimal denominator = k.multiply(airSupply).multiply(constant0_01);
+
+        BigDecimal p = numerator.divide(denominator, MathContext.DECIMAL128);
+        p = p.multiply(new BigDecimal("0.0001")).setScale(2, RoundingMode.HALF_UP);
+        System.out.println(p);
     }
 
     @Autowired

@@ -19,8 +19,10 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
 {
     @Select("SELECT " +
             "hole_type, " +
-            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
-            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(drill_blasting, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(lining_casting, 0)) AS total_lining " +
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 " +
             "GROUP BY hole_type")
@@ -28,8 +30,10 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
 
     @Select("SELECT " +
             "hole_type, " +
-            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
-            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(drill_blasting, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(lining_casting, 0)) AS total_lining " +
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 AND YEAR(log_date) = #{year} " +
             "GROUP BY hole_type")
@@ -37,8 +41,10 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
 
     @Select("SELECT " +
             "hole_type, " +
-            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
-            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(drill_blasting, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(lining_casting, 0)) AS total_lining " +
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 AND DATE_FORMAT(log_date, '%Y-%m') = #{month}  " +
             "GROUP BY hole_type")
@@ -46,8 +52,10 @@ public interface SysConstructionProgressLogMapper extends BaseMapper<SysConstruc
 
     @Select("SELECT " +
             "hole_type, " +
-            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
-            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(drill_blasting, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(drill_blasting, 0) + IFNULL(tmb5, 0) + IFNULL(tmb6, 0)) AS total_excavation, " +
+//            "SUM(IFNULL(lining_casting, 0) + IFNULL(side_top_arch, 0) + IFNULL(segments, 0) * 1.8) AS total_lining " +
+            "SUM(IFNULL(lining_casting, 0)) AS total_lining " +
             "FROM sys_construction_progress_log " +
             "WHERE yn = 1 AND log_date = #{date} " +
             "GROUP BY hole_type " +

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.WeighbridgeMapper">
+    
+    <resultMap type="Weighbridge" id="WeighbridgeResult">
+        <result property="id"    column="id"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="gross"    column="gross"    />
+        <result property="tare"    column="tare"    />
+        <result property="tareWeightingTime"    column="tare_weighting_time"    />
+        <result property="carNumber"    column="car_number"    />
+        <result property="netWeight"    column="net_weight"    />
+        <result property="rawData"    column="raw_data"    />
+        <result property="materialName"    column="material_name"    />
+        <result property="grossWeightingTime"    column="gross_weighting_time"    />
+        <result property="rawDataId"    column="raw_data_id"    />
+    </resultMap>
+
+    <sql id="selectWeighbridgeVo">
+        select id, del_flag, create_by, create_time, update_by, update_time, remark, gross, tare, tare_weighting_time, car_number, net_weight, raw_data, material_name, gross_weighting_time, raw_data_id from weighbridge
+    </sql>
+
+    <select id="selectWeighbridgeList" parameterType="Weighbridge" resultMap="WeighbridgeResult">
+        <include refid="selectWeighbridgeVo"/>
+        <where>  
+            <if test="gross != null  and gross != ''"> and gross = #{gross}</if>
+            <if test="tare != null  and tare != ''"> and tare = #{tare}</if>
+            <if test="tareWeightingTime != null  and tareWeightingTime != ''"> and tare_weighting_time = #{tareWeightingTime}</if>
+            <if test="carNumber != null  and carNumber != ''"> and car_number = #{carNumber}</if>
+            <if test="netWeight != null  and netWeight != ''"> and net_weight = #{netWeight}</if>
+            <if test="rawData != null  and rawData != ''"> and raw_data = #{rawData}</if>
+            <if test="materialName != null  and materialName != ''"> and material_name like concat('%', #{materialName}, '%')</if>
+            <if test="grossWeightingTime != null  and grossWeightingTime != ''"> and gross_weighting_time = #{grossWeightingTime}</if>
+            <if test="rawDataId != null "> and raw_data_id = #{rawDataId}</if>
+        </where>
+    </select>
+    
+    <select id="selectWeighbridgeById" parameterType="Long" resultMap="WeighbridgeResult">
+        <include refid="selectWeighbridgeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertWeighbridge" parameterType="Weighbridge" useGeneratedKeys="true" keyProperty="id">
+        insert into weighbridge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="gross != null">gross,</if>
+            <if test="tare != null">tare,</if>
+            <if test="tareWeightingTime != null">tare_weighting_time,</if>
+            <if test="carNumber != null">car_number,</if>
+            <if test="netWeight != null">net_weight,</if>
+            <if test="rawData != null">raw_data,</if>
+            <if test="materialName != null">material_name,</if>
+            <if test="grossWeightingTime != null">gross_weighting_time,</if>
+            <if test="rawDataId != null">raw_data_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="gross != null">#{gross},</if>
+            <if test="tare != null">#{tare},</if>
+            <if test="tareWeightingTime != null">#{tareWeightingTime},</if>
+            <if test="carNumber != null">#{carNumber},</if>
+            <if test="netWeight != null">#{netWeight},</if>
+            <if test="rawData != null">#{rawData},</if>
+            <if test="materialName != null">#{materialName},</if>
+            <if test="grossWeightingTime != null">#{grossWeightingTime},</if>
+            <if test="rawDataId != null">#{rawDataId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWeighbridge" parameterType="Weighbridge">
+        update weighbridge
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="gross != null">gross = #{gross},</if>
+            <if test="tare != null">tare = #{tare},</if>
+            <if test="tareWeightingTime != null">tare_weighting_time = #{tareWeightingTime},</if>
+            <if test="carNumber != null">car_number = #{carNumber},</if>
+            <if test="netWeight != null">net_weight = #{netWeight},</if>
+            <if test="rawData != null">raw_data = #{rawData},</if>
+            <if test="materialName != null">material_name = #{materialName},</if>
+            <if test="grossWeightingTime != null">gross_weighting_time = #{grossWeightingTime},</if>
+            <if test="rawDataId != null">raw_data_id = #{rawDataId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWeighbridgeById" parameterType="Long">
+        delete from weighbridge where id = #{id}
+    </delete>
+
+    <delete id="deleteWeighbridgeByIds" parameterType="String">
+        delete from weighbridge where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -48,7 +48,6 @@ public class DoorFunctionApi {
     }
 
 
-
     //查询门禁点事件v2
     public  String events(EventsRequest eventsRequest ){
         String eventsDataApi = ARTEMIS_PATH +"/api/acs/v2/door/events";
@@ -62,6 +61,19 @@ public class DoorFunctionApi {
         return result;
     }
 
+    public JSONObject previewURLS(Map<String,Object> request){
+        String eventsDataApi = ARTEMIS_PATH +"/api/video/v2/cameras/previewURLs";
+        Map<String,String> path = new HashMap<String,String>(2){
+            {
+                put("https://",eventsDataApi);
+            }
+        };
+        String body=JSON.toJSONString(request);
+        String result =ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        return jsonObject;
+    }
+
     public JSONObject search(Map<String,Object> request){
         String eventsDataApi = ARTEMIS_PATH +"/api/resource/v2/acsDevice/search";
         Map<String,String> path = new HashMap<String,String>(2){
@@ -73,6 +85,19 @@ public class DoorFunctionApi {
         String result =ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
         JSONObject jsonObject = JSONObject.parseObject(result);
         return jsonObject;
+    }
+
+    //添加人员信息
+    public  String personSingleAdd(Map<String,Object> request){
+        String doControlDataApi = ARTEMIS_PATH +"/api/resource/v2/person/single/add";
+        Map<String,String> path = new HashMap<String,String>(){
+            {
+                put("https://",doControlDataApi);
+            }
+        };
+        String body= JSON.toJSONString(request);
+        String result = ArtemisHttpUtil.doPostStringArtemis(path,body,null,null,"application/json");
+        return result;
     }
 
 }

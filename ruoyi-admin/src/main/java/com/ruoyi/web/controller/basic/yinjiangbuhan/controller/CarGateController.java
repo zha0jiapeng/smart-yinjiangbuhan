@@ -1,10 +1,14 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.enums.YnEnum;
 import com.ruoyi.common.utils.MinioUtils;
 import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.CarAccessService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import com.ruoyi.web.core.config.MinioConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -38,13 +42,16 @@ public class CarGateController {
     @Autowired
     private CarAccessService carAccessService;
 
+    @Resource
+    private IDeviceService deviceService;
+
 
     @PostMapping("/carAccess")
-    public Map<String,Object> carAccess(@RequestParam Map<String,Object> request) throws IOException {
-       // log.info("carAccess:{}",JSON.toJSONString(request));
-        Map<String,Object> responst = new HashMap<>();
+    public Map<String, Object> carAccess(@RequestParam Map<String, Object> request) throws IOException {
+        log.info("carAccess:{}", JSON.toJSONString(request));
+        Map<String, Object> responst = new HashMap<>();
         Object type = request.get("type");
-        if(!"online".equals(type.toString())) return null;
+        if (!"online".equals(type.toString())) return null;
 
 //        carAccessService.count(new LambdaQueryWrapper<CarAccess>()
 //                .eq(CarAccess::getCarCode,request.get("plate_num").toString())
@@ -58,38 +65,45 @@ public class CarGateController {
         String filename = UUID.randomUUID().toString() + ".png";
         minioUtils.uploadFile(minioConfig.getCarAccessBucketName(), filename, inputStream);
         //String presignedObjectUrl = minioUtils.getPresignedObjectUrl("car-access", filename);
-        String presignedObjectUrl = minioConfig.getEndpoint()+"/"+minioConfig.getCarAccessBucketName()+"/"+filename;
+        String presignedObjectUrl = minioConfig.getEndpoint() + "/" + minioConfig.getCarAccessBucketName() + "/" + filename;
 
 
         CarAccess carAccess = new CarAccess();
         carAccess.setCarCode(request.get("plate_num").toString());
-        if("in".equals(request.get("vdc_type"))){
+        if ("in".equals(request.get("vdc_type"))) {
             carAccess.setCarInDate(new Date());
-        }else{
+        } else {
             carAccess.setCarOutDate(new Date());
         }
         //carAccess.setPhotoBase64(picture);
         carAccess.setPhotoUrl(presignedObjectUrl);
-        carAccess.setSn("in".equals(request.get("vdc_type"))?"DSC101DKDZ001":"DSC101DKDZ002");
+        QueryWrapper<Device> deviceQueryWrapper = new QueryWrapper<>();
+        carAccess.setSn("in".equals(request.get("vdc_type")) ? "DSC101DKDZ001" : "DSC101DKDZ002");
+
+        String deviceIp = String.valueOf(request.get("cam_ip")).replaceAll("\\s+", "");
+        System.out.println("deviceIp：" + deviceIp);
+        deviceQueryWrapper.eq("device_ip", deviceIp);
+        Device device = deviceService.getOne(deviceQueryWrapper);
+        carAccess.setSn(device.getSn());
         carAccess.setCreatedDate(new Date());
         carAccess.setModifyDate(new Date());
         carAccess.setYn(YnEnum.Y.getCode());
         carAccessService.insert(carAccess);
-        pushCarAccess(request,presignedObjectUrl);
-        responst.put("error_num",0);
-        responst.put("error_str","无");
+        pushCarAccess(request, presignedObjectUrl, device);
+        responst.put("error_num", 0);
+        responst.put("error_str", "无");
         return responst;
     }
 
-    private void pushCarAccess(Map<String, Object> request,String presignedObjectUrl) throws IOException {
+    private void pushCarAccess(Map<String, Object> request, String presignedObjectUrl, Device device) throws IOException {
         // Root map.
         Map<String, Object> rootMap = new HashMap<>();
         rootMap.put("deviceType", "2001000011");
-        rootMap.put("SN", "in".equals(request.get("vdc_type"))?"DSC101DKDZ001":"DSC101DKDZ002");
+        rootMap.put("SN", device.getSn());
         rootMap.put("dataType", "200300004");
         rootMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
         rootMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
-        rootMap.put("deviceName", "8#洞车辆门禁");
+        rootMap.put("deviceName", device.getDeviceName());
 
         // Values list with one item
         Map<String, Object> valuesItem = new HashMap<>();

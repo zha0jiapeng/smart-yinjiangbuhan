@@ -104,6 +104,11 @@ public class SysConstructionProgressLogController extends BaseController
 
         for (Map<String, Object> entry : sum) {
             String holeType = (String) entry.get("hole_type");
+            if (type == 2){
+                if (entry.get("hole_type").equals("支洞")){
+                    entry.put("total","2104.64");
+                }
+            }
             resultMap.put(holeType, entry);
         }
         for (String expectedType : expectedHoleTypes) {

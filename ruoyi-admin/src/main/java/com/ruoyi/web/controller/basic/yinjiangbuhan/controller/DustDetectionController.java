@@ -120,6 +120,7 @@ public class DustDetectionController {
 
 
     public static Float temperature = 0f;
+    public static Float humidity = 0f;
 
     @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzk() {
@@ -166,7 +167,7 @@ public class DustDetectionController {
             propertiesObj.put("temperature", dustdetection.getTem());
             temperature = dustdetection.getTem();
             propertiesObj.put("humidity", dustdetection.getHum());
-
+            humidity = dustdetection.getHum();
             // 将 profile 和 properties 对象放入 values 对象中
             valuesObj.put("profile", profileObj);
             valuesObj.put("properties", propertiesObj);
