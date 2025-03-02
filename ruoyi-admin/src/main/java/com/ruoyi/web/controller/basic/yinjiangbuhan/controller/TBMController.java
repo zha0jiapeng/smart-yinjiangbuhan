@@ -9,9 +9,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
+import com.ruoyi.common.enums.YnEnum;
 import com.ruoyi.system.domain.IotTbm;
+import com.ruoyi.system.domain.basic.CarAccess;
 import com.ruoyi.system.service.IotTbmService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysVentilatorMonitor;
@@ -26,16 +29,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -74,15 +76,15 @@ public class TBMController {
     @RequestMapping("/list")
     public AjaxResult list(String sn) {
         Map<String, Object> item = new HashMap<>();
-        System.out.println("TBMSN："+sn);
+        System.out.println("TBMSN：" + sn);
         if ("tbm6_mainBelt".equals(sn)) {
-            System.out.println("TBMSN：：："+tbm6_mainBelt);
+            System.out.println("TBMSN：：：" + tbm6_mainBelt);
             item = tbm6_mainBelt;
         } else if ("tbm6_main".equals(sn)) {
-            System.out.println("TBMSN：：："+tbm6_main);
+            System.out.println("TBMSN：：：" + tbm6_main);
             item = tbm6_main;
         } else if ("tbm6_trailer".equals(sn)) {
-            System.out.println("TBMSN：：："+tbm6_trailer);
+            System.out.println("TBMSN：：：" + tbm6_trailer);
             item = tbm6_trailer;
         }
         return AjaxResult.success(item);
@@ -96,6 +98,32 @@ public class TBMController {
         map.put("url", url);
         map.put("vue_tbmcloud_template_token", token);
         return AjaxResult.success(map);
+    }
+
+    @RequestMapping("/getTest")
+    public AjaxResult getTest() {
+        Map<String, Object> request = new HashMap<>();
+        request.put("secretKey", "z7kZ9eEsFXfIEDsCXfNCrI2coYPYkIawOWIScmi0gC1ywtVm0uKCmQgye+xuRnnWhhAjAs3AUe6F547z1FgkbQ==");
+        request.put("tbmCode", "CREC1463");
+        request.put("name", "shibajukjb");
+        HttpResponse execute = HttpRequest.post(url)
+                .body(JSONObject.toJSONString(request))
+                .execute();
+        JSONObject result = JSONObject.parseObject(execute.body());
+        execute();
+
+
+        return AjaxResult.success(result);
+    }
+
+
+    @PostMapping("/advancedDrillingRig")
+    public Map<String, Object> advancedDrillingRig(@RequestParam Map<String, Object> request) throws IOException {
+        log.info("advancedDrillingRig:{}", JSON.toJSONString(request));
+        Map<String, Object> responst = new HashMap<>();
+        responst.put("error_num", 0);
+        responst.put("error_str", "无");
+        return responst;
     }
 
 
@@ -127,21 +155,35 @@ public class TBMController {
         Map<String, Map<String, Object>> resultMap = array.stream()
                 .map(obj -> (JSONObject) obj) // 将每个元素转换为 JSONObject
                 .collect(Collectors.toMap(
-                        jsonObj -> jsonObj.getString("key"), // 以 "key" 作为 Map 的键
+                        jsonObj -> jsonObj.getString("colName"), // 以 "key" 作为 Map 的键
                         JSONObject::getInnerMap             // 将 JSONObject 转为 Map 作为值
                 ));
 
 
         IotTbm tbm = new IotTbm();
         tbm.setDeviceCode(tbmCode);
-        tbm.setCutterTorque(resultMap.get("cutterTorque").get("val").toString());
-        tbm.setCutterRev(resultMap.get("cutterRpm").get("val").toString());
-        tbm.setStatus(Integer.parseInt(resultMap.get("shieldState").get("val").toString()));
-        tbm.setTotalThrustOne(resultMap.get("thrust").get("val").toString());
-        tbm.setTotalThrustTwo(resultMap.get("advnPrs").get("val").toString());
+        tbm.setCutterTorque(resultMap.get("刀盘扭矩").get("val").toString());
+        tbm.setCutterRev(resultMap.get("刀盘转速").get("val").toString());
+        Integer status;
+        try {
+            status = Integer.parseInt(resultMap.get("shieldState").get("val").toString());
+        } catch (NullPointerException e) {
+            System.out.println("没有对应参数：shieldState");
+            status = null;
+        }
+        tbm.setStatus(status);
+        String totalThrustOne = resultMap.get("总推进力").get("val").toString();
+        tbm.setTotalThrustOne(totalThrustOne);
+        String totalThrustTwo = null;
+        try {
+            totalThrustTwo = resultMap.get("推进泵压力").get("val").toString();
+        } catch (NullPointerException e) {
+            System.out.println("没有对应参数：推进泵压力");
+            totalThrustTwo = null;
+        }
+        tbm.setTotalThrustTwo(totalThrustTwo);
         tbm.setCreatedDate(new Date());
         tbmService.save(tbm);
-
 
         //气体检测
         pushGasMonitor(resultMap);
@@ -166,17 +208,18 @@ public class TBMController {
     private void pushGasMonitor(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
         // item.put("dust", dust.doubleValue());
-        item.put("o2", resultMap.get("mainBeltO2").get("val"));
-        o2 = resultMap.get("mainBeltO2").get("val");
-        item.put("ch4", resultMap.get("mainBeltCH4").get("val"));
-        item.put("co", resultMap.get("mainBeltCO").get("val"));
-        item.put("h2s", resultMap.get("mainBeltH2S").get("val"));
-        item.put("co2", resultMap.get("mainBeltCO2").get("val"));
-        co2 = resultMap.get("mainBeltCO2").get("val");
-        item.put("so2", resultMap.get("mainBeltSO2").get("val"));
-        item.put("no2", resultMap.get("mainBeltNO2").get("val"));
-        item.put("no", resultMap.get("mainBeltNO").get("val"));
-        item.put("cl2", resultMap.get("mainBeltCL2").get("val"));
+
+        item.put("o2", resultMap.get("主机皮带O2").get("val"));
+        o2 = resultMap.get("主机皮带O2").get("val");
+        item.put("ch4", resultMap.get("主皮带机CH4").get("val"));
+        item.put("co", resultMap.get("主机皮带CO").get("val"));
+        item.put("h2s", resultMap.get("主机皮带H2S").get("val"));
+        item.put("co2", resultMap.get("主机皮带CO2").get("val"));
+        co2 = resultMap.get("主机皮带CO2").get("val");
+        item.put("so2", resultMap.get("主机皮带SO2").get("val"));
+        item.put("no2", resultMap.get("主机皮带机NO2").get("val"));
+        item.put("no", resultMap.get("主机皮带NO").get("val"));
+        item.put("cl2", resultMap.get("主机皮带CL2").get("val"));
         item.put("temp", DustDetectionController.temperature);
         item.put("humi", DustDetectionController.humidity);
         tbm6_mainBelt = item;
@@ -187,9 +230,9 @@ public class TBMController {
 
     private void pushGasMonitor2(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
-        item.put("ch4", resultMap.get("mainCH4").get("val"));
-        item.put("co", resultMap.get("mainCO").get("val"));
-        item.put("h2s", resultMap.get("mainH2S").get("val"));
+        item.put("ch4", resultMap.get("主仓CH4").get("val"));
+        item.put("co", resultMap.get("主机CO").get("val"));
+        item.put("h2s", resultMap.get("主仓H2S").get("val"));
         item.put("o2", o2);
         item.put("co2", co2);
         item.put("temp", DustDetectionController.temperature);
@@ -202,9 +245,9 @@ public class TBMController {
 
     private void pushGasMonitor3(Map<String, Map<String, Object>> resultMap) {
         Map<String, Object> item = new HashMap<>();
-        item.put("ch4", resultMap.get("trailerCH4").get("val"));
-        item.put("co", resultMap.get("trailerCO").get("val"));
-        item.put("h2s", resultMap.get("trailerH2S").get("val"));
+        item.put("ch4", resultMap.get("拖车尾部CH4").get("val"));
+        item.put("co", resultMap.get("拖车尾部CO").get("val"));
+        item.put("h2s", resultMap.get("拖车尾部H2S").get("val"));
         item.put("o2", o2);
         item.put("co2", co2);
         item.put("temp", DustDetectionController.temperature);
@@ -272,13 +315,13 @@ public class TBMController {
         ventilatorMonitor.setSn("tbm6_ventilator");
         ventilatorMonitor.setDeviceId(91L);
         ventilatorMonitor.setYn(1L);
-        Integer funIsOn1 = (Integer) resultMap.get("funIsOn1").get("val");
-        Integer funIsOn2 = (Integer) resultMap.get("funIsOn2").get("val");
+        Integer funIsOn1 = (Integer) resultMap.get("二次风机1运行信号").get("val");
+        Integer funIsOn2 = (Integer) resultMap.get("二次风机2运行信号").get("val");
         ventilatorMonitor.setIsOpen(funIsOn1 == 1 || funIsOn2 == 1);
-        ventilatorMonitor.setPower(new BigDecimal(resultMap.get("funPower1").get("val").toString()));
+        ventilatorMonitor.setPower(new BigDecimal(resultMap.get("二次风机2电机功率").get("val").toString()));
         ventilatorMonitor.setDiameter(1250L);
-        ventilatorMonitor.setSpeed(new BigDecimal(resultMap.get("funRotateSpeed1").get("val").toString()));
-        ventilatorMonitor.setAirSupply(new BigDecimal(resultMap.get("funAirOutput").get("val").toString()));
+        ventilatorMonitor.setSpeed(new BigDecimal(resultMap.get("二次风机1电机转速").get("val").toString()));
+        ventilatorMonitor.setAirSupply(new BigDecimal(resultMap.get("二次通风风量").get("val").toString()));
         ventilatorMonitor.setCreatedDate(new Date());
         sysVentilatorMonitorService.save(ventilatorMonitor);
 
