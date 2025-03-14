@@ -13,6 +13,8 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Weighbridge;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.enums.MaterialType;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IWeighbridgeService;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Weighbridege.OpenApiClient;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.Weighbridege.RequestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,6 +51,7 @@ import com.ghgande.j2mod.modbus.msg.ReadInputRegistersRequest;
 import com.ghgande.j2mod.modbus.msg.ReadInputRegistersResponse;
 import com.ghgande.j2mod.modbus.net.SerialConnection;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -69,6 +72,45 @@ public class WeighbridgeController extends BaseController {
     @Resource
     SwzkHttpUtils swzkHttpUtils;
 
+
+    private static final String accessId = "R5kqByQr0otY3hR99ctY";
+    private static final String secretKey = "n+HR8rqPWMVYRVsOR1joj7Ypo94cCt6BPnH4j128";
+
+    private static final String baseUrl = "https://api.mctech.vip";
+
+    private static OpenApiClient client = new OpenApiClient(baseUrl, accessId, secretKey);
+
+
+    private JSONArray getPcr(String orgId) {
+        String apiUrl = "mquantity/get-delivery-weight-order-list?offset=0&orgId=" + orgId + "&limit=100&version=0";
+        try (RequestResult result = client.get(apiUrl)) {
+            com.alibaba.fastjson.JSONArray fastjsonArray = (com.alibaba.fastjson.JSONArray) result.getJsonObject();
+
+            String jsonString = fastjsonArray.toJSONString();
+
+            com.alibaba.fastjson2.JSONArray fastjson2Array = com.alibaba.fastjson2.JSONArray.parseArray(jsonString);
+
+            return fastjson2Array;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 查询地磅列表
+     */
+    @GetMapping("/getWeighbridge")
+    @ApiOperation("查询地磅列表")
+    public AjaxResult getWeighbridge() {
+        //orgid:1940124249584128
+        //组织名称：张家山砂石料厂1号磅
+        //orgid：1940124480671744
+        //组织名称：张家山沙石料厂2号磅
+        pushWeighbridgeData(getPcr("1940124249584128"), "weighbridge-YJBH-SSZGX_GQ-09-1");
+        pushWeighbridgeData(getPcr("1940124480671744"), "weighbridge-YJBH-SSZGX_GQ-09-2");
+        return success();
+    }
 
 
     /**
@@ -126,7 +168,6 @@ public class WeighbridgeController extends BaseController {
         }
         return success();
     }
-
 
 
     /**
@@ -289,7 +330,7 @@ public class WeighbridgeController extends BaseController {
                     saveWeighbridge.setGrossWeightingTime(dataItem.getString("grossWeightingTime"));
                     saveWeighbridge.setRawDataId(rawDataId);
                     weighbridgeService.insertWeighbridge(saveWeighbridge);
-                } else if (weighbridge != null && weighbridge.getTareWeightingTime() == null){
+                } else if (weighbridge != null && weighbridge.getTareWeightingTime() == null) {
                     weighbridge.setTareWeightingTime(tareWeightingTime);
                     weighbridgeService.updateWeighbridge(weighbridge);
                 }
@@ -300,7 +341,7 @@ public class WeighbridgeController extends BaseController {
         return AjaxResult.success();
     }
 
-//    @Scheduled(cron = "0 */7 * * * ?")
+    //    @Scheduled(cron = "0 */7 * * * ?")
     public AjaxResult getWeighbridgeData() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         // 假设结束时间是当前时间
@@ -399,14 +440,67 @@ public class WeighbridgeController extends BaseController {
     }
 
 
+    public void pushWeighbridgeData(JSONArray jsonArray, String sn) {
+        // 遍历 data 数组
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject dataItem = jsonArray.getJSONObject(i);
+            Map<String, Object> item = new HashMap<>();
+            item.put("sn", sn);
+            item.put("eventType", 0);
+            //车牌号
+            item.put("plateNumber", dataItem.getString("plateNumber"));
+
+            //物料名称
+            String materialName = "";
+            JSONArray materials = (JSONArray) dataItem.get("material");
+            if (materials != null && materials.size() > 0) {
+                materialName = ((JSONObject) materials.get(0)).getString("materialName");
+            }
+
+            item.put("materialName", materialName);
+            MaterialType materialType = getMaterialTypeByName(materialName);
+            String typeName = "";
+            if (materialType != null) {
+                typeName = materialType.getTypeName();
+            } else {
+                typeName = "其他";
+            }
+            //物料类型
+            item.put("materialType", typeName);
+            //毛重
+            item.put("totalWeight", dataItem.getDoubleValue("roughQuantity"));
+            //皮重
+            item.put("carWeight", dataItem.getDoubleValue("tareQuantity"));
+
+            //出入场状态
+            String tareWeightingTime = dataItem.getString("exitTime");
+
+            if (tareWeightingTime == null) {
+                item.put("passDirection", dataItem.getString("02"));
+                //通过时间
+                item.put("passTime", dataItem.getString("enterTime"));
+            } else {
+                item.put("passDirection", dataItem.getString("01"));
+                //通过时间
+                item.put("passTime", tareWeightingTime);
+            }
+
+            item.put("describe", "");
+            item.put("pictures", new JSONArray());
+            //执行推送
+            push(item);
+        }
+    }
+
+
     private void push(Map<String, Object> item) {
         List<Object> valus = new ArrayList<>();
         Map<String, Object> swzkParam = new HashMap<String, Object>();
-        swzkParam.put("SN", "weighbridge-YJBH-SSZGX_GQ-08");//待确认
+        swzkParam.put("SN", item.get("sn"));//待确认
         swzkParam.put("dataType", "200100028"); //地磅
         swzkParam.put("deviceType", "2001000075"); //智能地磅
-        swzkParam.put("workAreaCode", "YJBH-SSZGX_GQ-08"); //工区编码待确认
-        swzkParam.put("deviceName", "砂石料厂出口地磅"); //设备名称
+        swzkParam.put("workAreaCode", "YJBH-SSZGX_GQ-09"); //工区编码待确认
+        swzkParam.put("deviceName", "张家山砂石料厂地磅"); //设备名称
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> profile = new HashMap<>();
         map.put("reportTs", DateUtil.currentSeconds());
@@ -420,7 +514,7 @@ public class WeighbridgeController extends BaseController {
         profile.put("makeDate", "2020-05-22");
         profile.put("validYear", "2050-05-22");
         profile.put("status", "01");
-        profile.put("installPosition", "安乐河生活营地门口");
+        profile.put("installPosition", "张家山砂石厂");
         map.put("profile", profile);
         Map<String, Object> events = new HashMap<>();
         events.put("pass", item);

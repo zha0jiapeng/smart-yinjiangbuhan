@@ -29,10 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -118,8 +115,9 @@ public class TBMController {
 
 
     @PostMapping("/advancedDrillingRig")
-    public Map<String, Object> advancedDrillingRig(@RequestParam Map<String, Object> request) throws IOException {
+    public Map<String, Object> advancedDrillingRig(@RequestBody Map<String, Object> request) throws IOException {
         log.info("advancedDrillingRig:{}", JSON.toJSONString(request));
+        log.info("advancedDrillingRigMap:{}", request);
         Map<String, Object> responst = new HashMap<>();
         responst.put("error_num", 0);
         responst.put("error_str", "无");
@@ -197,7 +195,76 @@ public class TBMController {
         //风机
         saveVentilator(resultMap);
 
+        //智能电表
+        pushSwzkElectricityMeter(resultMap);
 
+
+    }
+
+
+    private void pushSwzkElectricityMeter(Map<String, Map<String, Object>> resultMap) {
+        // Creating the nested map structure
+        Map<String, Object> rootMap = new HashMap<>();
+        rootMap.put("deviceType", "2001000013");
+        rootMap.put("SN", "TBMEM000001");
+        rootMap.put("dataType", "200300009");
+        rootMap.put("bidCode", "YJBH-SSZGX_BD-SG-205");
+        rootMap.put("workAreaCode", "YJBH-SSZGX_GQ-08");
+        rootMap.put("deviceName", "TBM施工配电箱");
+        List<Map<String, Object>> valuesList = new ArrayList<>();
+        // Creating the values list with a single value map
+        Map<String, Object> valuesMap = new HashMap<>();
+        // Creating the profile map
+        Map<String, Object> profileMap = new HashMap<>();
+        profileMap.put("appType", "");
+        profileMap.put("modelId", "2405");
+        profileMap.put("poiCode", "w0104000");
+        profileMap.put("name", "施工配电箱");
+        profileMap.put("model", "设备型号");
+        profileMap.put("manufacture", "");
+        profileMap.put("owner", "");
+        profileMap.put("makeDate", "2020-05-23");
+        profileMap.put("validYear", "2050");
+        profileMap.put("state", "01");
+        profileMap.put("installPosition", "04");
+        profileMap.put("distributeLevel", "03");
+        profileMap.put("ratedVoltage", "690");
+        profileMap.put("ratedPower", "10000");
+        profileMap.put("installedArea", "0");
+        profileMap.put("tempAlmLim", "0");
+        profileMap.put("leakCurrAlmLim", "0");
+        profileMap.put("x", 0);
+        profileMap.put("y", 0);
+        profileMap.put("z", 0);
+
+        // Creating the properties map
+        Map<String, Object> propertiesMap = new HashMap<>();
+        propertiesMap.put("monitorTime", DateUtil.now());
+        propertiesMap.put("voltA", resultMap.get("L1相电压").get("val"));
+//        propertiesMap.put("voltB", map.get("voltageB"));
+        propertiesMap.put("voltB", resultMap.get("L2相电压").get("val"));
+        propertiesMap.put("voltC", resultMap.get("L3相电压").get("val"));
+//        propertiesMap.put("voltC", map.get("voltageC"));
+        propertiesMap.put("currA", resultMap.get("L1相电流").get("val"));
+        propertiesMap.put("currB", resultMap.get("L2相电流").get("val"));
+        propertiesMap.put("currC", resultMap.get("L3相电流").get("val"));
+        propertiesMap.put("activeEnergy", resultMap.get("本月用电量").get("val"));
+        propertiesMap.put("tempA", null);
+        propertiesMap.put("tempB", null);
+        propertiesMap.put("tempC", null);
+        propertiesMap.put("cabinetTemp", DustDetectionController.temperature);
+        propertiesMap.put("leakCurr", 0);
+        propertiesMap.put("cableTempAlm", 0);
+        propertiesMap.put("leakCurrAlm", 0);
+        valuesMap.put("reportTs", DateUtil.current());
+        valuesMap.put("profile", profileMap);
+        valuesMap.put("properties", propertiesMap);
+        valuesMap.put("events", new HashMap<>());
+        valuesMap.put("services", new HashMap<>());
+        valuesList.add(valuesMap);
+
+        rootMap.put("values", valuesList);
+        swzkHttpUtils.pushIOT(rootMap);
     }
 
     public static Object o2 = 0;

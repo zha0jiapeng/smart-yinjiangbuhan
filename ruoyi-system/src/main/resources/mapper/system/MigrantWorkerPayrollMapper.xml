@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.MigrantWorkerPayrollMapper">
+
+    <resultMap type="MigrantWorkerPayroll" id="MigrantWorkerPayrollResult">
+        <result property="id" column="id"/>
+        <result property="sysWorkPeopleId" column="sys_work_people_id"/>
+        <result property="phone" column="phone"/>
+        <result property="userName" column="user_name"/>
+        <result property="month" column="month"/>
+        <result property="grossSalary" column="gross_salary"/>
+        <result property="netSalary" column="net_salary"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="payrollNumber" column="payroll_number"/>
+        <result property="workType" column="work_type"/>
+        <result property="idCard" column="id_card"/>
+        <result property="company" column="company"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectMigrantWorkerPayrollVo">
+        select id,
+               sys_work_people_id,
+               phone,
+               user_name, month, gross_salary, net_salary, payment_date, payroll_number, work_type, id_card, company, del_flag, create_by, create_time, update_by, update_time, remark
+        from migrant_worker_payroll
+    </sql>
+
+    <select id="selectMigrantWorkerPayrollList" parameterType="MigrantWorkerPayroll"
+            resultMap="MigrantWorkerPayrollResult">
+        <include refid="selectMigrantWorkerPayrollVo"/>
+        <where>
+            <if test="sysWorkPeopleId != null ">and sys_work_people_id = #{sysWorkPeopleId}</if>
+            <if test="phone != null  and phone != ''">and phone = #{phone}</if>
+            <if test="userName != null  and userName != ''">and user_name like concat('%', #{userName}, '%')</if>
+            <if test="month != null  and month != ''">and month = #{month}</if>
+            <if test="grossSalary != null ">and gross_salary = #{grossSalary}</if>
+            <if test="netSalary != null ">and net_salary = #{netSalary}</if>
+            <if test="paymentDate != null  and paymentDate != ''">and payment_date = #{paymentDate}</if>
+            <if test="payrollNumber != null  and payrollNumber != ''">and payroll_number = #{payrollNumber}</if>
+            <if test="workType != null  and workType != ''">and work_type = #{workType}</if>
+            <if test="idCard != null  and idCard != ''">and id_card = #{idCard}</if>
+            <if test="company != null  and company != ''">and company = #{company}</if>
+        </where>
+    </select>
+
+    <select id="selectMigrantWorkerPayrollById" parameterType="Long" resultMap="MigrantWorkerPayrollResult">
+        <include refid="selectMigrantWorkerPayrollVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMigrantWorkerPayroll" parameterType="MigrantWorkerPayroll" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into migrant_worker_payroll
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysWorkPeopleId != null">sys_work_people_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="month != null">month,</if>
+            <if test="grossSalary != null">gross_salary,</if>
+            <if test="netSalary != null">net_salary,</if>
+            <if test="paymentDate != null">payment_date,</if>
+            <if test="payrollNumber != null">payroll_number,</if>
+            <if test="workType != null">work_type,</if>
+            <if test="idCard != null and idCard != ''">id_card,</if>
+            <if test="company != null">company,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysWorkPeopleId != null">#{sysWorkPeopleId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="month != null">#{month},</if>
+            <if test="grossSalary != null">#{grossSalary},</if>
+            <if test="netSalary != null">#{netSalary},</if>
+            <if test="paymentDate != null">#{paymentDate},</if>
+            <if test="payrollNumber != null">#{payrollNumber},</if>
+            <if test="workType != null">#{workType},</if>
+            <if test="idCard != null and idCard != ''">#{idCard},</if>
+            <if test="company != null">#{company},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMigrantWorkerPayroll" parameterType="MigrantWorkerPayroll">
+        update migrant_worker_payroll
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sysWorkPeopleId != null">sys_work_people_id = #{sysWorkPeopleId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="grossSalary != null">gross_salary = #{grossSalary},</if>
+            <if test="netSalary != null">net_salary = #{netSalary},</if>
+            <if test="paymentDate != null">payment_date = #{paymentDate},</if>
+            <if test="payrollNumber != null">payroll_number = #{payrollNumber},</if>
+            <if test="workType != null">work_type = #{workType},</if>
+            <if test="idCard != null and idCard != ''">id_card = #{idCard},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMigrantWorkerPayrollById" parameterType="Long">
+        delete
+        from migrant_worker_payroll
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMigrantWorkerPayrollByIds" parameterType="String">
+        delete from migrant_worker_payroll where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO migrant_worker_payroll (sys_work_people_id, phone, user_name, month, gross_salary, net_salary, payment_date,
+        payroll_number, work_type, id_card, company, del_flag, create_by, create_time, update_by, update_time, remark)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.sysWorkPeopleId},
+            #{item.phone},
+            #{item.userName},
+            #{item.month},
+            #{item.grossSalary},
+            #{item.netSalary},
+            #{item.paymentDate},
+            #{item.payrollNumber},
+            #{item.workType},
+            #{item.idCard},
+            #{item.company},
+            #{item.delFlag},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime},
+            #{item.remark})
+        </foreach>
+    </insert>
+</mapper>

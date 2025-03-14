@@ -81,7 +81,7 @@ public class SysWorkPeopleController extends BaseController {
         startPage();
         QueryWrapper<SysWorkPeople> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotEmpty(sysWorkPeople.getName())) {
-            queryWrapper.eq("name", sysWorkPeople.getName());
+            queryWrapper.like("name", sysWorkPeople.getName());
         }
         if (StringUtils.isNotEmpty(sysWorkPeople.getPhone())) {
             queryWrapper.eq("phone", sysWorkPeople.getPhone());

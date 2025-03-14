@@ -20,6 +20,7 @@ public class SwzkHttpUtils {
         HttpResponse execute = HttpRequest.post("http://58.48.101.155:8089/receive/pushIOT")
                 .body(JSON.toJSONString(param, SerializerFeature.WriteMapNullValue), "application/json").execute();
         log.info("push tcp swzk response:{}", execute.body());
+        log.info("push tcp swzk response value:{}", execute.body() + JSON.toJSONString(param, SerializerFeature.WriteMapNullValue));
         return execute.body();
     }
 

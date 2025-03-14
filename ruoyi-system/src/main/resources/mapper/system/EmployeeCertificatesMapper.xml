@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.EmployeeCertificatesMapper">
+    
+    <resultMap type="EmployeeCertificates" id="EmployeeCertificatesResult">
+        <result property="id"    column="id"    />
+        <result property="certificateName"    column="certificate_name"    />
+        <result property="certificateNumber"    column="certificate_number"    />
+        <result property="certificateType"    column="certificate_type"    />
+        <result property="jobCategory"    column="job_category"    />
+        <result property="certificateLevel"    column="certificate_level"    />
+        <result property="effectiveDate"    column="effective_date"    />
+        <result property="expiryDate"    column="expiry_date"    />
+        <result property="attachmentUrl"    column="attachment_url"    />
+        <result property="sysWorkPeopleId"    column="sys_work_people_id"    />
+        <result property="phone"    column="phone"    />
+        <result property="userName"    column="user_name"    />
+        <result property="workType"    column="work_type"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="company"    column="company"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectEmployeeCertificatesVo">
+        select id, certificate_name, certificate_number, certificate_type, job_category, certificate_level, effective_date, expiry_date, attachment_url, sys_work_people_id, phone, user_name, work_type, id_card, company, del_flag, create_by, create_time, update_by, update_time, remark from employee_certificates
+    </sql>
+
+    <select id="selectEmployeeCertificatesList" parameterType="EmployeeCertificates" resultMap="EmployeeCertificatesResult">
+        <include refid="selectEmployeeCertificatesVo"/>
+        <where>  
+            <if test="certificateName != null  and certificateName != ''"> and certificate_name like concat('%', #{certificateName}, '%')</if>
+            <if test="certificateNumber != null  and certificateNumber != ''"> and certificate_number = #{certificateNumber}</if>
+            <if test="certificateType != null  and certificateType != ''"> and certificate_type = #{certificateType}</if>
+            <if test="jobCategory != null  and jobCategory != ''"> and job_category = #{jobCategory}</if>
+            <if test="certificateLevel != null  and certificateLevel != ''"> and certificate_level = #{certificateLevel}</if>
+            <if test="effectiveDate != null  and effectiveDate != ''"> and effective_date = #{effectiveDate}</if>
+            <if test="expiryDate != null  and expiryDate != ''"> and expiry_date = #{expiryDate}</if>
+            <if test="attachmentUrl != null  and attachmentUrl != ''"> and attachment_url = #{attachmentUrl}</if>
+            <if test="sysWorkPeopleId != null "> and sys_work_people_id = #{sysWorkPeopleId}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="workType != null  and workType != ''"> and work_type = #{workType}</if>
+            <if test="idCard != null  and idCard != ''"> and id_card = #{idCard}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+        </where>
+    </select>
+    
+    <select id="selectEmployeeCertificatesById" parameterType="Long" resultMap="EmployeeCertificatesResult">
+        <include refid="selectEmployeeCertificatesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEmployeeCertificates" parameterType="EmployeeCertificates" useGeneratedKeys="true" keyProperty="id">
+        insert into employee_certificates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="certificateName != null">certificate_name,</if>
+            <if test="certificateNumber != null">certificate_number,</if>
+            <if test="certificateType != null">certificate_type,</if>
+            <if test="jobCategory != null">job_category,</if>
+            <if test="certificateLevel != null">certificate_level,</if>
+            <if test="effectiveDate != null">effective_date,</if>
+            <if test="expiryDate != null">expiry_date,</if>
+            <if test="attachmentUrl != null">attachment_url,</if>
+            <if test="sysWorkPeopleId != null">sys_work_people_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="workType != null">work_type,</if>
+            <if test="idCard != null and idCard != ''">id_card,</if>
+            <if test="company != null">company,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="certificateName != null">#{certificateName},</if>
+            <if test="certificateNumber != null">#{certificateNumber},</if>
+            <if test="certificateType != null">#{certificateType},</if>
+            <if test="jobCategory != null">#{jobCategory},</if>
+            <if test="certificateLevel != null">#{certificateLevel},</if>
+            <if test="effectiveDate != null">#{effectiveDate},</if>
+            <if test="expiryDate != null">#{expiryDate},</if>
+            <if test="attachmentUrl != null">#{attachmentUrl},</if>
+            <if test="sysWorkPeopleId != null">#{sysWorkPeopleId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="workType != null">#{workType},</if>
+            <if test="idCard != null and idCard != ''">#{idCard},</if>
+            <if test="company != null">#{company},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEmployeeCertificates" parameterType="EmployeeCertificates">
+        update employee_certificates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="certificateName != null">certificate_name = #{certificateName},</if>
+            <if test="certificateNumber != null">certificate_number = #{certificateNumber},</if>
+            <if test="certificateType != null">certificate_type = #{certificateType},</if>
+            <if test="jobCategory != null">job_category = #{jobCategory},</if>
+            <if test="certificateLevel != null">certificate_level = #{certificateLevel},</if>
+            <if test="effectiveDate != null">effective_date = #{effectiveDate},</if>
+            <if test="expiryDate != null">expiry_date = #{expiryDate},</if>
+            <if test="attachmentUrl != null">attachment_url = #{attachmentUrl},</if>
+            <if test="sysWorkPeopleId != null">sys_work_people_id = #{sysWorkPeopleId},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="workType != null">work_type = #{workType},</if>
+            <if test="idCard != null and idCard != ''">id_card = #{idCard},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEmployeeCertificatesById" parameterType="Long">
+        delete from employee_certificates where id = #{id}
+    </delete>
+
+    <delete id="deleteEmployeeCertificatesByIds" parameterType="String">
+        delete from employee_certificates where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

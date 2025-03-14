@@ -23,6 +23,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -327,6 +328,125 @@ public class RainController extends BaseController {
 
         //设备安装位置
         valuesJSONproperties.put("installPosition", "8号洞出渣场");
+
+        //腾讯坐标x，经度，eg：113.073201
+        valuesJSONproperties.put("x", "");
+
+        //腾讯坐标y,纬度， eg：22.792789
+        valuesJSONproperties.put("y", "");
+
+        //大地坐标Z
+        valuesJSONproperties.put("z", "");
+        valuesJSON.put("properties", valuesJSONproperties);
+
+        com.alibaba.fastjson.JSONObject valuesJSONservices = new com.alibaba.fastjson.JSONObject();
+        valuesJSON.put("services", valuesJSONservices);
+        Map<String, Object> monitor = new HashMap<>();
+        monitor.put("monitorData",valuesJSONEventsMonitorData);
+        valuesJSON.put("events", monitor);
+        values.add(valuesJSON);
+        object.put("values", values);
+        Map<String, Object> map = jsonObjectToMap(object);
+        swzkHttpUtils.pushIOT(map);
+    }
+
+
+    @GetMapping("/getRainnew")
+    @Scheduled(cron = "0 */3 * * * *")
+    public void getRainnew() throws IOException {
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("loginName", "ZTSBJ");
+        paramMap.put("pwd", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92");
+        paramMap.put("deviceList", "868892074992729");
+        String result2 = HttpRequest.post("http://120.55.55.127:21010/remote/dataTrans")
+                .form(paramMap)//表单内容
+                .timeout(20000)//超时，毫秒
+                .execute().body();
+
+
+        JSONObject jsonObject = JSON.parseObject(result2);
+        String airHeight = "";
+        // 检查 success 是否为 true
+        if (jsonObject.getBoolean("success")) {
+            // 获取 dataList 数组
+            JSONArray dataList = jsonObject.getJSONArray("dataList");
+
+            if (dataList != null && !dataList.isEmpty()) {
+                JSONObject firstData = dataList.getJSONObject(0);
+                JSONObject data = firstData.getJSONObject("data");
+                airHeight = data.getString("airHeight");
+            } else {
+                System.out.println("dataList 为空或不存在！");
+            }
+        } else {
+            System.out.println("请求失败，success 字段为 false");
+        }
+
+        long timestamp = System.currentTimeMillis();
+        com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
+        object.put("deviceType", "2001000032");////设备类型，见1.1章节
+        object.put("SN", "868892074992729");//设备SN号,必填
+        object.put("dataType", "80000");//固定值
+        object.put("bidCode", "YJBH-SSZGX_BD-SG-205");//标段编码
+        object.put("workAreaCode", "YJBH-SSZGX_GQ-08");//工区编码
+        object.put("deviceName", "雨量计");   //设备名称
+        com.alibaba.fastjson.JSONArray values = new com.alibaba.fastjson.JSONArray();
+        com.alibaba.fastjson.JSONObject valuesJSON = new com.alibaba.fastjson.JSONObject();
+        valuesJSON.put("reportTs", timestamp);//数据报告时间
+        com.alibaba.fastjson.JSONObject valuesJSONEventsMonitorData = new com.alibaba.fastjson.JSONObject();
+        valuesJSONEventsMonitorData.put("eventTs", timestamp);
+        valuesJSONEventsMonitorData.put("eventType", 1);
+        // 将时间戳转换为LocalDateTime
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        // 定义日期时间格式
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // 格式化日期时间
+        String formattedDateTime = dateTime.format(formatter);
+        valuesJSONEventsMonitorData.put("monitorTime", formattedDateTime);
+        valuesJSONEventsMonitorData.put("waterLevel", airHeight);
+        valuesJSONEventsMonitorData.put("curRain", 0.5);
+        valuesJSONEventsMonitorData.put("totalRain", 1);
+        valuesJSONEventsMonitorData.put("rain1", 0.5);
+        valuesJSONEventsMonitorData.put("rain5", 0.5);
+        valuesJSONEventsMonitorData.put("rain10", 0.5);
+        valuesJSONEventsMonitorData.put("rain60", 0.5);
+
+
+        //信号强度   没有
+        valuesJSONEventsMonitorData.put("signal", "100");
+        //电池电量   没有
+        valuesJSONEventsMonitorData.put("battery", "100");
+
+        com.alibaba.fastjson.JSONObject valuesJSONprofile = new com.alibaba.fastjson.JSONObject();
+        valuesJSONprofile.put("appType", "waterMonitor");//固定值，不用改
+        valuesJSONprofile.put("modelId", "200012");//固定值，不用改
+        valuesJSONprofile.put("poiCode", "w1315001");//固定值，不用改
+        valuesJSONprofile.put("deviceType", "2001000032");//固定值，不用改
+        valuesJSON.put("profile", valuesJSONprofile);
+
+
+        com.alibaba.fastjson.JSONObject valuesJSONproperties = new com.alibaba.fastjson.JSONObject();
+        valuesJSONproperties.put("name", "雨量计");// 设备名称
+        valuesJSONproperties.put("status", 1);
+        valuesJSONproperties.put("report", 1);
+        //设备型号
+        valuesJSONproperties.put("model", "RS-RADZJ-E-Y-4G");
+        //设备制造商
+        valuesJSONproperties.put("manufacture", "建大仁科");
+        //设备制造商
+        valuesJSONproperties.put("makeDate", "建大仁科");
+        //有效年限
+        valuesJSONproperties.put("validYear", "一年");
+
+        //设备使用状态
+        valuesJSONproperties.put("state", "1");
+        //产权单位
+        valuesJSONproperties.put("owner", "土建4标");
+        //安装日期
+        valuesJSONproperties.put("makeDate", "2024-06-28");
+
+        //设备安装位置
+        valuesJSONproperties.put("installPosition", "8号洞");
 
         //腾讯坐标x，经度，eg：113.073201
         valuesJSONproperties.put("x", "");

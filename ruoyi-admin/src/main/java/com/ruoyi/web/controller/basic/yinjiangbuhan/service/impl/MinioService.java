@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl;
 
+import com.ruoyi.common.core.domain.AjaxResult;
 import io.minio.*;
 import io.minio.errors.MinioException;
 import io.minio.messages.Item;
@@ -88,6 +89,34 @@ public class MinioService {
         }
         return "File uploaded successfully to " + filePath;
     }
+
+
+    // 上传文件到指定的文件夹
+    public String uploadFileBucketName(MultipartFile file, String folderPath) throws Exception {
+        String filename = file.getOriginalFilename();
+
+        // 确保文件夹路径以 "/" 结尾
+        if (!folderPath.endsWith("/")) {
+            folderPath = folderPath + "/";
+        }
+
+        // 拼接文件夹路径和文件名
+        String filePath = folderPath + filename;
+
+        try (InputStream inputStream = file.getInputStream()) {
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filePath)  // 文件路径 = 文件夹路径 + 文件名
+                            .stream(inputStream, file.getSize(), -1)
+                            .contentType(file.getContentType())
+                            .build());
+        } catch (MinioException e) {
+            throw new Exception("Error while uploading file to MinIO: " + e.getMessage(), e);
+        }
+        return "http://192.168.1.204:9000/pecialworker-file/" + filePath;
+    }
+
 
     // 下载文件
     public InputStream downloadFile(String filename) throws Exception {

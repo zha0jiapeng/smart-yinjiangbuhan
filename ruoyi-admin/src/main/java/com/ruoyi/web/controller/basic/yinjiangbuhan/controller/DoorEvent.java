@@ -7,6 +7,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysWorkPeopleInoutLog;
 import com.ruoyi.system.mapper.SysWorkPeopleInoutLogMapper;
@@ -126,8 +127,8 @@ public class DoorEvent {
 
         for (Map.Entry<String, List<Map<String, Object>>> stringListEntry : groupedByDevIndexCode.entrySet()) {
             String devIndexCode = stringListEntry.getKey();
-            if (snDevIndexCode != null && !snDevIndexCode.equals("")){
-                if (!snDevIndexCode.equals(devIndexCode)){
+            if (snDevIndexCode != null && !snDevIndexCode.equals("")) {
+                if (!snDevIndexCode.equals(devIndexCode)) {
                     continue;
                 }
             }
@@ -142,8 +143,11 @@ public class DoorEvent {
             // Add top-level fields
             mainMap.put("deviceType", "2001000010");
             String sn = door.get("devSerialNum").toString();
+            sn = sn.substring(sn.length() - 9);
             mainMap.put("SN", sn);
-            Device one = deviceService.getOne(new LambdaQueryWrapper<Device>().eq(Device::getSn, sn), false);
+            QueryWrapper<Device> deviceQueryWrapper = new QueryWrapper<>();
+            deviceQueryWrapper.like("sn", sn);
+            Device one = deviceService.getOne(deviceQueryWrapper);
             if (one != null) {
 //               Integer cameraType = one.getCameraType();
 //               if(cameraType == 1){
@@ -151,6 +155,9 @@ public class DoorEvent {
 //               }
                 if (StringUtils.isNotEmpty(one.getModifyBy())) {
                     mainMap.put("SN", one.getModifyBy());
+                } else {
+                    sn = one.getSn();
+                    mainMap.put("SN", sn);
                 }
             } else {
 

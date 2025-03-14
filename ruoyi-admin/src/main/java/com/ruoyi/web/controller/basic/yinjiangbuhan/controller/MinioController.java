@@ -1,12 +1,20 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.MinioUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.impl.MinioService;
+import com.ruoyi.web.core.config.MinioConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/minio")
@@ -17,6 +25,14 @@ public class MinioController {
     public MinioController(MinioService minioService) {
         this.minioService = minioService;
     }
+
+
+    @Resource
+    MinioUtils minioUtil;
+
+
+    @Resource
+    MinioConfig minioConfig;
 
     // 获取当前目录下的文件和文件夹
     @GetMapping("/list")
@@ -86,7 +102,7 @@ public class MinioController {
     @PostMapping("/rename")
     public AjaxResult renameObject(@RequestParam("oldName") String oldName, @RequestParam("newName") String newName) {
         try {
-            if(oldName.endsWith("/"))
+            if (oldName.endsWith("/"))
                 return AjaxResult.success(minioService.renameFolder(oldName, newName));
             else
                 return AjaxResult.success(minioService.renameObject(oldName, newName));
@@ -115,6 +131,17 @@ public class MinioController {
         } catch (Exception e) {
             e.printStackTrace();
             return AjaxResult.error("Error copying object: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/upload/folderPath")
+    public AjaxResult uploadFileBucket(@RequestParam("file") MultipartFile file,
+                                       @RequestParam("folderPath") String folderPath) {
+        try {
+            return AjaxResult.success(minioService.uploadFileBucketName(file, folderPath));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return AjaxResult.error("Error uploading file: " + e.getMessage());
         }
     }
 }

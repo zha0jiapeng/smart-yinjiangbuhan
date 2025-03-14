@@ -68,6 +68,17 @@ public class GasDetectionController {
     }
 
 
+    @RequestMapping("/test")
+    public AjaxResult test() {
+        Map<String, Object> item = new HashMap<>();
+        ModbusMaster master = new ModbusTcpMaster().getSlave("192.168.103.125",23);
+        Number temp = Modbus4jReadUtil.readHoldingRegister(master, 1, 16119, DataType.TWO_BYTE_INT_UNSIGNED, "温度");
+//        item.put("temp", new BigDecimal(temp.doubleValue()).multiply(new BigDecimal(0.1)).setScale(1, RoundingMode.HALF_UP));
+
+        return AjaxResult.success(temp);
+    }
+
+
     @Autowired
     RedisCache redisCache;
 
