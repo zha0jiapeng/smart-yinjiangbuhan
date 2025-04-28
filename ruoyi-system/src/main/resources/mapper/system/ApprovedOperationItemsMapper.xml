@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.ApprovedOperationItemsMapper">
+    
+    <resultMap type="ApprovedOperationItems" id="ApprovedOperationItemsResult">
+        <result property="id"    column="id"    />
+        <result property="project"    column="project"    />
+        <result property="projectCode"    column="project_code"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectApprovedOperationItemsVo">
+        select id, project, project_code, del_flag, create_by, create_time, update_by, update_time, remark from approved_operation_items
+    </sql>
+
+    <select id="selectApprovedOperationItemsList" parameterType="ApprovedOperationItems" resultMap="ApprovedOperationItemsResult">
+        <include refid="selectApprovedOperationItemsVo"/>
+        <where>  
+            <if test="project != null  and project != ''"> and project = #{project}</if>
+            <if test="projectCode != null  and projectCode != ''"> and project_code = #{projectCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectApprovedOperationItemsById" parameterType="Long" resultMap="ApprovedOperationItemsResult">
+        <include refid="selectApprovedOperationItemsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertApprovedOperationItems" parameterType="ApprovedOperationItems" useGeneratedKeys="true" keyProperty="id">
+        insert into approved_operation_items
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="project != null">project,</if>
+            <if test="projectCode != null">project_code,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="project != null">#{project},</if>
+            <if test="projectCode != null">#{projectCode},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateApprovedOperationItems" parameterType="ApprovedOperationItems">
+        update approved_operation_items
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="project != null">project = #{project},</if>
+            <if test="projectCode != null">project_code = #{projectCode},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteApprovedOperationItemsById" parameterType="Long">
+        delete from approved_operation_items where id = #{id}
+    </delete>
+
+    <delete id="deleteApprovedOperationItemsByIds" parameterType="String">
+        delete from approved_operation_items where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

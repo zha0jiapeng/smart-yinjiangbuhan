@@ -34,11 +34,6 @@ public class MigrantWorkerPayrollServiceImpl extends ServiceImpl<MigrantWorkerPa
     private MigrantWorkerPayrollMapper migrantWorkerPayrollMapper;
 
 
-    @Resource
-    private SysWorkPeopleService workPeopleService;
-
-    private static final String PREFIX = "ORD";
-
     /**
      * 查询薪资
      *
@@ -69,23 +64,8 @@ public class MigrantWorkerPayrollServiceImpl extends ServiceImpl<MigrantWorkerPa
      */
     @Override
     public AjaxResult insertMigrantWorkerPayroll(MigrantWorkerPayroll migrantWorkerPayroll) {
-        LambdaQueryWrapper<SysWorkPeople> sysWorkPeopleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        sysWorkPeopleLambdaQueryWrapper.eq(migrantWorkerPayroll.getSysWorkPeopleId() != null, SysWorkPeople::getId, migrantWorkerPayroll.getSysWorkPeopleId());
-        sysWorkPeopleLambdaQueryWrapper.eq(StringUtils.isNotEmpty(migrantWorkerPayroll.getPhone()), SysWorkPeople::getPhone, migrantWorkerPayroll.getPhone());
-        sysWorkPeopleLambdaQueryWrapper.eq(StringUtils.isNotEmpty(migrantWorkerPayroll.getUserName()), SysWorkPeople::getName, migrantWorkerPayroll.getUserName());
-        sysWorkPeopleLambdaQueryWrapper.eq(StringUtils.isNotEmpty(migrantWorkerPayroll.getIdCard()), SysWorkPeople::getIdCard, migrantWorkerPayroll.getIdCard());
-        SysWorkPeople sysWorkPeople = workPeopleService.getOne(sysWorkPeopleLambdaQueryWrapper);
-        if (sysWorkPeople == null) {
-            return AjaxResult.error("无人员信息");
-        }
-
-        migrantWorkerPayroll.setPhone(sysWorkPeople.getPhone());
-        migrantWorkerPayroll.setUserName(sysWorkPeople.getName());
-        migrantWorkerPayroll.setCompany(sysWorkPeople.getCompany());
-        migrantWorkerPayroll.setWorkType(sysWorkPeople.getWorkType());
-        migrantWorkerPayroll.setIdCard(sysWorkPeople.getIdCard());
-        migrantWorkerPayroll.setPayrollNumber(PREFIX + DateUtil.format(DateUtil.date(), DatePattern.PURE_DATETIME_PATTERN));
         migrantWorkerPayroll.setCreateTime(DateUtils.getNowDate());
+        migrantWorkerPayroll.setDelFlag("0");
         return AjaxResult.success(migrantWorkerPayrollMapper.insert(migrantWorkerPayroll));
     }
 
@@ -133,17 +113,17 @@ public class MigrantWorkerPayrollServiceImpl extends ServiceImpl<MigrantWorkerPa
     @Override
     public List<MigrantWorkerPayroll> selectMigrantWorkerPayrollPaymentDateList(MigrantWorkerPayroll migrantWorkerPayroll) {
         LambdaQueryWrapper<MigrantWorkerPayroll> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.isNotEmpty(migrantWorkerPayroll.getPaymentDate())) {
-            String queryDate = migrantWorkerPayroll.getPaymentDate();
+        if (StringUtils.isNotEmpty(migrantWorkerPayroll.getGiveOutDate())) {
+            String queryDate = migrantWorkerPayroll.getGiveOutDate();
             if (queryDate.matches("\\d{4}")) {
                 // 如果输入是年份（如 2025）
-                lambdaQueryWrapper.like(MigrantWorkerPayroll::getPaymentDate, queryDate + "-");
+                lambdaQueryWrapper.like(MigrantWorkerPayroll::getGiveOutDate, queryDate + "-");
             } else if (queryDate.matches("\\d{4}-\\d{2}")) {
                 // 如果输入是年份和月份（如 2025-03）
-                lambdaQueryWrapper.like(MigrantWorkerPayroll::getPaymentDate, queryDate);
+                lambdaQueryWrapper.like(MigrantWorkerPayroll::getGiveOutDate, queryDate);
             } else if (queryDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
                 // 如果输入是年份/月份/日（如 2025-03）
-                lambdaQueryWrapper.like(MigrantWorkerPayroll::getPaymentDate, queryDate);
+                lambdaQueryWrapper.like(MigrantWorkerPayroll::getGiveOutDate, queryDate);
             } else {
                 throw new IllegalArgumentException("Invalid queryDate format. Use yyyy or yyyy-MM.");
             }

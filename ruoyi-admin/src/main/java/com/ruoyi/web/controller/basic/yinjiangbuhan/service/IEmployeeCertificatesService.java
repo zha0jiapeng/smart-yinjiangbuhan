@@ -44,6 +44,7 @@ public interface IEmployeeCertificatesService  extends IService<EmployeeCertific
      * @return 结果
      */
     public int updateEmployeeCertificates(EmployeeCertificates employeeCertificates);
+    public void pushList();
 
     /**
      * 批量删除人员证照

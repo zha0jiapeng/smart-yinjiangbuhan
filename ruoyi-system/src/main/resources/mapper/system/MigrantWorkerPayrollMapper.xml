@@ -6,17 +6,15 @@
 
     <resultMap type="MigrantWorkerPayroll" id="MigrantWorkerPayrollResult">
         <result property="id" column="id"/>
-        <result property="sysWorkPeopleId" column="sys_work_people_id"/>
-        <result property="phone" column="phone"/>
         <result property="userName" column="user_name"/>
-        <result property="month" column="month"/>
-        <result property="grossSalary" column="gross_salary"/>
-        <result property="netSalary" column="net_salary"/>
-        <result property="paymentDate" column="payment_date"/>
-        <result property="payrollNumber" column="payroll_number"/>
-        <result property="workType" column="work_type"/>
         <result property="idCard" column="id_card"/>
-        <result property="company" column="company"/>
+        <result property="month" column="month"/>
+        <result property="workDay" column="work_day"/>
+        <result property="wages" column="wages"/>
+        <result property="overWorkDay" column="over_work_day"/>
+        <result property="giveOutStatus" column="give_out_status"/>
+        <result property="giveOutDate" column="give_out_date"/>
+        <result property="isTpgrant" column="is_tpgrant"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
@@ -27,9 +25,8 @@
 
     <sql id="selectMigrantWorkerPayrollVo">
         select id,
-               sys_work_people_id,
-               phone,
-               user_name, month, gross_salary, net_salary, payment_date, payroll_number, work_type, id_card, company, del_flag, create_by, create_time, update_by, update_time, remark
+               user_name,
+               id_card, month, work_day, wages, over_work_day, give_out_status, give_out_date, is_tpgrant, del_flag, create_by, create_time, update_by, update_time, remark
         from migrant_worker_payroll
     </sql>
 
@@ -37,17 +34,15 @@
             resultMap="MigrantWorkerPayrollResult">
         <include refid="selectMigrantWorkerPayrollVo"/>
         <where>
-            <if test="sysWorkPeopleId != null ">and sys_work_people_id = #{sysWorkPeopleId}</if>
-            <if test="phone != null  and phone != ''">and phone = #{phone}</if>
             <if test="userName != null  and userName != ''">and user_name like concat('%', #{userName}, '%')</if>
-            <if test="month != null  and month != ''">and month = #{month}</if>
-            <if test="grossSalary != null ">and gross_salary = #{grossSalary}</if>
-            <if test="netSalary != null ">and net_salary = #{netSalary}</if>
-            <if test="paymentDate != null  and paymentDate != ''">and payment_date = #{paymentDate}</if>
-            <if test="payrollNumber != null  and payrollNumber != ''">and payroll_number = #{payrollNumber}</if>
-            <if test="workType != null  and workType != ''">and work_type = #{workType}</if>
             <if test="idCard != null  and idCard != ''">and id_card = #{idCard}</if>
-            <if test="company != null  and company != ''">and company = #{company}</if>
+            <if test="month != null  and month != ''">and month = #{month}</if>
+            <if test="workDay != null  and workDay != ''">and work_day = #{workDay}</if>
+            <if test="wages != null  and wages != ''">and wages = #{wages}</if>
+            <if test="overWorkDay != null  and overWorkDay != ''">and over_work_day = #{overWorkDay}</if>
+            <if test="giveOutStatus != null  and giveOutStatus != ''">and give_out_status = #{giveOutStatus}</if>
+            <if test="giveOutDate != null  and giveOutDate != ''">and give_out_date = #{giveOutDate}</if>
+            <if test="isTpgrant != null  and isTpgrant != ''">and is_tpgrant = #{isTpgrant}</if>
         </where>
     </select>
 
@@ -60,17 +55,15 @@
             keyProperty="id">
         insert into migrant_worker_payroll
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="sysWorkPeopleId != null">sys_work_people_id,</if>
-            <if test="phone != null">phone,</if>
             <if test="userName != null">user_name,</if>
-            <if test="month != null">month,</if>
-            <if test="grossSalary != null">gross_salary,</if>
-            <if test="netSalary != null">net_salary,</if>
-            <if test="paymentDate != null">payment_date,</if>
-            <if test="payrollNumber != null">payroll_number,</if>
-            <if test="workType != null">work_type,</if>
             <if test="idCard != null and idCard != ''">id_card,</if>
-            <if test="company != null">company,</if>
+            <if test="month != null">month,</if>
+            <if test="workDay != null">work_day,</if>
+            <if test="wages != null">wages,</if>
+            <if test="overWorkDay != null">over_work_day,</if>
+            <if test="giveOutStatus != null">give_out_status,</if>
+            <if test="giveOutDate != null">give_out_date,</if>
+            <if test="isTpgrant != null">is_tpgrant,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -79,17 +72,15 @@
             <if test="remark != null">remark,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="sysWorkPeopleId != null">#{sysWorkPeopleId},</if>
-            <if test="phone != null">#{phone},</if>
             <if test="userName != null">#{userName},</if>
-            <if test="month != null">#{month},</if>
-            <if test="grossSalary != null">#{grossSalary},</if>
-            <if test="netSalary != null">#{netSalary},</if>
-            <if test="paymentDate != null">#{paymentDate},</if>
-            <if test="payrollNumber != null">#{payrollNumber},</if>
-            <if test="workType != null">#{workType},</if>
             <if test="idCard != null and idCard != ''">#{idCard},</if>
-            <if test="company != null">#{company},</if>
+            <if test="month != null">#{month},</if>
+            <if test="workDay != null">#{workDay},</if>
+            <if test="wages != null">#{wages},</if>
+            <if test="overWorkDay != null">#{overWorkDay},</if>
+            <if test="giveOutStatus != null">#{giveOutStatus},</if>
+            <if test="giveOutDate != null">#{giveOutDate},</if>
+            <if test="isTpgrant != null">#{isTpgrant},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -102,17 +93,15 @@
     <update id="updateMigrantWorkerPayroll" parameterType="MigrantWorkerPayroll">
         update migrant_worker_payroll
         <trim prefix="SET" suffixOverrides=",">
-            <if test="sysWorkPeopleId != null">sys_work_people_id = #{sysWorkPeopleId},</if>
-            <if test="phone != null">phone = #{phone},</if>
             <if test="userName != null">user_name = #{userName},</if>
-            <if test="month != null">month = #{month},</if>
-            <if test="grossSalary != null">gross_salary = #{grossSalary},</if>
-            <if test="netSalary != null">net_salary = #{netSalary},</if>
-            <if test="paymentDate != null">payment_date = #{paymentDate},</if>
-            <if test="payrollNumber != null">payroll_number = #{payrollNumber},</if>
-            <if test="workType != null">work_type = #{workType},</if>
             <if test="idCard != null and idCard != ''">id_card = #{idCard},</if>
-            <if test="company != null">company = #{company},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="workDay != null">work_day = #{workDay},</if>
+            <if test="wages != null">wages = #{wages},</if>
+            <if test="overWorkDay != null">over_work_day = #{overWorkDay},</if>
+            <if test="giveOutStatus != null">give_out_status = #{giveOutStatus},</if>
+            <if test="giveOutDate != null">give_out_date = #{giveOutDate},</if>
+            <if test="isTpgrant != null">is_tpgrant = #{isTpgrant},</if>
             <if test="delFlag != null">del_flag = #{delFlag},</if>
             <if test="createBy != null">create_by = #{createBy},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
@@ -138,21 +127,19 @@
 
 
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO migrant_worker_payroll (sys_work_people_id, phone, user_name, month, gross_salary, net_salary, payment_date,
-        payroll_number, work_type, id_card, company, del_flag, create_by, create_time, update_by, update_time, remark)
+        INSERT INTO migrant_worker_payroll (user_name, id_card, month, work_day, wages, over_work_day, give_out_status,
+        give_out_date, is_tpgrant, del_flag, create_by, create_time, update_by, update_time, remark)
         VALUES
         <foreach collection="list" item="item" separator=",">
-            (#{item.sysWorkPeopleId},
-            #{item.phone},
-            #{item.userName},
-            #{item.month},
-            #{item.grossSalary},
-            #{item.netSalary},
-            #{item.paymentDate},
-            #{item.payrollNumber},
-            #{item.workType},
+            (#{item.userName},
             #{item.idCard},
-            #{item.company},
+            #{item.month},
+            #{item.workDay},
+            #{item.wages},
+            #{item.overWorkDay},
+            #{item.giveOutStatus},
+            #{item.giveOutDate},
+            #{item.isTpgrant},
             #{item.delFlag},
             #{item.createBy},
             #{item.createTime},

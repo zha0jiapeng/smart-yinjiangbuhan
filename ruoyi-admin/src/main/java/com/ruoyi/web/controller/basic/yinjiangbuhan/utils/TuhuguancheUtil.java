@@ -22,6 +22,7 @@ public class TuhuguancheUtil {
     private static final String openapi_url = "http://open.tuhugc.com";
     private static final String app_key = "5508166a129cf8e1bfe2943b14e6d1dc";
     private static final String app_secret = "b05cec7978367a830ab693c0a504e103";
+    private static final String userId = "13521470746";
 
 
     private synchronized static String getToken() {
@@ -33,7 +34,7 @@ public class TuhuguancheUtil {
         }
         Map<String, String> paramMap = getCommonParam();
         // 私有参数_获取token
-        paramMap.put("userId", "13521470746");
+        paramMap.put("userId", userId);
         paramMap.put("expiresIn", "7200");
 
         String sign = "";
@@ -68,6 +69,16 @@ public class TuhuguancheUtil {
         return paramMap;
     }
 
+    public static void main(String[] args) {
+        String token = getToken();
+        Map<String, String> paramMap2 = getCommonParam();
+        paramMap2.put("userId", userId);
+        paramMap2.put("groupId", "1911605065166684162");
+        paramMap2.put("imeis", "868120319730211,868120319747116,868120319729809,868120319733330,868120319730351");
+        JSONObject jsonObject2 = getParam(token, paramMap2, "/v1/device/bind");
+        System.out.println(jsonObject2);
+    }
+
 
     public static Map getDeviceLocation() {
         RedisTemplate redisTemplate = RedisUtil.redis;
@@ -78,7 +89,7 @@ public class TuhuguancheUtil {
 
         String token = getToken();
         Map<String, String> paramMap2 = getCommonParam();
-        paramMap2.put("userId", "13521470746");
+        paramMap2.put("userId", userId);
         JSONObject jsonObject2 = getParam(token, paramMap2, "/v1/vehicle/list");
         log.info("======车辆定位：{}======", jsonObject2);
         JSONArray cars = jsonObject2.getJSONArray("result");
@@ -90,7 +101,7 @@ public class TuhuguancheUtil {
         Map<String, String> paramMap = getCommonParam();
         paramMap.put("mapType", "WGS84");
         paramMap.put("imeis", imeiString);
-        paramMap.put("userId", "13521470746");
+        paramMap.put("userId", userId);
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/location/get");
         JSONArray locations = jsonObject.getJSONArray("result");
         List<JSONObject> list = new ArrayList<>();
@@ -127,7 +138,7 @@ public class TuhuguancheUtil {
         Map<String, String> paramMap = getCommonParam();
         paramMap.put("startTime", DateUtil.format(DateUtil.beginOfDay(DateUtil.date()), "yyyy-MM-dd HH:mm:ss"));
         paramMap.put("endTime",DateUtil.now());
-        paramMap.put("userId", "13521470746");
+        paramMap.put("userId", userId);
         paramMap.put("imei", imei);
         JSONObject jsonObject = getParam(token, paramMap, "/v1/device/track/list");
         JSONArray jsonArray = jsonObject.getJSONArray("result");

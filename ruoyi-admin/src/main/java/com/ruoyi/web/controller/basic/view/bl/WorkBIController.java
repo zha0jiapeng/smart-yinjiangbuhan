@@ -1,11 +1,14 @@
 package com.ruoyi.web.controller.basic.view.bl;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.utils.DateToUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.PresenceDetails;
 import com.ruoyi.system.service.impl.PresenceDetailsServiceImpl;
 import com.ruoyi.system.utils.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -116,5 +120,26 @@ public class WorkBIController {
         weekBase.setValue(value);
         workBI.setWeekBase(weekBase);
         return Result.OK(workBI);
+    }
+
+
+    public static void main(String[] args) {
+        long timestampSeconds = Instant.now().getEpochSecond();
+        //常用接口
+        String sid = "48c44c67aa9b4ee18cc0959509a6c27e";
+        String sign = "comid=1041&compvtkey=f3ee1fd566764671838dbae83050450e&sid=" + sid + "&ts=" + timestampSeconds + "&key=f1cd9351930d4e589922edbcf3b09a7c";
+        //登录接口
+//        String sign = "alias=LJMG001&comid=1041&compvtkey=f3ee1fd566764671838dbae83050450e&password=21218cca77804d2ba1922c33e0151105&ts=" + timestampSeconds + "&key=f1cd9351930d4e589922edbcf3b09a7c";
+        String encrypted = DigestUtils.md5Hex(sign);
+
+        JSONObject json = new JSONObject();
+        json.put("compvtkey", "f3ee1fd566764671838dbae83050450e");
+        json.put("sign", encrypted);
+        json.put("comid", "1041");
+        json.put("sid", sid);
+        json.put("ts", timestampSeconds);
+
+        String jsonString = JSON.toJSONString(json);
+        System.out.println(jsonString);
     }
 }

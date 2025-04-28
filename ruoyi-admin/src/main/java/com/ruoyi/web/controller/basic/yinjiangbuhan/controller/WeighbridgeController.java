@@ -81,7 +81,7 @@ public class WeighbridgeController extends BaseController {
     private static OpenApiClient client = new OpenApiClient(baseUrl, accessId, secretKey);
 
 
-    private JSONArray getPcr(String orgId) {
+    private static JSONArray getPcr(String orgId) {
         String apiUrl = "mquantity/get-delivery-weight-order-list?offset=0&orgId=" + orgId + "&limit=100&version=0";
         try (RequestResult result = client.get(apiUrl)) {
             com.alibaba.fastjson.JSONArray fastjsonArray = (com.alibaba.fastjson.JSONArray) result.getJsonObject();
@@ -107,6 +107,7 @@ public class WeighbridgeController extends BaseController {
         //组织名称：张家山砂石料厂1号磅
         //orgid：1940124480671744
         //组织名称：张家山沙石料厂2号磅
+        // TODO: 2025/4/28  需要添加另一个，其次需要根据offset和limit这两个字段进行对接
         pushWeighbridgeData(getPcr("1940124249584128"), "weighbridge-YJBH-SSZGX_GQ-09-1");
         pushWeighbridgeData(getPcr("1940124480671744"), "weighbridge-YJBH-SSZGX_GQ-09-2");
         return success();
@@ -341,7 +342,7 @@ public class WeighbridgeController extends BaseController {
         return AjaxResult.success();
     }
 
-    //    @Scheduled(cron = "0 */7 * * * ?")
+//    @Scheduled(cron = "0 */7 * * * ?")
     public AjaxResult getWeighbridgeData() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         // 假设结束时间是当前时间
@@ -441,6 +442,11 @@ public class WeighbridgeController extends BaseController {
 
 
     public void pushWeighbridgeData(JSONArray jsonArray, String sn) {
+        if (sn == null){
+            System.out.println("地磅数据：" + jsonArray);
+            return;
+        }
+
         // 遍历 data 数组
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject dataItem = jsonArray.getJSONObject(i);
@@ -536,7 +542,11 @@ public class WeighbridgeController extends BaseController {
         return null; // 如果没有匹配到，返回 null
     }
 
-    public String sha256(String input) {
+    public static void main(String[] args) {
+//        pushWeighbridgeData(getPcr("1940124249584128"), "weighbridge-YJBH-SSZGX_GQ-09-1");
+    }
+
+    public static String sha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(input.getBytes());

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.SpecialOperationTypesMapper">
+    
+    <resultMap type="SpecialOperationTypes" id="SpecialOperationTypesResult">
+        <result property="id"    column="id"    />
+        <result property="jobType"    column="job_type"    />
+        <result property="assignmentCode"    column="assignment_code"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSpecialOperationTypesVo">
+        select id, job_type, assignment_code, del_flag, create_by, create_time, update_by, update_time, remark from special_operation_types
+    </sql>
+
+    <select id="selectSpecialOperationTypesList" parameterType="SpecialOperationTypes" resultMap="SpecialOperationTypesResult">
+        <include refid="selectSpecialOperationTypesVo"/>
+        <where>  
+            <if test="jobType != null  and jobType != ''"> and job_type = #{jobType}</if>
+            <if test="assignmentCode != null  and assignmentCode != ''"> and assignment_code = #{assignmentCode}</if>
+        </where>
+    </select>
+    
+    <select id="selectSpecialOperationTypesById" parameterType="Long" resultMap="SpecialOperationTypesResult">
+        <include refid="selectSpecialOperationTypesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSpecialOperationTypes" parameterType="SpecialOperationTypes" useGeneratedKeys="true" keyProperty="id">
+        insert into special_operation_types
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="jobType != null">job_type,</if>
+            <if test="assignmentCode != null">assignment_code,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="jobType != null">#{jobType},</if>
+            <if test="assignmentCode != null">#{assignmentCode},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSpecialOperationTypes" parameterType="SpecialOperationTypes">
+        update special_operation_types
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="jobType != null">job_type = #{jobType},</if>
+            <if test="assignmentCode != null">assignment_code = #{assignmentCode},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSpecialOperationTypesById" parameterType="Long">
+        delete from special_operation_types where id = #{id}
+    </delete>
+
+    <delete id="deleteSpecialOperationTypesByIds" parameterType="String">
+        delete from special_operation_types where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

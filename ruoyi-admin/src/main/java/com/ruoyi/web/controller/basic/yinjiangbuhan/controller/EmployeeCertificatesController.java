@@ -82,16 +82,12 @@ public class EmployeeCertificatesController extends BaseController
     /**
      * 新增人员证照
      */
-    @PreAuthorize("@ss.hasPermi('system:certificates:add')")
+//    @PreAuthorize("@ss.hasPermi('system:certificates:add')")
     @Log(title = "人员证照", businessType = BusinessType.INSERT)
     @ApiOperation("新增人员证照")
     @PostMapping
     public AjaxResult add(@RequestBody EmployeeCertificates employeeCertificates)
     {
-        Long sysWorkPeopleId = employeeCertificates.getSysWorkPeopleId();
-        if (sysWorkPeopleId == null || sysWorkPeopleId == 0L) {
-            return AjaxResult.error("无人员信息");
-        }
         return toAjax(employeeCertificatesService.insertEmployeeCertificates(employeeCertificates));
     }
 
@@ -129,5 +125,15 @@ public class EmployeeCertificatesController extends BaseController
     public AjaxResult calculateDueAndOverdueCount()
     {
         return success(employeeCertificatesService.calculateDueAndOverdueCount());
+    }
+
+    /**
+     * 计算即将过期和已过期的证书数量
+     */
+    @GetMapping(value = "/pushList")
+    public AjaxResult pushList()
+    {
+        employeeCertificatesService.pushList();
+        return success();
     }
 }

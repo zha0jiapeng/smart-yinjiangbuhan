@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.GantryCraneMapper">
+    
+    <resultMap type="GantryCrane" id="GantryCraneResult">
+        <result property="id"    column="id"    />
+        <result property="sn"    column="sn"    />
+        <result property="rawData"    column="raw_data"    />
+        <result property="distOfCrane"    column="dist_of_crane"    />
+        <result property="distOfCar"    column="dist_of_car"    />
+        <result property="loadWghtOfMain"    column="load_wght_of_main"    />
+        <result property="loadHghtOfMain"    column="load_hght_of_main"    />
+        <result property="loadWghtOfAux"    column="load_wght_of_aux"    />
+        <result property="loadHghtOfAux"    column="load_hght_of_aux"    />
+        <result property="windSpeed"    column="wind_speed"    />
+        <result property="rtLimAlmOfCrane"    column="rt_lim_alm_of_crane"    />
+        <result property="leLimAlmOfCrane"    column="le_lim_alm_of_crane"    />
+        <result property="ftLimAlmOfCar"    column="ft_lim_alm_of_car"    />
+        <result property="bkLimAlmOfCar"    column="bk_lim_alm_of_car"    />
+        <result property="overWghtAlm"    column="over_wght_alm"    />
+        <result property="overWindSpdAlm"    column="over_wind_spd_alm"    />
+        <result property="driverIdCard"    column="driver_id_card"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="installPosition"    column="install_position"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectGantryCraneVo">
+        select id, sn, raw_data, dist_of_crane, dist_of_car, load_wght_of_main, load_hght_of_main, load_wght_of_aux, load_hght_of_aux, wind_speed, rt_lim_alm_of_crane, le_lim_alm_of_crane, ft_lim_alm_of_car, bk_lim_alm_of_car, over_wght_alm, over_wind_spd_alm, driver_id_card, driver_name,install_position, del_flag, create_by, create_time, update_by, update_time, remark from gantry_crane
+    </sql>
+
+    <select id="selectGantryCraneList" parameterType="GantryCrane" resultMap="GantryCraneResult">
+        <include refid="selectGantryCraneVo"/>
+        <where>  
+            <if test="sn != null  and sn != ''"> and sn = #{sn}</if>
+            <if test="rawData != null  and rawData != ''"> and raw_data = #{rawData}</if>
+            <if test="distOfCrane != null  and distOfCrane != ''"> and dist_of_crane = #{distOfCrane}</if>
+            <if test="distOfCar != null  and distOfCar != ''"> and dist_of_car = #{distOfCar}</if>
+            <if test="loadWghtOfMain != null  and loadWghtOfMain != ''"> and load_wght_of_main = #{loadWghtOfMain}</if>
+            <if test="loadHghtOfMain != null  and loadHghtOfMain != ''"> and load_hght_of_main = #{loadHghtOfMain}</if>
+            <if test="loadWghtOfAux != null  and loadWghtOfAux != ''"> and load_wght_of_aux = #{loadWghtOfAux}</if>
+            <if test="loadHghtOfAux != null  and loadHghtOfAux != ''"> and load_hght_of_aux = #{loadHghtOfAux}</if>
+            <if test="windSpeed != null  and windSpeed != ''"> and wind_speed = #{windSpeed}</if>
+            <if test="rtLimAlmOfCrane != null  and rtLimAlmOfCrane != ''"> and rt_lim_alm_of_crane = #{rtLimAlmOfCrane}</if>
+            <if test="leLimAlmOfCrane != null  and leLimAlmOfCrane != ''"> and le_lim_alm_of_crane = #{leLimAlmOfCrane}</if>
+            <if test="ftLimAlmOfCar != null  and ftLimAlmOfCar != ''"> and ft_lim_alm_of_car = #{ftLimAlmOfCar}</if>
+            <if test="bkLimAlmOfCar != null  and bkLimAlmOfCar != ''"> and bk_lim_alm_of_car = #{bkLimAlmOfCar}</if>
+            <if test="overWghtAlm != null  and overWghtAlm != ''"> and over_wght_alm = #{overWghtAlm}</if>
+            <if test="overWindSpdAlm != null  and overWindSpdAlm != ''"> and over_wind_spd_alm = #{overWindSpdAlm}</if>
+            <if test="driverIdCard != null  and driverIdCard != ''"> and driver_id_card = #{driverIdCard}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="installPosition != null  and installPosition != ''"> and install_position like concat('%', #{installPosition}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectGantryCraneById" parameterType="Long" resultMap="GantryCraneResult">
+        <include refid="selectGantryCraneVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGantryCrane" parameterType="GantryCrane" useGeneratedKeys="true" keyProperty="id">
+        insert into gantry_crane
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sn != null">sn,</if>
+            <if test="rawData != null">raw_data,</if>
+            <if test="distOfCrane != null">dist_of_crane,</if>
+            <if test="distOfCar != null">dist_of_car,</if>
+            <if test="loadWghtOfMain != null">load_wght_of_main,</if>
+            <if test="loadHghtOfMain != null">load_hght_of_main,</if>
+            <if test="loadWghtOfAux != null">load_wght_of_aux,</if>
+            <if test="loadHghtOfAux != null">load_hght_of_aux,</if>
+            <if test="windSpeed != null">wind_speed,</if>
+            <if test="rtLimAlmOfCrane != null">rt_lim_alm_of_crane,</if>
+            <if test="leLimAlmOfCrane != null">le_lim_alm_of_crane,</if>
+            <if test="ftLimAlmOfCar != null">ft_lim_alm_of_car,</if>
+            <if test="bkLimAlmOfCar != null">bk_lim_alm_of_car,</if>
+            <if test="overWghtAlm != null">over_wght_alm,</if>
+            <if test="overWindSpdAlm != null">over_wind_spd_alm,</if>
+            <if test="driverIdCard != null">driver_id_card,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="installPosition != null">install_position,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sn != null">#{sn},</if>
+            <if test="rawData != null">#{rawData},</if>
+            <if test="distOfCrane != null">#{distOfCrane},</if>
+            <if test="distOfCar != null">#{distOfCar},</if>
+            <if test="loadWghtOfMain != null">#{loadWghtOfMain},</if>
+            <if test="loadHghtOfMain != null">#{loadHghtOfMain},</if>
+            <if test="loadWghtOfAux != null">#{loadWghtOfAux},</if>
+            <if test="loadHghtOfAux != null">#{loadHghtOfAux},</if>
+            <if test="windSpeed != null">#{windSpeed},</if>
+            <if test="rtLimAlmOfCrane != null">#{rtLimAlmOfCrane},</if>
+            <if test="leLimAlmOfCrane != null">#{leLimAlmOfCrane},</if>
+            <if test="ftLimAlmOfCar != null">#{ftLimAlmOfCar},</if>
+            <if test="bkLimAlmOfCar != null">#{bkLimAlmOfCar},</if>
+            <if test="overWghtAlm != null">#{overWghtAlm},</if>
+            <if test="overWindSpdAlm != null">#{overWindSpdAlm},</if>
+            <if test="driverIdCard != null">#{driverIdCard},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="installPosition != null">#{installPosition},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGantryCrane" parameterType="GantryCrane">
+        update gantry_crane
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sn != null">sn = #{sn},</if>
+            <if test="rawData != null">raw_data = #{rawData},</if>
+            <if test="distOfCrane != null">dist_of_crane = #{distOfCrane},</if>
+            <if test="distOfCar != null">dist_of_car = #{distOfCar},</if>
+            <if test="loadWghtOfMain != null">load_wght_of_main = #{loadWghtOfMain},</if>
+            <if test="loadHghtOfMain != null">load_hght_of_main = #{loadHghtOfMain},</if>
+            <if test="loadWghtOfAux != null">load_wght_of_aux = #{loadWghtOfAux},</if>
+            <if test="loadHghtOfAux != null">load_hght_of_aux = #{loadHghtOfAux},</if>
+            <if test="windSpeed != null">wind_speed = #{windSpeed},</if>
+            <if test="rtLimAlmOfCrane != null">rt_lim_alm_of_crane = #{rtLimAlmOfCrane},</if>
+            <if test="leLimAlmOfCrane != null">le_lim_alm_of_crane = #{leLimAlmOfCrane},</if>
+            <if test="ftLimAlmOfCar != null">ft_lim_alm_of_car = #{ftLimAlmOfCar},</if>
+            <if test="bkLimAlmOfCar != null">bk_lim_alm_of_car = #{bkLimAlmOfCar},</if>
+            <if test="overWghtAlm != null">over_wght_alm = #{overWghtAlm},</if>
+            <if test="overWindSpdAlm != null">over_wind_spd_alm = #{overWindSpdAlm},</if>
+            <if test="driverIdCard != null">driver_id_card = #{driverIdCard},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="installPosition != null">install_position = #{installPosition},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGantryCraneById" parameterType="Long">
+        delete from gantry_crane where id = #{id}
+    </delete>
+
+    <delete id="deleteGantryCraneByIds" parameterType="String">
+        delete from gantry_crane where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

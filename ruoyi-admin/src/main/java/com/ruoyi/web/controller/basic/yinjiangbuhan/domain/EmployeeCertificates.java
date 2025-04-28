@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * 人员证照对象 employee_certificates
  *
  * @author ruoyi
- * @date 2025-03-10
+ * @date 2025-03-18
  */
 @Data
 @NoArgsConstructor
@@ -23,33 +23,21 @@ import java.math.BigDecimal;
 @ApiModel(value = "EmployeeCertificates", description = "人员证照对象 employee_certificates")
 public class EmployeeCertificates implements Serializable {
 
-private static final long serialVersionUID=1L;
+    private static final long serialVersionUID=1L;
 
 
-    /** $column.columnComment */
+    /** 主键ID */
     @TableId(value = "id", type = IdType.AUTO)
-    @ApiModelProperty(value = "${column.columnComment}")
+    @ApiModelProperty(value = "主键ID")
     private Long id;
 
-    /** 证书名称 */
-    @ApiModelProperty(value = "证书名称")
-    private String certificateName;
+    /** 人员姓名 */
+    @ApiModelProperty(value = "人员姓名")
+    private String userName;
 
-    /** 证书编号 */
-    @ApiModelProperty(value = "证书编号")
-    private String certificateNumber;
-
-    /** 证书类型 */
-    @ApiModelProperty(value = "证书类型")
-    private String certificateType;
-
-    /** 作业类别 */
-    @ApiModelProperty(value = "作业类别")
-    private String jobCategory;
-
-    /** 证书等级 */
-    @ApiModelProperty(value = "证书等级")
-    private String certificateLevel;
+    /** 身份证号 */
+    @ApiModelProperty(value = "身份证号")
+    private String idCard;
 
     /** 生效日期 */
     @ApiModelProperty(value = "生效日期")
@@ -59,33 +47,55 @@ private static final long serialVersionUID=1L;
     @ApiModelProperty(value = "失效日期")
     private String expiryDate;
 
-    /** 附件地址 */
-    @ApiModelProperty(value = "附件地址")
-    private String attachmentUrl;
+    /** 证书名称 */
+    @ApiModelProperty(value = "证书名称")
+    private String certificateName;
 
-    /** 人员id */
-    @ApiModelProperty(value = "人员id")
-    private Long sysWorkPeopleId;
-
-    /** 手机号 */
-    @ApiModelProperty(value = "手机号")
-    private String phone;
-
-    /** 人员姓名 */
-    @ApiModelProperty(value = "人员姓名")
-    private String userName;
-
-    /** 工种 */
-    @ApiModelProperty(value = "工种")
+    /** 特种作业类型 */
+    @ApiModelProperty(value = "特种作业类型")
     private String workType;
 
-    /** 身份证号 */
-    @ApiModelProperty(value = "身份证号")
-    private String idCard;
+    @TableField(exist = false)
+    private String workTypeName;
 
-    /** 所属公司 */
-    @ApiModelProperty(value = "所属公司")
-    private String company;
+    /** 准操项目 */
+    @ApiModelProperty(value = "准操项目")
+    private String operationItem;
+
+    @TableField(exist = false)
+    private String operationItemName;
+
+    /** 证书编号 */
+    @ApiModelProperty(value = "证书编号")
+    private String certificateNumber;
+
+    /** 证书图片地址 */
+    @ApiModelProperty(value = "证书图片地址")
+    private String attachmentUrl;
+
+    /** 证书文件转base64 */
+    @ApiModelProperty(value = "证书文件转base64")
+    private String photoBase64;
+
+    /** 证书文件后缀: 若photoBase64填了，必填 */
+    @ApiModelProperty(value = "证书文件后缀: 若photoBase64填了，必填")
+    private String fileSuffix;
+
+    /** 发证书机构 */
+    @ApiModelProperty(value = "发证书机构")
+    private String issuingAuthority;
+
+    /** 发证时间，指定格式:yyyy-MM-dd */
+    @ApiModelProperty(value = "发证时间，指定格式:yyyy-MM-dd")
+    private String issuingDate;
+
+    /** 一次复审日期 */
+    @ApiModelProperty(value = "一次复审日期")
+    private String reCheckOneDate;
+
+    /** 二次复审日期 */
+    @ApiModelProperty(value = "二次复审日期")
+    private String reCheckTwoDate;
 
     /** 删除标志（0代表存在 1代表删除） */
     @TableLogic(value = "0", delval = "1")
