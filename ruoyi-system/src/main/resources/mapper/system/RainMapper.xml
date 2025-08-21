@@ -5,58 +5,84 @@
 <mapper namespace="com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.RainMapper">
 
     <resultMap type="Rain" id="RainResult">
-        <result property="id"    column="id"    />
-        <result property="deviceStatus"    column="device_status"    />
-        <result property="deviceName"    column="device_name"    />
-        <result property="deviceAddr"    column="device_addr"    />
-        <result property="lat"    column="lat"    />
-        <result property="lng"    column="lng"    />
-        <result property="relayStatus"    column="relay_status"    />
-        <result property="systemCode"    column="system_code"    />
-        <result property="timeStamp"    column="time_stamp"    />
-        <result property="dataItem"    column="data_item"    />
-        <result property="curRain"    column="cur_rain"    />
-        <result property="totalRain"    column="total_rain"    />
-        <result property="rain1"    column="rain1"    />
-        <result property="rain5"    column="rain5"    />
-        <result property="rain10"    column="rain10"    />
-        <result property="rain60"    column="rain60"    />
-        <result property="waterLevel"    column="water_level"    />
-        <result property="rawData"    column="raw_data"    />
-        <result property="delFlag"    column="del_flag"    />
-        <result property="createBy"    column="create_by"    />
-        <result property="createTime"    column="create_time"    />
-        <result property="updateBy"    column="update_by"    />
-        <result property="updateTime"    column="update_time"    />
-        <result property="remark"    column="remark"    />
-        <result property="oldRain1"    column="old_rain1"    />
+        <result property="id" column="id"/>
+        <result property="deviceStatus" column="device_status"/>
+        <result property="deviceName" column="device_name"/>
+        <result property="deviceAddr" column="device_addr"/>
+        <result property="lat" column="lat"/>
+        <result property="lng" column="lng"/>
+        <result property="relayStatus" column="relay_status"/>
+        <result property="systemCode" column="system_code"/>
+        <result property="timeStamp" column="time_stamp"/>
+        <result property="dataItem" column="data_item"/>
+        <result property="curRain" column="cur_rain"/>
+        <result property="totalRain" column="total_rain"/>
+        <result property="rain1" column="rain1"/>
+        <result property="rain5" column="rain5"/>
+        <result property="rain10" column="rain10"/>
+        <result property="rain60" column="rain60"/>
+        <result property="waterLevel" column="water_level"/>
+        <result property="rawData" column="raw_data"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="oldRain1" column="old_rain1"/>
     </resultMap>
 
     <sql id="selectRainVo">
-        select id, device_status, device_name, device_addr, lat, lng, relay_status, system_code, time_stamp, data_item, cur_rain, total_rain, rain1, rain5, rain10, rain60, water_level, raw_data, del_flag, create_by, create_time, update_by, update_time, remark, old_rain1 from rain
+        select id,
+               device_status,
+               device_name,
+               device_addr,
+               lat,
+               lng,
+               relay_status,
+               system_code,
+               time_stamp,
+               data_item,
+               cur_rain,
+               total_rain,
+               rain1,
+               rain5,
+               rain10,
+               rain60,
+               water_level,
+               raw_data,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark,
+               old_rain1
+        from rain
     </sql>
 
     <select id="selectRainList" parameterType="Rain" resultMap="RainResult">
         <include refid="selectRainVo"/>
         <where>
-            <if test="deviceStatus != null  and deviceStatus != ''"> and device_status = #{deviceStatus}</if>
-            <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
-            <if test="deviceAddr != null  and deviceAddr != ''"> and device_addr = #{deviceAddr}</if>
-            <if test="lat != null  and lat != ''"> and lat = #{lat}</if>
-            <if test="lng != null  and lng != ''"> and lng = #{lng}</if>
-            <if test="relayStatus != null  and relayStatus != ''"> and relay_status = #{relayStatus}</if>
-            <if test="systemCode != null  and systemCode != ''"> and system_code = #{systemCode}</if>
-            <if test="timeStamp != null  and timeStamp != ''"> and time_stamp = #{timeStamp}</if>
-            <if test="dataItem != null  and dataItem != ''"> and data_item = #{dataItem}</if>
-            <if test="curRain != null  and curRain != ''"> and cur_rain = #{curRain}</if>
-            <if test="totalRain != null  and totalRain != ''"> and total_rain = #{totalRain}</if>
-            <if test="rain1 != null  and rain1 != ''"> and rain1 = #{rain1}</if>
-            <if test="rain5 != null  and rain5 != ''"> and rain5 = #{rain5}</if>
-            <if test="rain10 != null  and rain10 != ''"> and rain10 = #{rain10}</if>
-            <if test="rain60 != null  and rain60 != ''"> and rain60 = #{rain60}</if>
-            <if test="waterLevel != null  and waterLevel != ''"> and water_level = #{waterLevel}</if>
-            <if test="rawData != null  and rawData != ''"> and raw_data = #{rawData}</if>
-            <if test="oldRain1 != null  and oldRain1 != ''"> and old_rain1 = #{oldRain1}</if>
+            <if test="deviceStatus != null  and deviceStatus != ''">and device_status = #{deviceStatus}</if>
+            <if test="deviceName != null  and deviceName != ''">and device_name like concat('%', #{deviceName}, '%')
+            </if>
+            <if test="deviceAddr != null  and deviceAddr != ''">and device_addr = #{deviceAddr}</if>
+            <if test="lat != null  and lat != ''">and lat = #{lat}</if>
+            <if test="lng != null  and lng != ''">and lng = #{lng}</if>
+            <if test="relayStatus != null  and relayStatus != ''">and relay_status = #{relayStatus}</if>
+            <if test="systemCode != null  and systemCode != ''">and system_code = #{systemCode}</if>
+            <if test="timeStamp != null  and timeStamp != ''">and time_stamp = #{timeStamp}</if>
+            <if test="dataItem != null  and dataItem != ''">and data_item = #{dataItem}</if>
+            <if test="curRain != null  and curRain != ''">and cur_rain = #{curRain}</if>
+            <if test="totalRain != null  and totalRain != ''">and total_rain = #{totalRain}</if>
+            <if test="rain1 != null  and rain1 != ''">and rain1 = #{rain1}</if>
+            <if test="rain5 != null  and rain5 != ''">and rain5 = #{rain5}</if>
+            <if test="rain10 != null  and rain10 != ''">and rain10 = #{rain10}</if>
+            <if test="rain60 != null  and rain60 != ''">and rain60 = #{rain60}</if>
+            <if test="waterLevel != null  and waterLevel != ''">and water_level = #{waterLevel}</if>
+            <if test="rawData != null  and rawData != ''">and raw_data = #{rawData}</if>
+            <if test="oldRain1 != null  and oldRain1 != ''">and old_rain1 = #{oldRain1}</if>
         </where>
     </select>
 
@@ -155,7 +181,9 @@
     </update>
 
     <delete id="deleteRainById" parameterType="Long">
-        delete from rain where id = #{id}
+        delete
+        from rain
+        where id = #{id}
     </delete>
 
     <delete id="deleteRainByIds" parameterType="String">
@@ -164,4 +192,15 @@
             #{id}
         </foreach>
     </delete>
+
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO rain (cur_rain, total_rain, rain1, rain5, rain10, rain60, create_time)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.curRain}, #{item.totalRain}, #{item.rain1},
+            #{item.rain5}, #{item.rain10},
+            #{item.rain60}, #{item.createTime})
+        </foreach>
+    </insert>
 </mapper>

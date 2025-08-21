@@ -451,11 +451,15 @@ public class WeighbridgeController extends BaseController {
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject dataItem = jsonArray.getJSONObject(i);
             Map<String, Object> item = new HashMap<>();
+            Weighbridge weighbridge = new Weighbridge();
+            //sn标识码
+//            weighbridge.setSn(sn);
             item.put("sn", sn);
-            item.put("eventType", 0);
+            //那我们收料接口统一就是1对应的eventtype， 发料接口对应0
+            item.put("eventType", 0);//现在是出场
             //车牌号
             item.put("plateNumber", dataItem.getString("plateNumber"));
-
+            weighbridge.setCarNumber(dataItem.getString("plateNumber"));
             //物料名称
             String materialName = "";
             JSONArray materials = (JSONArray) dataItem.get("material");
@@ -464,6 +468,7 @@ public class WeighbridgeController extends BaseController {
             }
 
             item.put("materialName", materialName);
+            weighbridge.setMaterialName(materialName);
             MaterialType materialType = getMaterialTypeByName(materialName);
             String typeName = "";
             if (materialType != null) {
@@ -473,20 +478,22 @@ public class WeighbridgeController extends BaseController {
             }
             //物料类型
             item.put("materialType", typeName);
+
             //毛重
             item.put("totalWeight", dataItem.getDoubleValue("roughQuantity"));
+            weighbridge.setGross(item.get("totalWeight").toString());
             //皮重
             item.put("carWeight", dataItem.getDoubleValue("tareQuantity"));
+            weighbridge.setTare(item.get("carWeight").toString());
 
             //出入场状态
             String tareWeightingTime = dataItem.getString("exitTime");
-
             if (tareWeightingTime == null) {
-                item.put("passDirection", dataItem.getString("02"));
+                item.put("passDirection", "02");
                 //通过时间
                 item.put("passTime", dataItem.getString("enterTime"));
             } else {
-                item.put("passDirection", dataItem.getString("01"));
+                item.put("passDirection", "01");
                 //通过时间
                 item.put("passTime", tareWeightingTime);
             }

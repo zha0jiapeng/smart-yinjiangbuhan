@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.ruoyi.assessment.core.utils.DateUtils;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BasicDataValueConfigEnum;
 import com.ruoyi.common.enums.HiddenDangerStatus;
 import com.ruoyi.common.enums.ProblemGradeEnum;
@@ -13,6 +14,7 @@ import com.ruoyi.system.domain.Item;
 import com.ruoyi.system.domain.PersonnelTypeCount;
 import com.ruoyi.system.domain.ScheduleTbmSegment;
 import com.ruoyi.system.domain.SysUserNotice;
+import com.ruoyi.system.domain.basic.IotTsp;
 import com.ruoyi.system.domain.bim.*;
 import com.ruoyi.system.domain.bim.QualityBimDomain.Head;
 import com.ruoyi.system.domain.bim.QualityBimDomain.QualityCount;
@@ -38,11 +40,15 @@ import com.ruoyi.system.service.impl.PersonnelTypeCountServiceImpl;
 import com.ruoyi.system.service.impl.ReceiptOrderService;
 import com.ruoyi.system.service.impl.ShipmentOrderService;
 import com.ruoyi.system.utils.Result;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.controller.DustDetectionController;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.controller.TBMController;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,10 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -94,6 +97,9 @@ public class BimHomeController {
 
     @Autowired
     private SysQuestionDescribeService sysQuestionDescribeService;
+
+    @Resource
+    private IotTspService iotTspService;
 
     /**
      * 首页接口
@@ -596,6 +602,43 @@ public class BimHomeController {
         equipmentBimDomain.setWmsOrderCount(wmsOrderCount);
 
         return Result.OK(equipmentBimDomain);
+    }
+
+
+    /**
+     * top栏信息
+     */
+    @GetMapping("/top")
+    public Map<String, Object> top() {
+
+        QueryWrapper<IotTsp> iotTspQueryWrapper = new QueryWrapper<>();
+        iotTspQueryWrapper.orderByDesc("id");
+        iotTspQueryWrapper.last("limit 1");
+        IotTsp iotTsp = iotTspService.getOne(iotTspQueryWrapper);
+
+        // 创建 topinfo 的内容
+        Map<String, Object> topinfo = new HashMap<>();
+        //天气
+        topinfo.put("tianqi", iotTsp.getWeather());
+        //气压
+        topinfo.put("qiya", iotTsp.getPressure()+" kPa");
+        //温度
+        topinfo.put("wendu", iotTsp.getTemperature() + " ℃");
+        //湿度
+        topinfo.put("shidu", iotTsp.getHumidity() + " %rh");
+        //风向
+        topinfo.put("fengxiang", iotTsp.getWindDirection());
+        //风速
+        topinfo.put("fengsu", iotTsp.getWindSpeed() + " m/s");
+
+        // 创建 result 的内容
+        Map<String, Object> result = new HashMap<>();
+        result.put("topinfo", topinfo);
+
+        // 创建最终 JSON
+        Map<String, Object> finalJson = new HashMap<>();
+        finalJson.put("result", result);
+        return finalJson;
     }
 
 }

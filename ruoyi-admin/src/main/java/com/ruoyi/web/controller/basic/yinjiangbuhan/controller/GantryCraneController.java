@@ -166,38 +166,16 @@ public class GantryCraneController extends BaseController {
     }
 
     @GetMapping(value = "/realdata")
-    @Scheduled(cron = "0 0/5 * * * ?")
-    public void getRealdata() {
-        realdata("LJMG001", 6499313, "门燕妮", "420605197607102025");
-        realdata("LJMG002", 6499314, "孟祥新", "420626199109134519");
+//    @Scheduled(cron = "0 0/5 * * * ?")
+    public void getRealdata(String json, String alias, String name, String carId) {
+        System.out.println("龙门吊数据：" + json);
+        realdata(json, alias, name, carId);
     }
 
-    public void realdata(String alias, Integer boxId, String name, String carId) {
-        //登录
-        String loginUrl = "http://api.v-box.net/box-data/api/we-data/login?alias=" + alias + "&password=21218cca77804d2ba1922c33e0151105";
-        String loginHeader = common("", alias);
-        HttpResponse response = HttpRequest.get(loginUrl)
-                .header("common", loginHeader)
-                .execute();
-        String loginResponse = response.body();
-        JSONObject json = JSONObject.parseObject(loginResponse);
-        String sid = JSONObject.parseObject(json.getString("result")).getString("sid");
-        //常用接口
-        String realdataUrl = "http://api.v-box.net/box-data/api/we-data/realdata";
-        String realdataHeader = common(sid, alias);
-        Map<String, Object> formMap = new HashMap<>();
-        formMap.put("groupId", 1);
-        formMap.put("boxId", boxId); //http://api.v-box.net/box-data/api/we-data/boxlist获取
-        formMap.put("devType", 1);
-        formMap.put("pageSize", 20);
-        formMap.put("pageIndex", 1);
-        HttpResponse realdataResponse = HttpRequest.post(realdataUrl)
-                .header("common", realdataHeader)
-                .header("Content-Type", "multipart/form-data")
-                .form(formMap)
-                .execute();
+
+    public void realdata(String json, String alias, String name, String carId) {
         //数据推送
-        JSONObject realdataJsonObject = JSON.parseObject(realdataResponse.body());
+        JSONObject realdataJsonObject = JSON.parseObject(json);
         JSONObject result = realdataJsonObject.getJSONObject("result");
         JSONArray list = result.getJSONArray("list"); // 获取 list 数组
         GantryCrane gantryCrane = new GantryCrane();
@@ -294,6 +272,41 @@ public class GantryCraneController extends BaseController {
         valus.add(map);
         swzkParam.put("values", valus);
         swzkHttpUtils.pushIOT(swzkParam);
+    }
+
+
+    public static void main(String[] args) {
+        tets("LJMG001", 6499313, "门燕妮", "420605197607102025");
+        tets("LJMG002", 6499314, "孟祥新", "420626199109134519");
+    }
+
+    public static void tets(String alias, Integer boxId, String name, String carId) {
+        //登录
+        String loginUrl = "http://api.v-box.net/box-data/api/we-data/login?alias=" + alias + "&password=21218cca77804d2ba1922c33e0151105";
+        String loginHeader = common("", alias);
+        HttpResponse response = HttpRequest.get(loginUrl)
+                .header("common", loginHeader)
+                .execute();
+        String loginResponse = response.body();
+        JSONObject json = JSONObject.parseObject(loginResponse);
+        String sid = JSONObject.parseObject(json.getString("result")).getString("sid");
+        //常用接口
+        String realdataUrl = "http://api.v-box.net/box-data/api/we-data/realdata";
+        String realdataHeader = common(sid, alias);
+        Map<String, Object> formMap = new HashMap<>();
+        formMap.put("groupId", 1);
+        formMap.put("boxId", boxId); //http://api.v-box.net/box-data/api/we-data/boxlist获取
+        formMap.put("devType", 1);
+        formMap.put("pageSize", 20);
+        formMap.put("pageIndex", 1);
+        HttpResponse realdataResponse = HttpRequest.post(realdataUrl)
+                .header("common", realdataHeader)
+                .header("Content-Type", "multipart/form-data")
+                .form(formMap)
+                .execute();
+        //数据推送
+        JSONObject realdataJsonObject = JSON.parseObject(realdataResponse.body());
+        System.out.println(realdataJsonObject);
     }
 
 

@@ -9,6 +9,7 @@ import com.ruoyi.web.controller.basic.yinjiangbuhan.mapper.RainMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IRainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,6 +60,17 @@ public class RainServiceImpl extends ServiceImpl<RainMapper, Rain> implements IR
     {
         rain.setCreateTime(DateUtils.getNowDate());
         return rainMapper.insertRain(rain);
+    }
+
+    @Override
+    @Transactional
+    public boolean saveRainList(List<Rain> rainList) {
+        int rainListSize = rainList.size();
+        int resultSize = rainMapper.insertBatch(rainList);
+        if (rainListSize == resultSize) {
+            return true;
+        }
+        return false;
     }
 
     /**

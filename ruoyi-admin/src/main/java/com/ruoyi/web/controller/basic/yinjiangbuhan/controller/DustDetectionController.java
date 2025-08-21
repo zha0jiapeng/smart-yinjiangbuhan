@@ -120,8 +120,11 @@ public class DustDetectionController {
 
     public static Float temperature = 0f;
     public static Float humidity = 0f;
+    public static Float windSpeed = 0f;
+    public static String windDirectionStatic = "";
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @GetMapping("dustdetection/pushSwzk")
+//    @Scheduled(cron = "0 */5 * * * *")
     private void pushSwzk() {
         DustDetectionData dustdetection = redisCache.getCacheObject("dustdetection");
         if (dustdetection != null) {
@@ -160,8 +163,10 @@ public class DustDetectionController {
             propertiesObj.put("pm2_5", dustdetection.getPm25());
             propertiesObj.put("pm10", dustdetection.getPm10());
             propertiesObj.put("windSpeed", dustdetection.getWs());
+            windSpeed = dustdetection.getWs();
             String windDirection = getWindDirection(dustdetection.getWd());
             propertiesObj.put("windDirection", StrUtil.sub(windDirection, 0, windDirection.length() - 1));
+            windDirectionStatic = propertiesObj.get("windDirection").toString();
             propertiesObj.put("noiseDb", dustdetection.getNoise());
             propertiesObj.put("temperature", dustdetection.getTem());
             temperature = dustdetection.getTem();

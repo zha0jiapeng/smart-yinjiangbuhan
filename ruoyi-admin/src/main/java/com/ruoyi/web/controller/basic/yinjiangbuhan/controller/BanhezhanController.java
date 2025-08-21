@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @RestController
 @Slf4j
 @RequestMapping("/banhezhan")
@@ -29,6 +30,18 @@ public class BanhezhanController {
     @PostMapping("/pullData")
     public Map<String,Object> banhezhan(@RequestBody Map<String,Object> request) {
         redisTemplate.opsForValue().set("banhezhan_request",JSON.toJSONString(request));
+        log.info("swzk banhezhan push request:{}",JSON.toJSONString(request));
+        String returnMsg = swzkHttpUtils.pushIOT(request);
+        Map<String,Object> map = new HashMap<>();
+        map.put("code",200);
+        map.put("msg","Data sent successfully !");
+        return map;
+    }
+
+
+    @PostMapping("/banhezhanshoudong")
+    public Map<String,Object> banhezhanshoudong(@RequestBody Map<String,Object> request) {
+//        redisTemplate.opsForValue().set("banhezhan_request",JSON.toJSONString(request));
         log.info("swzk banhezhan push request:{}",JSON.toJSONString(request));
         String returnMsg = swzkHttpUtils.pushIOT(request);
         Map<String,Object> map = new HashMap<>();

@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Rain;
+import io.lettuce.core.dynamic.annotation.Param;
+
 import java.util.List;
 
 /**
@@ -35,6 +37,8 @@ public interface RainMapper extends BaseMapper<Rain>
      * @return 结果
      */
     public int insertRain(Rain rain);
+
+    int insertBatch(@Param("list") List<Rain> rainList);
 
     /**
      * 修改雨量计

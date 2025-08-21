@@ -38,6 +38,8 @@ public interface IRainService  extends IService<Rain>
      */
     public int insertRain(Rain rain);
 
+    public boolean saveRainList(List<Rain> rainList);
+
     /**
      * 修改雨量计
      * 
