@@ -165,11 +165,18 @@ public class GantryCraneController extends BaseController {
         FIELD_MAPPERS.put("风速状态", GantryCrane::setOverWindSpdAlm);
     }
 
-    @GetMapping(value = "/realdata")
-//    @Scheduled(cron = "0 0/5 * * * ?")
-    public void getRealdata(String json, String alias, String name, String carId) {
-        System.out.println("龙门吊数据：" + json);
+    @PostMapping(value = "/realdata")
+    public AjaxResult getRealdata(@RequestBody Map<String, Object> requestData) {
+        System.out.println("龙门吊数据：" + requestData);
+
+        // 从Map中提取参数
+        String json = (String) requestData.get("json");
+        String alias = (String) requestData.get("alias");
+        String name = (String) requestData.get("name");
+        String carId = (String) requestData.get("carId");
+
         realdata(json, alias, name, carId);
+        return AjaxResult.success("数据接收成功");
     }
 
 
