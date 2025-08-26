@@ -128,6 +128,7 @@ public class TBMController {
     private static final String url = "https://trans.tbmcloud.com.cn/trans/transGetRealData/ex/getMappingData";
 
     @Scheduled(cron = "0 */1 * * * ?")
+    @GetMapping("/execute")
     public void execute() {
         Map<String, Object> request = new HashMap<>();
         request.put("secretKey", "z7kZ9eEsFXfIEDsCXfNCrI2coYPYkIawOWIScmi0gC1ywtVm0uKCmQgye+xuRnnWhhAjAs3AUe6F547z1FgkbQ==");
