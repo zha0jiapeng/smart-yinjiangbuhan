@@ -27,4 +27,11 @@ public class SyncTask {
     }
 
 
+
+    /**
+     * 人员定位
+     */
+    public void getPushSwzkIn() {
+        String result1 = HttpUtil.get("http://127.0.0.1:8097/peopleLocation/pushSwzkIn");
+    }
 }

@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -26,6 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -68,7 +77,7 @@ public class DoorEvent {
     IDeviceService deviceService;
 
     @Scheduled(cron = "0 */1 * * * ?")
-    public void execute() {
+    public void execute() throws NoSuchAlgorithmException, KeyManagementException {
         Object doorLastTime = redisTemplate.opsForValue().get("door_last_time");
         if (doorLastTime == null) {
             doorLastTime = DateUtil.offsetMinute(new Date(), -10);
@@ -96,7 +105,7 @@ public class DoorEvent {
     }
 
     @RequestMapping("/door/pushHik")
-    public void execute2(String startTime, String endTime, String sn) {
+    public void execute2(String startTime, String endTime, String sn) throws NoSuchAlgorithmException, KeyManagementException {
         DoorFunctionApi doorFunctionApi = new DoorFunctionApi();
         DateTime date = DateUtil.date();
         String now = DateUtil.formatDateTime(date);
@@ -119,7 +128,7 @@ public class DoorEvent {
         pushSwzk(lists, true, sn);
     }
 
-    private void pushSwzk(List<Map<String, Object>> list, boolean flag, String snDevIndexCode) {
+    private void pushSwzk(List<Map<String, Object>> list, boolean flag, String snDevIndexCode) throws NoSuchAlgorithmException, KeyManagementException {
 
         // 根据devIndexCode字段分组
         Map<String, List<Map<String, Object>>> groupedByDevIndexCode = list.stream()
@@ -195,6 +204,7 @@ public class DoorEvent {
                 profileMap.put("z", 0);
                 profileMap.put("level", "01");
                 valuesMap.put("profile", profileMap);
+                valuesMap.put("profile", profileMap);
                 // Create the 'events' map
                 Map<String, Object> eventsMap = new HashMap<>();
                 Map<String, Object> passMap = new HashMap<>();
@@ -204,6 +214,20 @@ public class DoorEvent {
                 passMap.put("describe", "");
                 passMap.put("idCardNumber", map.get("certNo").toString().trim().toUpperCase());
                 passMap.put("name", map.get("personName"));
+
+                String eventType = map.get("eventType").toString();
+
+                if (checkString(eventType)){
+                    continue;
+                }
+
+                try {
+                    passMap.put("photoBase64", imageToBase64(map.get("picUri").toString()));
+                } catch (NullPointerException e){
+                    passMap.put("photoBase64", "");
+                    System.err.print("门禁数据照片缺失，身份证号是：" + map.get("certNo").toString().trim().toUpperCase() + "；姓名是：" + map.get("personName"));
+                }
+                passMap.put("fiSuffix", "jpg");
                 passMap.put("passTime", DateUtil.formatDateTime(eventTime));
                 passMap.put("passDirection", map.get("inAndOutType").toString().equals("1") ? "02" : "01");
                 eventsMap.put("pass", passMap);
@@ -216,13 +240,59 @@ public class DoorEvent {
                 valuesList.add(valuesMap);
                 if (flag)
                     insertInOutLog(door, map, eventTime);
-
-
             }
             mainMap.put("values", valuesList);
             logger.info("门禁推送：{}", JSON.toJSONString(mainMap));
             swzkHttpUtils.pushIOT(mainMap);
 
+        }
+    }
+
+
+    public boolean checkString(String str) {
+        // 每次调用都重新创建集合
+        Set<Integer> predefinedNumbers = new HashSet<>(Arrays.asList(
+                196874, 196875, 196883, 196884, 198918, 198921, 199425,
+                196885, 196887, 198914, 198915, 196886, 196897, 197127,
+                196888, 196889, 196890, 196891, 196892, 196893, 197162
+        ));
+
+        try {
+            int num = Integer.parseInt(str);
+            return !predefinedNumbers.contains(num);
+        } catch (NumberFormatException e) {
+            return true;
+        }
+    }
+
+
+    public String imageToBase64(String url) throws KeyManagementException, NoSuchAlgorithmException {
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, new TrustManager[]{new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+        }}, new SecureRandom());
+        url = "https://192.168.1.207" + url;
+        HttpResponse response = HttpRequest.get(url)
+                .setSSLSocketFactory(sslContext.getSocketFactory())
+                .execute();
+
+        if (response.isOk()) {
+            // 获取图片字节数据并转换为base64
+            byte[] imageBytes = response.bodyBytes();
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } else {
+            throw new RuntimeException("Failed to fetch image from URL: " + url);
         }
     }
 

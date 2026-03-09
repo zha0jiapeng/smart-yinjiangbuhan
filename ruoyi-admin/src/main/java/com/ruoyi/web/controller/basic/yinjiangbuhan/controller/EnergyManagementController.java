@@ -62,15 +62,16 @@ public class EnergyManagementController {
                         "    \"PrivAddr\": \"%2FEquipment%2Faqgz.html\"\n" +
                         "}");
         try (HttpResponse resp = request.execute()) {
+            System.out.println("ammeterDataSummary接口调用后的数据："+resp.body().toString());
             final String data = JSON.parseObject(JSON.parse(resp.body()).toString()).getString("Data");
             if (Objects.isNull(data)) {
                 refreshToken();
                 return AjaxResult.error("token is expired");
             }
-            Map<String,Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             JSONObject jsonObject = requestUrl("http://nhapi.yunjichaobiao.com/api/Main/GetUseEnergy?PrivAddr=%252Findex.html");
-            map.put("useEnergy",jsonObject);
-            map.put("data",JSON.parseArray(data));
+            map.put("useEnergy", jsonObject);
+            map.put("data", JSON.parseArray(data));
             return AjaxResult.success(map);
         }
     }
@@ -78,7 +79,7 @@ public class EnergyManagementController {
     @GetMapping("getBigScreen")
     public AjaxResult get() {
         String token = getToken();
-        String url = "http://119.23.59.186:18996/#/home?ProjectID=11649&projectName=%E9%A9%AC%E8%89%AF%E9%95%87%E4%B8%AD%E9%93%81%E5%8D%81%E5%85%AB%E5%B1%80&token="+token;
+        String url = "http://119.23.59.186:18996/#/home?ProjectID=11649&projectName=%E9%A9%AC%E8%89%AF%E9%95%87%E4%B8%AD%E9%93%81%E5%8D%81%E5%85%AB%E5%B1%80&token=" + token;
         return AjaxResult.success(url);
     }
 
@@ -98,17 +99,17 @@ public class EnergyManagementController {
         }
         JSONArray array = JSON.parseArray(data);
         List<Map> javaList = array.toJavaList(Map.class);
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         javaList.forEach(item -> {
-             if(item.get("Keyword").equals("Power")){
-                 map.put("power", item.get("ValueAP"));
-             }
-            if(item.get("Keyword").equals("V")){
+            if (item.get("Keyword").equals("Power")) {
+                map.put("power", item.get("ValueAP"));
+            }
+            if (item.get("Keyword").equals("V")) {
                 map.put("voltageA", item.get("ValueA"));
                 map.put("voltageB", item.get("ValueB"));
                 map.put("voltageC", item.get("ValueC"));
             }
-            if(item.get("Keyword").equals("A")){
+            if (item.get("Keyword").equals("A")) {
                 map.put("currentA", item.get("ValueA"));
                 map.put("currentB", item.get("ValueB"));
                 map.put("currentC", item.get("ValueC"));
@@ -184,6 +185,7 @@ public class EnergyManagementController {
 
     /**
      * 获取指标曲线总数
+     *
      * @param dataType 15m 15分钟; D 日; M 月
      */
     @GetMapping("getIndexCurveTotal")
@@ -193,6 +195,7 @@ public class EnergyManagementController {
 
     /**
      * 获取电量使用情况
+     *
      * @return
      */
     @GetMapping("getUseEnergy")
@@ -216,6 +219,7 @@ public class EnergyManagementController {
 
     void refreshToken() {
         if (StringUtils.isNotBlank(redisCache.getCacheObject("energyManagementGetToken"))) {
+
             return;
         }
         new Thread(() -> {
@@ -234,6 +238,7 @@ public class EnergyManagementController {
 
     String getToken() {
         String token = redisCache.getCacheObject("energyManagementToken");
+        System.out.println("getToken方法中的token:"+token);
         if (StringUtils.isBlank(token)) {
             refreshToken();
             throw new IllegalArgumentException("token is expired");
@@ -267,6 +272,8 @@ public class EnergyManagementController {
                 break;
             }
         } while (StringUtils.isBlank(token));
+
+        System.out.println("配电箱toke信息：" + token);
         return token;
     }
 
@@ -279,7 +286,7 @@ public class EnergyManagementController {
                 ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
                 BufferedImage image = ImageIO.read(bis);
                 bis.close();
-                File outputFile = new File(rootPath+"/captcha.png");
+                File outputFile = new File(rootPath + "/captcha.png");
                 ImageIO.write(image, "png", outputFile);
 
                 ProcessBuilder processBuilder = new ProcessBuilder();

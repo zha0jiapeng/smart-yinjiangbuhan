@@ -10,13 +10,12 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Device;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.service.IDeviceService;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +31,16 @@ import java.util.Map;
 @RestController
 @RequestMapping("/PipeField")
 public class PipeFieldController extends BaseController {
+
+    @Resource
+    SwzkHttpUtils swzkHttpUtils;
+
+
+    @PostMapping("/door")
+    public AjaxResult door(@RequestBody Map<String, Object> request) {
+        return AjaxResult.success(swzkHttpUtils.pushIOT(request));
+    }
+
 
     /**
      * 管片厂面登录页面

@@ -507,9 +507,21 @@ public class RainController extends BaseController {
         return rain;
     }
 
+    public static void main(String[] args) {
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("loginName", "ZTSBJ");
+        paramMap.put("pwd", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92");
+        paramMap.put("deviceList", "868892074992729");
+        String result2 = HttpRequest.post("http://120.55.55.127:21010/remote/dataTrans")
+                .form(paramMap)//表单内容
+                .timeout(20000)//超时，毫秒
+                .execute().body();
+        System.out.println(result2);
+    }
 
-    @GetMapping("/getRainnew")
-//    @Scheduled(cron = "0 */1 * * * *")
+
+//    @GetMapping("/getRainnew")
+    @Scheduled(cron = "0 */1 * * * *")
     public void getRainnew() throws IOException {
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("loginName", "ZTSBJ");

@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * 拌合站
+ */
 @RestController
 @Slf4j
 @RequestMapping("/banhezhan")

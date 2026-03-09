@@ -190,6 +190,7 @@ public class DustDetectionController {
     private static String tokenUrl = "http://dust.0531yun.cn/api/getTokenByAcc?loginName=c241106hbjn&password=c241106hbjn";
     private static String getRealtimeDataUrl = "http://dust.0531yun.cn/api/data/getRealtimeData";
 
+
     /**
      * 张家山砂石厂扬尘噪音设备
      *

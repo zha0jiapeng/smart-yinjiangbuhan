@@ -1,28 +1,27 @@
 package com.ruoyi.web.controller.basic.yinjiangbuhan.controller;
 
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.ssl.TrustAnyHostnameVerifier;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.DoorFunctionApi;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.bean.EventApi;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.Order;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.SysEvents;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.domain.hik.Event;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.service.ISysEventsService;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.service.RuleService;
-import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.SwzkHttpUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ruoyi.web.controller.basic.yinjiangbuhan.utils.HutoolImageToBase64;
+import okhttp3.OkHttpClient;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.*;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.Base64;
 import java.util.*;
 
 /**
@@ -37,6 +36,7 @@ public class HikPersonController extends BaseController {
 
     @PostMapping("/request")
     public String add(@RequestBody String data) throws Exception {
+        //todo 需要对web端进行同步
         System.out.println("接收到的人员信息：" + data);
         byte[] decrypted = Base64.getDecoder().decode(data);
         String jsonString = decrypt(decrypted);

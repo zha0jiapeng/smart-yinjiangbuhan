@@ -97,6 +97,22 @@ public class TBMController {
         return AjaxResult.success(map);
     }
 
+    public static void main(String[] args) {
+        Map<String, Object> request = new HashMap<>();
+        request.put("secretKey", "z7kZ9eEsFXfIEDsCXfNCrI2coYPYkIawOWIScmi0gC1ywtVm0uKCmQgye+xuRnnWhhAjAs3AUe6F547z1FgkbQ==");
+        request.put("tbmCode", "CREC1463");
+        request.put("name", "shibajukjb");
+        HttpResponse execute = HttpRequest.post(url)
+                .body(JSONObject.toJSONString(request))
+                .execute();
+        JSONObject result = JSONObject.parseObject(execute.body());
+
+        System.out.println(result);
+
+
+
+    }
+
     @RequestMapping("/getTest")
     public AjaxResult getTest() {
         Map<String, Object> request = new HashMap<>();
@@ -481,30 +497,30 @@ public class TBMController {
 
     }
 
-    public static void main(String[] args) {
-        BigDecimal powerResult = new BigDecimal(4.6);
-        BigDecimal airSupply = new BigDecimal(119.2842942);
-
-        BigDecimal mu1 = new BigDecimal("0.98");
-        BigDecimal mu2 = new BigDecimal("0.97");
-        BigDecimal k = new BigDecimal("1.2");
-
-        BigDecimal constant1000 = new BigDecimal(1000);
-        BigDecimal constant0_01 = new BigDecimal("0.01");
-
-        // 按照公式计算 P
-        BigDecimal numerator = powerResult.multiply(new BigDecimal(3600))
-                .multiply(mu1)
-                .multiply(mu2)
-                .multiply(constant1000);
-
-
-        BigDecimal denominator = k.multiply(airSupply).multiply(constant0_01);
-
-        BigDecimal p = numerator.divide(denominator, MathContext.DECIMAL128);
-        p = p.multiply(new BigDecimal("0.0001")).setScale(2, RoundingMode.HALF_UP);
-        System.out.println(p);
-    }
+//    public static void main(String[] args) {
+//        BigDecimal powerResult = new BigDecimal(4.6);
+//        BigDecimal airSupply = new BigDecimal(119.2842942);
+//
+//        BigDecimal mu1 = new BigDecimal("0.98");
+//        BigDecimal mu2 = new BigDecimal("0.97");
+//        BigDecimal k = new BigDecimal("1.2");
+//
+//        BigDecimal constant1000 = new BigDecimal(1000);
+//        BigDecimal constant0_01 = new BigDecimal("0.01");
+//
+//        // 按照公式计算 P
+//        BigDecimal numerator = powerResult.multiply(new BigDecimal(3600))
+//                .multiply(mu1)
+//                .multiply(mu2)
+//                .multiply(constant1000);
+//
+//
+//        BigDecimal denominator = k.multiply(airSupply).multiply(constant0_01);
+//
+//        BigDecimal p = numerator.divide(denominator, MathContext.DECIMAL128);
+//        p = p.multiply(new BigDecimal("0.0001")).setScale(2, RoundingMode.HALF_UP);
+//        System.out.println(p);
+//    }
 
     @Autowired
     RedisCache redisCache;
